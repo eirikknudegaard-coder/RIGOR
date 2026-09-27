@@ -40,7 +40,7 @@ button { font: inherit; }
   position: relative;
   z-index: 20;
 }
-.brand { display: block; width: 235px; }
+.brand { display: block; width: 300px; }
 .brand img { width: 100%; height: auto; }
 .main-nav { display: flex; align-items: center; gap: 34px; font-size: 13px; letter-spacing: .08em; }
 .main-nav a { position: relative; }
@@ -158,7 +158,7 @@ button { font: inherit; }
 
 @media (max-width: 900px) {
   .site-header { height: 92px; }
-  .brand { width: 190px; }
+  .brand { width: 230px; }
   .menu-toggle { display: block; }
   .main-nav { display: none; position: absolute; top: 82px; left: 0; right: 0; padding: 26px; background: var(--paper-light); border: 1px solid var(--line); flex-direction: column; align-items: stretch; gap: 20px; }
   .main-nav.open { display: flex; }
