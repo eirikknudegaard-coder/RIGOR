@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 210" role="img" aria-labelledby="title desc">
+  <title id="title">RIGOR</title>
+  <desc id="desc">RIGOR – Rådgivende ingeniører</desc>
+  <g fill="none" stroke="#17191b" stroke-width="22" stroke-linecap="square" stroke-linejoin="miter">
+    <path d="M40 40v105M40 40h105c38 0 56 18 56 45s-18 45-56 45H40"/>
+    <path d="M252 40v105"/>
+    <path d="M325 70c0-21 17-38 38-38h80c21 0 38 17 38 38v67c0 21-17 38-38 38h-80c-21 0-38-17-38-38z"/>
+    <path d="M480 103h-70"/>
+    <path d="M554 70c0-21 17-38 38-38h72c21 0 38 17 38 38v67c0 21-17 38-38 38h-72c-21 0-38-17-38-38z"/>
+    <path d="M776 40v105M776 40h105c38 0 56 18 56 45s-18 45-56 45H776"/>
+  </g>
+  <g fill="#b78b61">
+    <polygon points="92,95 118,95 190,171 162,171"/>
+    <polygon points="828,95 854,95 926,171 898,171"/>
+  </g>
+  <text x="40" y="204" fill="#17191b" font-family="Arial, Helvetica, sans-serif" font-size="20" letter-spacing="11">RÅDGIVENDE INGENIØRER</text>
+</svg>
