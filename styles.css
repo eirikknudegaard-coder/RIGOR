@@ -43,7 +43,7 @@ button { font: inherit; }
 }
 .brand {
   display: block;
-  width: 320px;
+  width: 360px;
   flex: 0 0 auto;
 }
 .brand img {
@@ -167,7 +167,7 @@ button { font: inherit; }
 
 @media (max-width: 900px) {
   .site-header { min-height: 98px; padding: 14px 0 10px; }
-  .brand { width: 250px; }
+  .brand { width: 280px; }
   .menu-toggle { display: block; }
   .main-nav { display: none; position: absolute; top: 82px; left: 0; right: 0; padding: 26px; background: var(--paper-light); border: 1px solid var(--line); flex-direction: column; align-items: stretch; gap: 20px; }
   .main-nav.open { display: flex; }
@@ -187,7 +187,7 @@ button { font: inherit; }
 @media (max-width: 620px) {
   .section-shell, .site-header { width: min(calc(100% - 28px), var(--max)); }
   .site-header { min-height: 82px; padding: 12px 0 8px; }
-  .brand { width: 210px; }
+  .brand { width: 235px; }
   .hero h1 { font-size: 50px; }
   .hero-lead { font-size: 16px; }
   .hero-actions, .contact-actions { align-items: flex-start; flex-direction: column; }
