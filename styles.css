@@ -1007,3 +1007,15 @@ button { font: inherit; }
     flex-direction: column;
   }
 }
+
+
+/* Approved service imagery framing */
+.detail-damage .detail-split-primary { background-position: 52% 45%; }
+.detail-damage .detail-split-secondary { background-position: 50% 52%; }
+.detail-value .detail-split-primary { background-position: 50% 58%; }
+.detail-value .detail-split-secondary { background-position: 52% 50%; }
+.detail-advice .detail-split-primary { background-position: 52% 46%; }
+.detail-advice .detail-split-secondary { background-position: 50% 50%; }
+.detail-damage .detail-cta { background-position: 50% 58%; }
+.detail-value .detail-cta { background-position: 50% 55%; }
+.detail-advice .detail-cta { background-position: 50% 48%; }
