@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <div class="build-notice" role="status">Nettsted under bygging</div>
   <header class="site-header" id="top">
     <a class="brand" href="#top" aria-label="RIGOR – hjem">
       <img src="assets/rigor-logo.svg?v=20260927-3" alt="RIGOR – Rådgivende ingeniører" />
@@ -32,26 +33,33 @@
   </header>
 
   <main>
-    <section class="hero section-shell">
-      <div class="hero-copy reveal">
-        <h1>Faglig presisjon.<br><span>Praktiske løsninger.</span></h1>
-        <p class="hero-lead">
-          RIGOR kombinerer prosjektering, konstruksjon og materialforståelse for å gjøre gode byggbare løsninger enklere å realisere.
-        </p>
-        <div class="hero-actions">
-          <a class="button button-primary" href="#kontakt">Ta kontakt</a>
-          <a class="text-link" href="#tjenester">Se fagområder <span>↘</span></a>
+    <section class="hero hero-triptych" aria-label="RIGOR fagområder">
+      <article class="hero-panel hero-panel-damage reveal">
+        <div class="hero-panel-content">
+          <span class="hero-kicker">Takst</span>
+          <h1>Skadetaksering</h1>
+          <p>Kartlegging av skader, årsak og utbedringsbehov.</p>
+          <a class="hero-panel-link" href="mailto:takst@rigor.no" aria-label="Kontakt RIGOR om skadetaksering">→</a>
         </div>
-      </div>
+      </article>
 
-      <div class="hero-visual reveal" aria-hidden="true">
-        <div class="structural-grid"></div>
-        <div class="beam beam-a"></div>
-        <div class="beam beam-b"></div>
-        <div class="column"></div>
-        <div class="dimension-line"><span>RIGOR</span></div>
-        <div class="hero-note">BYGG · KONSTRUKSJON · MATERIALER</div>
-      </div>
+      <article class="hero-panel hero-panel-value reveal">
+        <div class="hero-panel-content">
+          <span class="hero-kicker">Takst</span>
+          <h2>Verdivurdering</h2>
+          <p>Vurdering og dokumentasjon av bolig og eiendom.</p>
+          <a class="hero-panel-link" href="mailto:takst@rigor.no" aria-label="Kontakt RIGOR om verdivurdering">→</a>
+        </div>
+      </article>
+
+      <article class="hero-panel hero-panel-advice reveal">
+        <div class="hero-panel-content">
+          <span class="hero-kicker">Ingeniørtjenester</span>
+          <h2>Rådgivning innen<br>bygg og anlegg</h2>
+          <p>Prosjektering, konstruksjon, materialer og praktiske løsninger for ditt prosjekt.</p>
+          <a class="hero-panel-link" href="#kontakt" aria-label="Se kontaktinformasjon">→</a>
+        </div>
+      </article>
     </section>
 
     <section class="statement section-shell reveal">
@@ -154,10 +162,16 @@
       <div class="contact-card reveal">
         <p class="eyebrow">Kontakt</p>
         <h2>Har du et prosjekt<br>vi bør se på?</h2>
-        <p>Send noen linjer om prosjektet, gjerne med bilder eller eksisterende tegninger. Så tar vi en konkret prat om veien videre.</p>
-        <div class="contact-actions">
-          <a class="button button-light" href="mailto:post@rigor.no">post@rigor.no</a>
-          <a class="text-link light" href="tel:+4790000000">+47 900 00 000</a>
+        <p>Send noen linjer om saken eller prosjektet, gjerne med bilder eller eksisterende dokumentasjon. Så tar vi en konkret prat om veien videre.</p>
+        <div class="contact-actions contact-email-grid">
+          <a class="contact-email-card" href="mailto:info@rigor.no">
+            <span class="contact-email-label">Generelle henvendelser</span>
+            <strong>info@rigor.no</strong>
+          </a>
+          <a class="contact-email-card" href="mailto:takst@rigor.no">
+            <span class="contact-email-label">Takst og verdivurdering</span>
+            <strong>takst@rigor.no</strong>
+          </a>
         </div>
         <div class="contact-foot">
           <span>Agder · Norge</span>
