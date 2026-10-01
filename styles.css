@@ -65,17 +65,29 @@ button { font: inherit; }
 .eyebrow { margin: 0 0 20px; font-size: 11px; text-transform: uppercase; letter-spacing: .26em; font-weight: 600; color: var(--bronze-dark); }
 
 .build-notice {
-  min-height: 38px;
+  min-height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 12px;
   padding: 8px 20px;
-  background: var(--ink);
-  color: #d8c0a7;
+  background: #17191b;
+  color: #f4f2ed;
   font-size: 11px;
-  font-weight: 500;
-  letter-spacing: .14em;
-  text-transform: uppercase;
+  letter-spacing: .02em;
+}
+.build-notice strong {
+  color: #e0b486;
+  font-weight: 600;
+}
+.build-notice strong::before {
+  content: "✕";
+  display: inline-block;
+  margin-right: 9px;
+  transform: rotate(45deg);
+}
+.build-notice span {
+  color: #c9cbcc;
 }
 
 .hero-triptych {
@@ -106,7 +118,7 @@ button { font: inherit; }
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(180deg, rgba(12,14,16,.04) 20%, rgba(12,14,16,.82) 100%);
+  background: linear-gradient(180deg, rgba(12,14,16,.03) 16%, rgba(12,14,16,.18) 48%, rgba(12,14,16,.88) 100%);
 }
 
 .hero-panel::after {
@@ -125,30 +137,30 @@ button { font: inherit; }
 .hero-panel:last-child::after { display: none; }
 
 .hero-panel-damage {
-  flex-basis: 34%;
+  flex-basis: 35%;
   background-image:
-    url("https://images.pexels.com/photos/19901522/pexels-photo-19901522/free-photo-of-man-wearing-pink-helmet-with-camera.jpeg?auto=compress&dpr=1&h=1100&w=1400");
-  background-position: 52% center;
+    url("https://images.pexels.com/photos/8293699/pexels-photo-8293699.jpeg?auto=compress&cs=tinysrgb&w=1800");
+  background-position: 48% center;
   clip-path: polygon(0 0, 100% 0, 88% 100%, 0 100%);
 }
 
 .hero-panel-value {
-  flex-basis: 34%;
+  flex-basis: 35%;
   margin-left: -4.2%;
   padding-left: 4.2%;
   background-image:
-    url("https://images.pexels.com/photos/7587880/pexels-photo-7587880.jpeg?auto=compress&dpr=1&h=1100&w=1400");
-  background-position: 58% center;
+    url("https://images.pexels.com/photos/9173032/pexels-photo-9173032.jpeg?auto=compress&cs=tinysrgb&w=1800");
+  background-position: 54% center;
   clip-path: polygon(12% 0, 100% 0, 88% 100%, 0 100%);
 }
 
 .hero-panel-advice {
-  flex-basis: 38%;
+  flex-basis: 36%;
   margin-left: -4.2%;
   padding-left: 4.2%;
   background-image:
-    url("https://images.unsplash.com/photo-1742112125554-fdb788faedaa?auto=format&fit=crop&fm=jpg&q=78&w=1800");
-  background-position: 56% center;
+    url("https://images.pexels.com/photos/30832161/pexels-photo-30832161.jpeg?auto=compress&cs=tinysrgb&w=1800");
+  background-position: 58% center;
   clip-path: polygon(12% 0, 100% 0, 100% 100%, 0 100%);
 }
 
@@ -181,8 +193,8 @@ button { font: inherit; }
   color: var(--white);
   font-size: clamp(36px, 3.2vw, 58px);
   line-height: .98;
-  font-weight: 400;
-  letter-spacing: -.045em;
+  font-weight: 600;
+  letter-spacing: -.035em;
 }
 
 .hero-panel p {
@@ -397,4 +409,84 @@ button { font: inherit; }
   .contact-email-card {
     width: 100%;
   }
+}
+
+
+.hero-contact-strip {
+  width: 100%;
+  min-height: 126px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 52px;
+  padding: 22px 48px;
+  background: #fbfaf7;
+  border-bottom: 1px solid var(--line);
+}
+.hero-contact-item {
+  min-width: 340px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.hero-contact-icon {
+  width: 58px;
+  height: 58px;
+  flex: 0 0 58px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #eee8df;
+  color: var(--bronze-dark);
+  font-size: 25px;
+  line-height: 1;
+}
+.hero-contact-doc { font-size: 24px; }
+.hero-contact-item span:last-child {
+  display: flex;
+  flex-direction: column;
+}
+.hero-contact-item small {
+  margin-bottom: 3px;
+  color: #555a5e;
+  font-size: 13px;
+}
+.hero-contact-item strong {
+  color: var(--ink);
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: -.02em;
+}
+.hero-contact-divider {
+  width: 1px;
+  height: 62px;
+  background: var(--line);
+}
+
+
+@media (max-width: 900px) {
+  .build-notice span { display: none; }
+  .hero-contact-strip {
+    gap: 24px;
+    padding: 22px 28px;
+  }
+  .hero-contact-item { min-width: 0; flex: 1; }
+}
+
+@media (max-width: 620px) {
+  .hero-contact-strip {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 10px 18px;
+  }
+  .hero-contact-item {
+    padding: 16px 0;
+  }
+  .hero-contact-divider {
+    width: 100%;
+    height: 1px;
+  }
+  .hero-contact-item strong { font-size: 19px; }
 }
