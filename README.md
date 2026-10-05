@@ -147,3 +147,12 @@ oppgaver. Søk åpner relevante kategorier. Rehabvariantene dekker blant annet
 yttervegger, vinduer/dører, takriving, terrasser, innervegger, gulv, himling,
 listverk og kjøkken. Innholdet er egne RIGOR-maler; Svenns priser og tidsnormer
 er ikke kopiert.
+
+Kalkyleverkstedet åpner med en forside for Forenklet eller Detaljert.
+Opprett prosjekt med navn, kunde, adresse, kalkulasjonsnummer og status.
+Detaljert starter tomt med biblioteket; Forenklet starter med veiviseren.
+Hvert prosjekt har eget lagret prisgrunnlag, egne satser og poster.
+«Lagre prosjekt» og retur til prosjektoversikten lagrer lokalt. Prosjekter
+kan søkes frem, gjenåpnes og få endrede detaljer. Nye prosjekter starter med
+standardinnstillinger. Ingen Supabase-/skysynkronisering er aktivert.
+Nettlesertest: `python tests/kalkyle-projects.py`.

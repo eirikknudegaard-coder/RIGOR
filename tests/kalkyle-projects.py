@@ -1,0 +1,21 @@
+import sys
+from playwright.sync_api import sync_playwright
+with sync_playwright() as p:
+ b=p.chromium.launch(executable_path='/usr/bin/chromium',args=['--no-sandbox'])
+ page=b.new_page(); errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
+ page.goto((sys.argv[1] if len(sys.argv)>1 else 'http://127.0.0.1:8080')+'/kalkyle.html')
+ assert page.locator('#project-home').is_visible();assert not page.locator('#project-workspace').is_visible()
+ page.locator('#start-detailed').click();page.locator('#project-name').fill('Takprosjekt');page.locator('#project-customer').fill('Kari');page.locator('#project-address').fill('Vestliveien 55');page.locator('#project-submit').click()
+ assert page.locator('tr[data-row-index]').count()==0;assert page.locator('#library-browser').get_attribute('open') is not None
+ page.locator('#library-search').fill('Riving av benkeplate');card=page.locator('.library-card').first;card.locator('summary').click();card.get_by_role('button',name='Legg til valgte oppgaver').click()
+ assert page.locator('tr[data-row-index]').count()==1
+ page.locator('#project-back').click();assert 'Kari' in page.locator('#project-list').inner_text()
+ page.locator('#start-simple').click();page.locator('#project-name').fill('Etterisolering');page.locator('#project-submit').click();assert page.locator('#wizard').is_visible();assert page.locator('tr[data-row-index]').count()>1
+ page.locator('#project-back').click();page.reload();assert page.locator('.project-card').count()==2
+ page.locator('#project-search').fill('Vestliveien');page.get_by_role('button',name='Åpne prosjekt').click();assert page.locator('tr[data-row-index]').count()==1;assert page.locator('#details').is_visible()
+ page.locator('#project-edit').click();page.locator('#project-state').select_option('Under arbeid');page.locator('#project-submit').click();assert 'Under arbeid' in page.locator('#project-meta').inner_text()
+ page.locator('#project-back').click();page.set_viewport_size({'width':390,'height':844});assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
+ page.locator('#start-detailed').click();assert page.locator('#project-dialog').is_visible();page.locator('#project-cancel').click();assert page.locator('#project-home').is_visible()
+ assert not errors,errors
+ print('PASS: forside, prosjektopprettelse, tom detaljkalkyle, separate kalkyler, lagring, søk, metadata og mobil')
+ b.close()
