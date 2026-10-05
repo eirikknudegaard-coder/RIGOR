@@ -54,6 +54,7 @@ export function priceStatus(record,today=new Date().toISOString().slice(0,10)) {
 export function applyPrices(rows,mode,records,today) {
  const catalog=new Map(records.map(r=>[r.prisnokkel,r]));
  return rows.map(r=>{
+  if(mode==='example'&&r.needsExamplePrice&&!r.manualPrice)return {...r,material:0,priceSource:'Ingen eksempelpris',priceDate:'',priceIssue:'pris må registreres'};
   if(mode==='example')return {...r,material:r.manualPrice?r.material:(r.exampleMaterial??r.material),priceSource:r.manualPrice?'Manuelt satt':'Eksempelpris',priceDate:'',priceIssue:null};
   if(r.manualPrice)return {...r,priceSource:'Manuelt satt',priceDate:'',priceIssue:null};
   if(!r.priceKey)return {...r,material:0,priceSource:'Ingen materialkostnad',priceDate:'',priceIssue:null};

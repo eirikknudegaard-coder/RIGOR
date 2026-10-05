@@ -1,4 +1,4 @@
-import {readCsv,validatePrices} from './kalkyle-prices.js?v=20261005-takbibliotek';
+import {readCsv,validatePrices} from './kalkyle-prices.js?v=20261005-bibliotek2';
 export const fields=['prisnokkel','enhet','pris','kilde','dato','valuta','mva'];
 const aliases={prisnokkel:['prisnokkel','prisnøkkel','post','key'],enhet:['enhet','unit'],pris:['pris','nettopris','price','innkjøpspris'],kilde:['kilde','leverandør','supplier'],dato:['dato','prisdato','date'],valuta:['valuta','currency'],mva:['mva','vat']};
 export function prepareImport(text){

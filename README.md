@@ -127,3 +127,17 @@ brukere. Eksisterende lagrede kalkyler beholdes; nye detaljer lagres med dem.
 AI-knappen er deaktivert mens aktivering er utsatt. CSV-import og bibliotek
 krever ingen AI-kall. Kjør `node tests/kalkyle-library.test.mjs` for takgeometri,
 oppgavemengder, enhetskontroll og bibliotekfiltre.
+
+
+Biblioteket er utvidet til 70 elementer og 131 oppgaver. Hvert standardelement
+har beskrivelser av inkludert arbeid, mengdegrunnlag og avgrensninger. Søk
+omfatter også disse beskrivelsene. Nye material- og utførelsesalternativer
+har ingen oppdiktede priser eller tidsnormer: materialpris må importeres eller
+registreres, og grunntid må angis eksplisitt etter at oppgaven er lagt til.
+Totalsum og CSV-eksport venter på nødvendig pris og tid. Eksplisitt registrert
+null timer tillates for rent innkjøp eller eksterne leveranser.
+
+Nettleserregresjon: med Python Playwright og Chromium installert, start
+`python -m http.server 8080 --bind 127.0.0.1` fra repository-roten og kjør
+`python tests/kalkyle-browser.py`. Testen bruker bare lokale demonstrasjonsdata
+og sjekker blant annet at flere feltendringer på samme oppgave beholdes.

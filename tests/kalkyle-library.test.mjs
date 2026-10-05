@@ -26,3 +26,11 @@ test('Søk og filtre fungerer over elementer og oppgaver',()=>{
  assert(searchLibrary(library,{type:'Nybygg'}).every(e=>e.type==='Nybygg'||e.type==='Alle'));
  assert(searchLibrary(library,{trade:'Betong'}).every(e=>e.trade==='Betong'));
 });
+test('Utvidet bibliotek har unike nøkler og beskrivelser for hvert element',()=>{
+ assert(library.length>=70);assert.equal(new Set(library.map(e=>e.id)).size,library.length);
+ for(const e of library){assert(e.description?.length>20,e.id);assert(e.quantityNote?.length>20,e.id);assert(e.excludes?.length>10,e.id);assert.equal(new Set(e.tasks.map(t=>t.id)).size,e.tasks.length);}
+});
+test('Nye elementer krever oppgitt tid og gir ingen eksempelpris',()=>{
+ const e=library.find(e=>e.id==='roof.finish.pvc');const rows=instantiate(e,100);assert(rows.every(r=>r.requiresTime));assert(rows.every(r=>r.needsExamplePrice));assert(applyPrices(rows,'example',[]).every(r=>r.priceIssue));
+ const removal=instantiate(library.find(e=>e.id==='roof.remove.tile'),100);assert(removal.every(r=>r.priceKey===null));assert(removal.every(r=>r.requiresTime));
+});
