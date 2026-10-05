@@ -1,3 +1,4 @@
+import {productTypes,specificationIssues} from './market-product-types.js';
 // Deterministic comparison. No product attributes, tax status or prices are inferred.
 export function safeProductUrl(value,chain){
  const url=new URL(value);const host={obs:'www.obsbygg.no',byggmax:'www.byggmax.no'}[chain];
@@ -13,8 +14,9 @@ export function normalizeOffer(offer,product){
  return {...offer,original_ore:ore,normalized_ore:Math.round(exVat/content),unit:product.unit,vat:'ekskl',price_kind:product.price_kind,conversion:`${price} NOK ${product.vat==='inkl'?'inkl.':'ekskl.'} MVA / ${content} ${product.unit}`};
 }
 export function matchProducts(a,b){
- const fields={timber:['width','height','strength','material','treatment','profile'],decking:['width','height','material','treatment','profile'],gypsum:['thickness','width','length','board_type','edge'],insulation:['thickness','lambda','application','material']};
+ const fields=Object.fromEntries(Object.entries(productTypes).map(([key,value])=>[key,value.fields]));
  if(a.kind!==b.kind||!fields[a.kind])return {status:'rejected',reason:'Ulik eller ukjent produkttype'};
+ const missing=[...specificationIssues(a.kind,a.specs),...specificationIssues(b.kind,b.specs)];if(missing.length)return {status:'uncertain',reason:missing[0]};
  for(const k of fields[a.kind]){if(a.specs?.[k]===undefined||b.specs?.[k]===undefined)return {status:'uncertain',reason:'Mangler '+k};if(String(a.specs[k])!==String(b.specs[k]))return {status:'rejected',reason:'Ulik '+k};}
  const identical=['ean','nobb'].some(k=>a[k]&&b[k]&&a[k]===b[k]);
  return {status:identical?'identical':'equivalent',reason:identical?'Identifikator og spesifikasjoner stemmer':'Like dokumenterte spesifikasjoner'};

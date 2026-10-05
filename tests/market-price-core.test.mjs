@@ -13,3 +13,7 @@ test('Gamle priser, medlemspriser, ukjent lager og lokale priser velges ikke',()
  for(const o of [{...obs,checked_at:new Date(now-25*3600000).toISOString()},{...obs,accepted:false},{...obs,availability:'unknown'}])assert.equal(selectCatalog(groups,[product],[o],now).prices.length,0);
  const prices=validatePrices(selectCatalog(groups,[product],[obs],now).prices);const row={name:'Test',enabled:true,quantity:100,materialQuantity:100,materialUnit:'m²',unit:'m²',hours:0,factor:1,priceKey:'insulation.test'};const priced=applyPrices([row],'market',prices);assert.equal(priced[0].marketPackages,17);assert.equal(priced[0].marketPurchasedQuantity,102);assert.equal(calculate(priced,{wage:0,direct:0,indirect:0,billing:100,laborMarkup:0,materialMarkup:0},100).cost,8160);assert.equal(applyPrices(priced,'import',prices)[0].marketMaterialCost,undefined);
 });
+test('Sløyfer og lekter med ulik dimensjon eller behandling er ikke sammenlignbare',()=>{
+ const p={kind:'battens',specs:{width:48,height:30,material:'gran',treatment:'ubehandlet',strength:'ikke klassifisert'}};
+ assert.equal(matchProducts(p,p).status,'equivalent');assert.equal(matchProducts(p,{...p,specs:{...p.specs,height:36}}).status,'rejected');assert.equal(matchProducts(p,{...p,specs:{...p.specs,treatment:'impregnert'}}).status,'rejected');assert.equal(matchProducts(p,{...p,specs:{...p.specs,strength:''}}).status,'uncertain');
+});

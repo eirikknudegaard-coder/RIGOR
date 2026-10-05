@@ -34,3 +34,8 @@ test('Nye elementer krever oppgitt tid og gir ingen eksempelpris',()=>{
  const e=library.find(e=>e.id==='roof.finish.pvc');const rows=instantiate(e,100);assert(rows.every(r=>r.requiresTime));assert(rows.every(r=>r.needsExamplePrice));assert(applyPrices(rows,'example',[]).every(r=>r.priceIssue));
  const removal=instantiate(library.find(e=>e.id==='roof.remove.tile'),100);assert(removal.every(r=>r.priceKey===null));assert(removal.every(r=>r.requiresTime));
 });
+test('Sløyfer og lekter bruker valgt avstand og svinn',()=>{
+ const rows=propose({...base,battenSpacing:600,lathSpacing:350,roofWaste:10,basis:'surface'});
+ assert(Math.abs(rows.find(r=>r.priceKey==='roof.underlay.sloyfer').materialQuantity-183.3333333)<1e-5);
+ assert(Math.abs(rows.find(r=>r.priceKey==='roof.underlay.lekter').materialQuantity-314.2857143)<1e-5);
+});

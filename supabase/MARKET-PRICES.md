@@ -25,7 +25,8 @@ Dette dokumentet beskriver ikke en ferdig leverandørintegrasjon.
    feeds. Tilpass adapterne til verifiserte data; kjør kildeverifiseringene
    nedenfor. Ikke omgå innlogging, CAPTCHA eller andre sperrer.
 2. Kjør `supabase db push` mot riktig prosjekt. Migrasjonen er
-   `migrations/202610050002_market_prices.sql`.
+   `migrations/202610050002_market_prices.sql` og
+   `migrations/202610050003_price_assortment.sql`.
 3. Sett et tilfeldig dedikert `RIGOR_PRICE_JOB_KEY` som Edge Function-secret.
    `SUPABASE_URL` og `SUPABASE_SERVICE_ROLE_KEY` leveres av Supabase-runtime.
    Ingen OpenAI-nøkkel eller AI-kall er nødvendig.
@@ -45,7 +46,7 @@ Dette dokumentet beskriver ikke en ferdig leverandørintegrasjon.
    verdi som Supabase), `RIGOR_PRICE_FUNCTION_URL` i repository variables til
    funksjonens HTTPS-adresse og `RIGOR_PRICE_SYNC_ENABLED=true` som variable.
    GitHub Actions må være aktivert. Workflow `.github/workflows/market-prices.yml`
-   kjører ca. hver sjette time og kan startes manuelt. Actions-schedules kan
+   behandler forfalte varer ca. hvert kvarter og kan startes manuelt. Actions-schedules kan
    forsinkes og kan deaktiveres ved lang inaktivitet i offentlige repoer.
 
 Aktivering krever Supabase prosjekt-/deploytilgang, GitHub konfigurasjonstilgang
@@ -62,7 +63,12 @@ må kontrolleres på nytt ved endret produkt; de gjettes ikke fra navn.
 RPC med transaksjonslås forhindrer overlapp og nye jobber innen fem minutter.
 Jobber har tidsbegrenset lease for å tåle avbrutt runtime. Kildene kjøres
 sekvensielt, med maks 20 produkter per kilde og en begrenset tidsramme.
-Eldste forsøk prioriteres. Utvid med kø før større produktutvalg.
+Hver vare har neste kontrolltid; vellykket kontroll forskyver den med
+kildeintervallet (normalt seks timer), feil forsøkes tidligst igjen etter én
+time. Eldste forsøk prioriteres og kjedene roterer etter sist startet. Nye/endrede
+produkter blir forfalt umiddelbart. Hele sortimentet er ikke garantert å bli
+kontrollert hver sjette time; faktisk kapasitet må måles mot tilgjengelige kilder.
+Ved mange tusen varer må batchstørrelse/runtime og API-/feedtilgang dimensjoneres.
 Timeout, 429/502/503/504 gir én begrenset retry. Lang Retry-After respekteres ved
 å avbryte fremfor å prøve for tidlig. robots.txt kontrolleres før kildens batch.
 En robots-feil stopper kilden, ikke de andre kjedene. Siste gyldige pris og
@@ -101,3 +107,9 @@ Deploytilgang er lagt som krav i Codex-miljøets konfigurasjonsutkast:
 tilgangen finnes i runtime. Det aktiverer ikke Supabase-funksjonen eller
 GitHub-jobben automatisk. Legg også til `www.obsbygg.no` og `www.byggmax.no`
 i miljøets eksisterende nettverkstillatelser uten å fjerne andre domener.
+
+Sortiment: 16 typer med obligatoriske, typeavhengige spesifikasjoner. Sløyfer
+og lekter er en egen type. Ingen «alle varer»-oppdagelse eller reelle produkter
+er lagt inn uten kildeverifisering. Takveiviseren beregner sløyfer og lekter
+fra takflate, valgt avstand i mm og svinn. Kantlekter, skjøter og forsterkninger
+registreres separat; dette erstatter ikke produktets monteringsanvisning.

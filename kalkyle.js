@@ -1,12 +1,12 @@
-import {jobs,propose,calculate,roofGeometry} from './kalkyle-engine.js?v=20261005-prissynk';
+import {jobs,propose,calculate,roofGeometry,roofConsumption} from './kalkyle-engine.js?v=20261005-sortiment';
 import {library,roofTypes,instantiate,searchLibrary} from './kalkyle-library.js?v=20261005-kategorier';
-import {parseCsv,validatePrices,applyPrices} from './kalkyle-prices.js?v=20261005-prissynk';
+import {parseCsv,validatePrices,applyPrices} from './kalkyle-prices.js?v=20261005-sortiment';
 import {fields,prepareImport,sampleImport,checkMapping,mapImport} from './kalkyle-import.js?v=20261005-kategorier';
 const $=id=>document.getElementById(id),money=n=>new Intl.NumberFormat('nb-NO',{style:'currency',currency:'NOK',maximumFractionDigits:2}).format(n),num=n=>new Intl.NumberFormat('nb-NO',{maximumFractionDigits:2}).format(n);
 const rateKeys=['wage','direct','indirect','billing','laborMarkup','materialMarkup'];
 let job='roof',rows=[],edited=false,lastSettings=null,result=null;
 let priceMode='market',importedPrices=[],marketPrices=[],marketMessage='Ingen markedspriskilde er tilkoblet. Importer en prisliste eller velg demonstrasjon.',priceRequest=0;
-const roofKeys=['roofType','lowerAngle','upperShare','ridgeLength','hipLength','breakLength','edgeLength','drainCount'];
+const roofKeys=['roofType','lowerAngle','upperShare','ridgeLength','hipLength','breakLength','edgeLength','drainCount','battenSpacing','lathSpacing','roofWaste'];
 let renderedGroups=[];
 function settings(){return {...Object.fromEntries(roofKeys.map(k=>[k,k==='roofType'?$(k).value:Number($(k).value)])),job,area:Number($('area').value),angle:Number($('angle').value),basis:$('basis').value,material:$('material').value,difficulty:Number($('difficulty').value),options:[...document.querySelectorAll('#options input:checked')].map(e=>e.value)};}
 function rates(){return Object.fromEntries(rateKeys.map(k=>[k,Number($(k).value)]));}
@@ -20,6 +20,7 @@ function setupJob(){
  $('uncertainty').textContent=jobs[job].uncertainty;configureRoof();
 }
 function configureRoof(){
+ $('roof-consumption').hidden=job!=='roof';for(const id of ['battenSpacing','lathSpacing','roofWaste'])$(id).disabled=job!=='roof';
  const roof=job==='roof',type=$('roofType').value,shape=roofTypes[type];
  $('roof-type-note').textContent=roof?shape.note:'';
  $('angle').max=type==='flat'?'5':'75';if(roof&&type==='flat'&&Number($('angle').value)>5)$('angle').value='3';
@@ -29,7 +30,7 @@ function configureRoof(){
  for(const [id,active] of [['ridgeLength',['gable','hip','mansard'].includes(type)],['hipLength',type==='hip'],['breakLength',type==='mansard'],['edgeLength',true],['drainCount',type==='flat']]){$(id).disabled=!details||!active;$(id+'-label').hidden=!active;}
  if(roof)$('area-help').textContent=type==='mansard'?'Øvre takvinkel oppgis i feltet Takvinkel. Ved projisert areal brukes øvre og nedre vinkel med oppgitt arealandel. Ved målt takflate brukes høyeste vinkel som tidsforutsetning.':'Målt takflate brukes direkte. Projisert areal omregnes med takvinkelen; flatt tak har lavt fall. Arealet inkluderer takutstikk. Tidsfaktorer er foreløpige antakelser.';
 }
-function generate(){configureRoof();lastSettings=settings();rows=propose(lastSettings);edited=false;renderRows();update();}
+function generate(){configureRoof();if([...document.querySelectorAll('#questions input[type=number]')].some(e=>!e.disabled&&!e.checkValidity())){update();return;}lastSettings=settings();rows=propose(lastSettings);edited=false;renderRows();update();}
 function renderRows(){
  $('rows').replaceChildren();renderedGroups=[];
  const groups=new Map();rows.forEach((r,i)=>{const key=r.elementId||r.id||String(i);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(i);});
@@ -75,7 +76,7 @@ $('save').onclick=()=>{try{localStorage.setItem('rigor-calculation-v1',JSON.stri
 function restoreCalculation(snapshot=null){try{const raw=snapshot?JSON.stringify(snapshot):localStorage.getItem('rigor-calculation-v1');if(!raw){$('status').textContent='Ingen lokal kalkyle er lagret.';return;}const s=JSON.parse(raw);if(![1,2].includes(s.version)||!jobs[s.settings?.job]||!Array.isArray(s.rows)||s.rows.length>500||s.rows.some(r=>typeof r.name!=='string'||typeof r.enabled!=='boolean'||!['m²','m','stk','rs'].includes(r.unit)||['quantity','material','hours','factor'].some(k=>!Number.isFinite(r[k])||r[k]<0))||!rateKeys.every(k=>Number.isFinite(s.rates?.[k]))||!['surface','footprint'].includes(s.settings.basis)||!['metal','tile','membrane'].includes(s.settings.material)||!Array.isArray(s.settings.options)||!['area','angle','difficulty'].every(k=>Number.isFinite(s.settings[k])))throw Error();if(edited&&!confirm('Erstatte den åpne kalkylen med den lagrede?'))return;
  if(s.version===2){if(!['market','import','example'].includes(s.priceMode)||!Array.isArray(s.importedPrices))throw Error();if(s.importedPrices.length)validatePrices(s.importedPrices);if(s.marketPrices?.length)validatePrices(s.marketPrices);priceMode=s.priceMode;importedPrices=s.importedPrices;marketPrices=s.marketPrices||[];if(priceMode==='market'&&marketPrices.length)marketMessage='Lagret prisgrunnlag. Kilde og dato kontrolleres; hent nye priser ved behov.';}else{priceMode='example';importedPrices=[];}
  $('price-mode').value=priceMode;
- const restored={roofType:'gable',lowerAngle:60,upperShare:50,ridgeLength:0,hipLength:0,breakLength:0,edgeLength:0,drainCount:0,...s.settings};
+ const restored={roofType:'gable',lowerAngle:60,upperShare:50,ridgeLength:0,hipLength:0,breakLength:0,edgeLength:0,drainCount:0,battenSpacing:600,lathSpacing:500,roofWaste:0,...s.settings};
  job=s.settings.job;setupJob();for(const k of ['area','angle','basis','material','difficulty',...roofKeys])if(restored[k]!==undefined)$(k).value=restored[k];for(const el of document.querySelectorAll('#options input'))el.checked=s.settings.options.includes(el.value);configureRoof();for(const k of rateKeys)$(k).value=s.rates[k];lastSettings=restored;rows=s.rows.map(r=>({...r,materialQuantity:r.materialQuantity??r.quantity,materialUnit:r.materialUnit||r.unit,materialRatio:r.materialRatio??1,priceKey:r.priceKey===undefined&&r.material>0?`${job}.${r.id}${job==='roof'&&r.id==='cover'?'.'+s.settings.material:''}`:r.priceKey,manualPrice:Boolean(r.manualPrice)}));edited=Boolean(s.edited);renderRows();update();if(result)$('status').textContent='Lokal kalkyle åpnet med lagrede priser. Markedspriser hentes først når du ber om oppdatering.';
  return true;}catch{$('status').textContent='Kunne ikke åpne lokal kalkyle. Lagrede data er ugyldige eller utilgjengelige.';return false;}}
 $('restore').onclick=()=>restoreCalculation();
@@ -169,7 +170,7 @@ function renderLibrary(){
  const selected=[...card.querySelectorAll('input[type=checkbox]:checked')].map(e=>e.value);if(!selected.length||!input.checkValidity()){$('library-status').textContent='Velg minst én oppgave og en positiv mengde.';return;}
  if(rows.length+selected.length>500){$('library-status').textContent='Maks 500 oppgaver i én kalkyle.';return;}
  const factor=element.id.startsWith('roof.')&&element.unit==='m²'?lastSettings.difficulty*roofGeometry(lastSettings).slope:lastSettings.difficulty;
- rows.push(...instantiate(element,Number(input.value),factor,selected,'-'+Date.now()+'-'+Math.random().toString(36).slice(2,7)));edited=true;renderRows();update();$('library-status').textContent=selected.length+' oppgaver lagt til fra '+element.name+'.';
+ rows.push(...instantiate(element,Number(input.value),factor,selected,'-'+Date.now()+'-'+Math.random().toString(36).slice(2,7)).map(r=>roofConsumption(r,lastSettings)));edited=true;renderRows();update();$('library-status').textContent=selected.length+' oppgaver lagt til fra '+element.name+'.';
  };controls.append(add);card.append(controls);group.append(card);}
  if(!matches.length){const p=document.createElement('p');p.className='muted';p.textContent=elements.length?'Ingen elementer samsvarer med filtrene.':'Biblioteket er tomt. Lagre kalkylen som egne elementmaler.';$('library-list').append(p);}
 }

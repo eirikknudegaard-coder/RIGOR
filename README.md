@@ -161,3 +161,9 @@ Markedsprissynk: se [supabase/MARKET-PRICES.md](supabase/MARKET-PRICES.md).
 Serverkode, migrasjon, adminvisning og deaktivert planlagt jobb er lagt til.
 Ingen reelle Obs BYGG-/Byggmax-produkter er verifisert, og Supabase-funksjonen
 er ikke deployet. Nettverksproxy blokkerte kildeundersøkelsen.
+
+Prissortimentet støtter 16 varetyper, inkludert sløyfer/lekter, plater, duker,
+festemidler, kledning, listverk, gulv, vinduer og dører. Kildeprodukter må fortsatt
+registreres og verifiseres. Køen behandler forfalte varer hvert kvarter etter
+aktivering, med separat kontrollintervall per kilde. Takveiviseren har egne
+felt for sløyfeavstand, lekteavstand og svinn.

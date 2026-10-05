@@ -23,7 +23,7 @@ export function propose(s) {
  const rows=elements.flatMap(id=>{
   const option=id.startsWith('cover.')?'cover':id==='deck'?'underlay':id;
   const element=library.find(e=>e.id===s.job+'.'+id);if(!element)return [];
-  return instantiate(element,geometry.area,s.difficulty*geometry.slope).map(r=>({...r,enabled:s.options.includes(option)}));
+  return instantiate(element,geometry.area,s.difficulty*geometry.slope).map(r=>roofConsumption({...r,enabled:s.options.includes(option)},s));
  });
  if(s.job==='roof'){
   const details={flat:['edge','drain'],shed:['edge'],gable:['ridge','edge'],hip:['ridge','hip','edge'],mansard:['ridge','break','edge']}[s.roofType||'gable'];
@@ -36,4 +36,12 @@ export function calculate(rows,rates,area) {
  const items=rows.map(r=>{const hours=r.enabled?r.quantity*r.hours*r.factor:0;const material=r.enabled?(r.marketMaterialCost??((r.materialQuantity??r.quantity)*r.material)):0;const labor=hours*hourly;const cost=material+labor;const price=material*(1+rates.materialMarkup/100)+labor*(1+rates.laborMarkup/100);return {...r,workHours:hours,cost,price};});
  const cost=items.reduce((a,r)=>a+r.cost,0),price=items.reduce((a,r)=>a+r.price,0),hours=items.reduce((a,r)=>a+r.workHours,0);
  return {items,hourly,cost,price,hours,profit:price-cost,vat:price*0.25,gross:price*1.25,perArea:price/area};
+}
+
+export function roofConsumption(row,settings){
+ const spacingKey={'roof.underlay.sloyfer':'battenSpacing','roof.underlay.lekter':'lathSpacing'}[row.priceKey];
+ if(settings.job!=='roof'||!spacingKey||settings[spacingKey]===undefined)return row;
+ const spacing=Number(settings[spacingKey]),waste=Number(settings.roofWaste??0);
+ if(!Number.isFinite(spacing)||spacing<=0||!Number.isFinite(waste)||waste<0||waste>100)throw Error('Ugyldig avstand eller svinn');
+ const ratio=1000/spacing*(1+waste/100);return {...row,materialRatio:ratio,materialQuantity:row.quantity*ratio};
 }
