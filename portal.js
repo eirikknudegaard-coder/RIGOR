@@ -55,8 +55,13 @@ async function loadTools(isAdmin) {
   visible.forEach(tool=>{
     const card=createElement("article","portal-tool");
     card.append(createElement("h4","",tool.title),createElement("p","",tool.description));
-    const badge=createElement("p","portal-muted","Tilgjengelig ved publisering av verktøy.");
-    card.append(badge);
+    if (tool.tool_key === "kalkyle") {
+      const link=createElement("a","portal-inline-link","Åpne kalkyleverksted →");
+      link.href="kalkyle.html";
+      card.append(link);
+    } else {
+      card.append(createElement("p","portal-muted","Tilgjengelig ved publisering av verktøy."));
+    }
     list.append(card);
   });
 }
