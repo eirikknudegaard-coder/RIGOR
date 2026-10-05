@@ -40,14 +40,26 @@ async function loadTools(isAdmin) {
   list.replaceChildren();
   const {data: all, error: toolsError} = await sb.from("portal_tools")
     .select("tool_key,title,description,enabled").eq("enabled",true).order("title");
-  if (toolsError) {list.append(createElement("div","portal-tool-empty","Kunne ikke hente verktøyene."));return;}
+  if (toolsError) {
+    list.append(createElement("div","portal-tool-empty","Kunne ikke hente verktøyene."));
+    if (!isAdmin) return;
+  }
   let allowed = new Set();
   if (!isAdmin) {
     const {data: access,error:accessError}=await sb.from("portal_tool_access").select("tool_key");
     if (accessError) {list.append(createElement("div","portal-tool-empty","Tilgangene kunne ikke leses."));return;}
     allowed = new Set((access||[]).map(x=>x.tool_key));
   }
-  const visible=(all||[]).filter(t=>isAdmin||allowed.has(t.tool_key));
+  const visible=(toolsError ? [] : all||[]).filter(t=>isAdmin||allowed.has(t.tool_key));
+  // The public prototype is available to admins before database registration.
+  // An explicit disabled record is respected; member permissions stay database-driven.
+  if (isAdmin && !visible.some(t=>t.tool_key==="kalkyle")) {
+    const {data: registered, error: lookupError}=await sb.from("portal_tools")
+      .select("tool_key,enabled").eq("tool_key","kalkyle").maybeSingle();
+    if (!lookupError && !registered) {
+      visible.push({tool_key:"kalkyle",title:"Kalkyleverksted",description:"Prototype: enkel veiviser og detaljert kalkyle for tak, etterisolering og tilbygg. Bruker eksempelsatser."});
+    }
+  }
   if (!visible.length) {
     list.append(createElement("div","portal-tool-empty","Ingen verktøy er publisert for kontoen din ennå. Verktøy legges til her når de er klare."));
     return;

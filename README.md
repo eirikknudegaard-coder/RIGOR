@@ -41,8 +41,10 @@ for komplett omfang. Beregninger beholder desimalpresisjon frem til visning.
 Kalkyler lagres lokalt i nettleseren og kan eksporteres til CSV. Ingen AI,
 skylagring eller kundedata er koblet til. Siden er en offentlig statisk
 prototype, ikke et tilgangsbeskyttet portalverktøy. Portalens verktøyliste
-lenker til siden når et aktivert verktøy med `tool_key = kalkyle` finnes og
-brukeren har eksisterende verktøytilgang; denne endringen oppretter ingen
+viser prototypen for administrator dersom `kalkyle` ikke er registrert. En
+eksplisitt deaktivert registrering respekteres. Andre brukere får lenken når
+et aktivert verktøy med `tool_key = kalkyle` finnes og de har verktøytilgang.
+Denne endringen oppretter ingen
 Supabase-rader eller tilganger. Beskyttelse av fremtidige kundedata og
 AI-nøkler må håndheves i en autentisert backend, ikke i GitHub Pages.
 
