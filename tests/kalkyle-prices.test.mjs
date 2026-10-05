@@ -7,7 +7,7 @@ const row='roof.cover.metal;m2;123,45;"Leverandør; Oslo";2026-10-05;NOK;ekskl';
 const prices=parseCsv(header+row);
 test('CSV med desimalkomma, sitert kilde og BOM',()=>{assert.equal(parseCsv('\uFEFF'+header+row)[0].pris,123.45);assert.equal(prices[0].kilde,'Leverandør; Oslo');});
 test('Avviser feil enhet, MVA, blank pris, duplikat og ugyldig dato',()=>{
- for(const [from,to] of [['m2','stk'],['ekskl','inkl'],['123,45',''],['2026-10-05','2026-02-30']])assert.throws(()=>parseCsv(header+row.replace(from,to)));
+ for(const [from,to] of [['m2','pakke'],['ekskl','inkl'],['123,45',''],['2026-10-05','2026-02-30']])assert.throws(()=>parseCsv(header+row.replace(from,to)));
  assert.throws(()=>parseCsv(header+row+'\n'+row));assert.throws(()=>validatePrices([]));
 });
 test('Priser blir utdaterte etter 30 dager og fremtidige datoer avvises',()=>{

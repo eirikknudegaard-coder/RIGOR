@@ -42,8 +42,8 @@ export function validatePrices(records) {
   if(String(r.pris).trim()===''||!Number.isFinite(price)||price<0||price>1e7)throw Error('Ugyldig pris på rad '+(i+1)+'.');
   if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(Date.parse(date))||new Date(date).toISOString().slice(0,10)!==date)throw Error('Dato må være en gyldig dato i format ÅÅÅÅ-MM-DD.');
   if(!source||source.length>300)throw Error('Hver pris må ha en kilde.');
-  if(r.valuta!=='NOK'||r.mva!=='ekskl'||r.enhet!=='m2')throw Error('Prisene må være NOK, ekskl. MVA, per m2 kalkyleflate. Omregn produktpakninger før import.');
-  keys.add(key);return {prisnokkel:key,enhet:'m2',pris:price,kilde:source,dato:date,valuta:'NOK',mva:'ekskl'};
+  if(r.valuta!=='NOK'||r.mva!=='ekskl'||!['m2','m','stk','rs'].includes(r.enhet))throw Error('Prisene må være NOK, ekskl. MVA, i m2, m, stk eller rs. Omregn pakningspriser før import.');
+  keys.add(key);return {prisnokkel:key,enhet:r.enhet,pris:price,kilde:source,dato:date,valuta:'NOK',mva:'ekskl'};
  });
 }
 export function priceStatus(record,today=new Date().toISOString().slice(0,10)) {
@@ -57,7 +57,8 @@ export function applyPrices(rows,mode,records,today) {
   if(mode==='example')return {...r,material:r.manualPrice?r.material:(r.exampleMaterial??r.material),priceSource:r.manualPrice?'Manuelt satt':'Eksempelpris',priceDate:'',priceIssue:null};
   if(r.manualPrice)return {...r,priceSource:'Manuelt satt',priceDate:'',priceIssue:null};
   if(!r.priceKey)return {...r,material:0,priceSource:'Ingen materialkostnad',priceDate:'',priceIssue:null};
-  const p=catalog.get(r.priceKey),status=priceStatus(p,today);
+  const p=catalog.get(r.priceKey);let status=priceStatus(p,today);
+  const unit=(r.materialUnit||r.unit||'m²').replace('m²','m2');if(status==='gyldig'&&p.enhet!==unit)status='feil enhet';
   return {...r,material:status==='gyldig'?p.pris:0,priceSource:p?.kilde||'',priceDate:p?.dato||'',priceIssue:status==='gyldig'?null:status};
  });
 }

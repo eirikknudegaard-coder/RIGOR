@@ -1,8 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {test} from 'node:test';
-const source=readFileSync(new URL('../kalkyle-engine.js',import.meta.url));
-const {jobs,propose,calculate}=await import('data:text/javascript;base64,'+source.toString('base64'));
+import {jobs,propose,calculate} from '../kalkyle-engine.js';
 const rates={wage:283,direct:35,indirect:25,billing:80,laborMarkup:20,materialMarkup:20};
 test('Timepris beholder presisjon fra lønn og faktureringsgrad',()=>assert.equal(calculate([],rates,100).hourly,596.953125));
 for(const job of Object.keys(jobs))test(`${job}: mengder, påslag, MVA og fravalg`,()=>{

@@ -56,16 +56,18 @@ Kjør beregningstestene med `node --test tests/kalkyle-engine.test.mjs`.
 
 Velg **Importer prisliste**, last ned CSV-malen og fyll inn priser for jobbens
 prisnøkler. Format: `prisnokkel;enhet;pris;kilde;dato;valuta;mva`.
-Enhet må være `m2`, valuta `NOK`, MVA `ekskl` og dato `ÅÅÅÅ-MM-DD`.
+Enhet må være `m2`, `m`, `stk` eller `rs`, valuta `NOK`, MVA `ekskl` og dato `ÅÅÅÅ-MM-DD`.
 Desimalkomma og sitert CSV støttes. Import er lokal i nettleseren; Excel må
 først eksporteres til CSV. Importen avvises samlet ved ugyldige rader og beholder
 gjeldende prisgrunnlag. Duplikate prisnøkler avvises.
 
-Dagens jobbmaler er samleposter. Prisene må derfor være samlet innkjøpskostnad
-per m² for posten, ikke rå butikkpriser per pakke, løpemeter eller stykk. Det
-kreves en produkt- og mengdeoppskrift før individuelle leverandørvarer kan
-omregnes automatisk. Rigg, avfall og tekniske fag er kostnadsavsetninger og må
-også ha dokumentert grunnlag eller en eksplisitt manuelt satt pris.
+Biblioteket har kategorier, bygningselementer og oppgaver. Arbeidsmengde og
+materiellmengde er separate; for eksempel kan 100 m² tak gi 167 løpemeter
+sløyfer etter en foreløpig forbruksoppskrift. Prisen må ha samme enhet som
+oppgavens materialenhet. Feil enhet gir ingen totalpris. Forbrukstall og
+grunnarbeidstider er antakelser som må kontrolleres mot faktisk oppbygging.
+Rigg, avfall og tekniske fag er fortsatt avsetninger med eget prisgrunnlag.
+Ingen butikkpriser eller produktmatching er automatisk hentet inn.
 
 **Bruk markedspriser** henter `assets/market-prices.json` med `cache: no-store`.
 Ingen ekte kilde er foreløpig tilkoblet: valget viser dette og gir ingen totalpris.
@@ -93,3 +95,35 @@ produkt-til-kalkylekobling er ikke implementert.
 
 Tester: `node tests/kalkyle-import.test.mjs` og
 `node tests/import-map-backend.test.mjs` (Node 24).
+
+
+### Taktyper og bygningselementbibliotek
+
+Velg flatt tak, pulttak, saltak, valmtak eller mansardtak. Flatt tak foreslår
+membran og fast underlag med fall på 0–5 grader. For pult-/saltak og valmtak
+med lik vinkel er areal = projisert areal / cos(vinkel). Mansard bruker øvre
+og nedre vinkel og øvre delens andel av projisert areal. Målt takflate kan
+alltid oppgis direkte. For mansard med målt areal brukes den høyeste vinkelen
+som tidsforutsetning, siden fordelingen mellom flatene er ukjent.
+
+Møne, valmer, knekkbeslag, kantbeslag og sluk kan inkluderes med egne lengder
+eller antall. Disse utledes ikke fra takarealet. Valgte detaljer med ukjent
+mengde blokkerer totalpris. Takform er ikke i seg selv en kvalitetssikret
+prisfaktor; komplisert geometri må vurderes i oppgaver og tidsgrunnlag.
+
+Detaljert kalkyle grupperer oppgaver etter bygningselement og kategori med
+subtotaler. Endring av elementmengden oppdaterer oppgavenes arbeidsmengde og
+materiellmengde ut fra forbruksoppskriften. Oppgavene kan også redigeres
+individuelt. Biblioteket har søk, fagfilter og Nybygg/Rehab, og lar brukeren
+velge enkeltoppgaver før de legges inn. RIGOR-malene er egne antakelser, ikke
+en kopi av Svenns kommersielle pris-/tidsbibliotek.
+
+«Lagre kalkylen i mitt bibliotek» lagrer inkluderte oppgaver, arbeidstider og
+forbruksoppskrifter som navngitte elementmaler i denne nettleseren. Prisene
+følger ikke malen: de kommer fra valgt prisgrunnlag ved gjenbruk. Manuelle
+priser må registreres igjen. Egne bibliotek er lokale og ikke delt med andre
+brukere. Eksisterende lagrede kalkyler beholdes; nye detaljer lagres med dem.
+
+AI-knappen er deaktivert mens aktivering er utsatt. CSV-import og bibliotek
+krever ingen AI-kall. Kjør `node tests/kalkyle-library.test.mjs` for takgeometri,
+oppgavemengder, enhetskontroll og bibliotekfiltre.
