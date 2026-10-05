@@ -129,7 +129,7 @@ krever ingen AI-kall. Kjør `node tests/kalkyle-library.test.mjs` for takgeometr
 oppgavemengder, enhetskontroll og bibliotekfiltre.
 
 
-Biblioteket er utvidet til 70 elementer og 131 oppgaver. Hvert standardelement
+Biblioteket er utvidet til 160 elementer og 347 oppgaver. Hvert standardelement
 har beskrivelser av inkludert arbeid, mengdegrunnlag og avgrensninger. Søk
 omfatter også disse beskrivelsene. Nye material- og utførelsesalternativer
 har ingen oppdiktede priser eller tidsnormer: materialpris må importeres eller
@@ -141,3 +141,9 @@ Nettleserregresjon: med Python Playwright og Chromium installert, start
 `python -m http.server 8080 --bind 127.0.0.1` fra repository-roten og kjør
 `python tests/kalkyle-browser.py`. Testen bruker bare lokale demonstrasjonsdata
 og sjekker blant annet at flere feltendringer på samme oppgave beholdes.
+
+Biblioteket viser sammenleggbare kategorier med elementer og avkryssbare
+oppgaver. Søk åpner relevante kategorier. Rehabvariantene dekker blant annet
+yttervegger, vinduer/dører, takriving, terrasser, innervegger, gulv, himling,
+listverk og kjøkken. Innholdet er egne RIGOR-maler; Svenns priser og tidsnormer
+er ikke kopiert.
