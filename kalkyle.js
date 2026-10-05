@@ -1,6 +1,6 @@
-import {jobs,propose,calculate,roofGeometry} from './kalkyle-engine.js?v=20261005-kategorier';
+import {jobs,propose,calculate,roofGeometry} from './kalkyle-engine.js?v=20261005-prissynk';
 import {library,roofTypes,instantiate,searchLibrary} from './kalkyle-library.js?v=20261005-kategorier';
-import {parseCsv,validatePrices,applyPrices} from './kalkyle-prices.js?v=20261005-kategorier';
+import {parseCsv,validatePrices,applyPrices} from './kalkyle-prices.js?v=20261005-prissynk';
 import {fields,prepareImport,sampleImport,checkMapping,mapImport} from './kalkyle-import.js?v=20261005-kategorier';
 const $=id=>document.getElementById(id),money=n=>new Intl.NumberFormat('nb-NO',{style:'currency',currency:'NOK',maximumFractionDigits:2}).format(n),num=n=>new Intl.NumberFormat('nb-NO',{maximumFractionDigits:2}).format(n);
 const rateKeys=['wage','direct','indirect','billing','laborMarkup','materialMarkup'];
@@ -101,9 +101,9 @@ $('template').onclick=()=>{
 $('refresh-prices').onclick=async()=>{
  if(rows.some(r=>r.manualPrice)&&!confirm('Hente nye priser erstatter manuelt satte materialpriser. Fortsette?'))return;
  const request=++priceRequest;$('refresh-prices').disabled=true;marketMessage='Henter dokumenterte markedspriser …';update();
- try{const response=await fetch('assets/market-prices.json',{cache:'no-store'});if(!response.ok)throw Error();const data=await response.json();const prices=validatePrices(data.prices);if(request!==priceRequest)return;marketPrices=prices;marketMessage='Publisert prisregister hentet. Kilde og dato vises per post; priser eldre enn 30 dager brukes ikke.';
+ try{const {priceApi}=await import('./market-price-client.js');const data=await priceApi('catalog');if(!data.prices.length)throw Error('Ingen verifiserte priser i serverregisteret.');const prices=validatePrices(data.prices);if(request!==priceRequest)return;marketPrices=prices;marketMessage='Serverens prisregister hentet. Markedspriser eldre enn 24 timer brukes ikke. Hele pakninger prises; frakt er ikke inkludert.';
  if(priceMode==='market')applyCatalog();else update();
- }catch{marketMessage='Markedspriser er ikke tilgjengelige. Ingen leverandørkilde er koblet til ennå. Importer en prisliste. Eventuelle tidligere hentede priser beholdes med datokontroll.';update();}
+ }catch(e){marketMessage=e.message+' Importer en prisliste ved behov. Tidligere hentede priser beholdes med datokontroll.';update();}
  finally{$('refresh-prices').disabled=false;}
 };
 setupJob();generate();

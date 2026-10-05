@@ -156,3 +156,8 @@ Hvert prosjekt har eget lagret prisgrunnlag, egne satser og poster.
 kan søkes frem, gjenåpnes og få endrede detaljer. Nye prosjekter starter med
 standardinnstillinger. Ingen Supabase-/skysynkronisering er aktivert.
 Nettlesertest: `python tests/kalkyle-projects.py`.
+
+Markedsprissynk: se [supabase/MARKET-PRICES.md](supabase/MARKET-PRICES.md).
+Serverkode, migrasjon, adminvisning og deaktivert planlagt jobb er lagt til.
+Ingen reelle Obs BYGG-/Byggmax-produkter er verifisert, og Supabase-funksjonen
+er ikke deployet. Nettverksproxy blokkerte kildeundersøkelsen.

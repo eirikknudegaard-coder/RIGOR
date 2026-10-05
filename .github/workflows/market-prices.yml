@@ -1,0 +1,33 @@
+name: Market price synchronization
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+jobs:
+  sync:
+    if: vars.RIGOR_PRICE_SYNC_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions: {}
+    concurrency:
+      group: rigor-market-prices
+      cancel-in-progress: false
+    steps:
+      - name: Run protected server job
+        env:
+          PRICE_URL: ${{ vars.RIGOR_PRICE_FUNCTION_URL }}
+          JOB_KEY: ${{ secrets.RIGOR_PRICE_JOB_KEY }}
+        run: |
+          test -n "$PRICE_URL" && test -n "$JOB_KEY"
+          curl --fail-with-body --silent --show-error --max-time 100 \
+            -X POST "$PRICE_URL" \
+            -H "Authorization: Bearer $JOB_KEY" \
+            -H 'Content-Type: application/json' \
+            --data '{"action":"sync"}' -o result.json
+          python3 - <<'PY'
+          import json
+          with open('result.json') as f: result=json.load(f)
+          print('Job status:', result.get('status'), 'Success:', result.get('succeeded'), 'Failed:', result.get('failed'))
+          if result.get('status') not in ['completed','already_running_or_recent']:
+              raise SystemExit('Unexpected sync result')
+          PY

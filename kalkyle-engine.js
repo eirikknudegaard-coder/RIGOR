@@ -33,7 +33,7 @@ export function propose(s) {
 }
 export function calculate(rows,rates,area) {
  const hourly=rates.wage*(1+rates.direct/100)*(1+rates.indirect/100)/(rates.billing/100);
- const items=rows.map(r=>{const hours=r.enabled?r.quantity*r.hours*r.factor:0;const material=r.enabled?(r.materialQuantity??r.quantity)*r.material:0;const labor=hours*hourly;const cost=material+labor;const price=material*(1+rates.materialMarkup/100)+labor*(1+rates.laborMarkup/100);return {...r,workHours:hours,cost,price};});
+ const items=rows.map(r=>{const hours=r.enabled?r.quantity*r.hours*r.factor:0;const material=r.enabled?(r.marketMaterialCost??((r.materialQuantity??r.quantity)*r.material)):0;const labor=hours*hourly;const cost=material+labor;const price=material*(1+rates.materialMarkup/100)+labor*(1+rates.laborMarkup/100);return {...r,workHours:hours,cost,price};});
  const cost=items.reduce((a,r)=>a+r.cost,0),price=items.reduce((a,r)=>a+r.price,0),hours=items.reduce((a,r)=>a+r.workHours,0);
  return {items,hourly,cost,price,hours,profit:price-cost,vat:price*0.25,gross:price*1.25,perArea:price/area};
 }
