@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RIGOR | Kalkyleverksted</title><link rel="icon" href="assets/favicon.svg"><link rel="stylesheet" href="kalkyle.css?v=20261005-priser"><script type="module" src="kalkyle.js?v=20261005-priser"></script></head>
+<html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RIGOR | Kalkyleverksted</title><link rel="icon" href="assets/favicon.svg"><link rel="stylesheet" href="kalkyle.css?v=20261005-ai-import"><script type="module" src="kalkyle.js?v=20261005-ai-import"></script></head>
 <body><header><a href="index.html"><img src="assets/rigor-logo.svg" alt="RIGOR" width="160"></a><a href="portal.html">Til portalen ↗</a></header>
 <main><div class="intro"><p class="eyebrow">RIGOR / KALKYLEVERKSTED</p><h1>Fra idé til oversikt.</h1><p>Velg arbeidet. Avklar omfanget. Se hva prisen består av.</p></div>
 <p class="notice">Prototype · Velg dokumentert prisgrunnlag. Arbeidstider og jobbmaler er fortsatt eksempler. Resultatet er et prisanslag, ikke et bindende tilbud. Ingen AI eller skylagring er tilkoblet.</p>
@@ -7,6 +7,14 @@
 <section class="price-panel" aria-labelledby="price-heading"><h2 id="price-heading">Prisgrunnlag</h2><p class="muted">Velg leverandørens prisliste eller dokumenterte markedspriser. Begge bruker kilde, prisdato og priser ekskl. MVA. Totalsummen skjules når valgte poster mangler gyldige priser.</p>
 <label>Materialpriser<select id="price-mode"><option value="market">Bruk markedspriser</option><option value="import">Importer prisliste</option><option value="example">Eksempelpriser (kun demonstrasjon)</option></select></label>
 <div id="import-panel" hidden><label>Velg prisliste (CSV)<input id="price-file" type="file" accept=".csv,text/csv"></label><button id="template" class="secondary">Last ned CSV-mal</button><p class="muted">Malen viser prisnøkler for denne jobben. Fyll inn faktiske priser, kilde og dato. Pris per m² gjelder hele posten, ikke en enkelt pakke eller vare. Eksporter Excel til CSV før import.</p></div>
+<details id="assisted-import"><summary>Importassistent: koble kolonner</summary>
+<p class="muted">Last opp CSV fra leverandøren. Kolonner foreslås først uten AI. Du kan be AI om hjelp og bekrefter alltid koblingen før import. Excel må eksporteres til CSV; PDF er ikke støttet i denne versjonen.</p>
+<label>Prisliste for kolonneanalyse<input id="assist-file" type="file" accept=".csv,text/csv"></label>
+<div id="mapping-panel" hidden><p id="sample-info"></p><button id="ai-map" class="secondary">Foreslå kolonner med AI</button><p class="muted">Kun kolonneoverskrifter og opptil åtte rader sendes til OpenAI. Bruk av AI krever administratorinnlogging. API-bruk belastes RIGOR.</p><p id="ai-import-status" role="status"></p><div id="mapping-fields" class="fields"></div>
+<div class="fields"><label>Leverandør / kilde ved manglende kolonne<input id="default-source" maxlength="300" placeholder="Leverandørnavn"></label><label>Prisdato ved manglende kolonne<input id="default-date" type="date"></label></div>
+<p class="muted">Manglende valuta settes til NOK, MVA til ekskl. og enhet til m2 først når du bekrefter dette nedenfor. Priser inkl. MVA, pakkepriser og rå produktpriser må omregnes separat.</p>
+<div class="table-scroll"><table><caption>Forhåndsvisning av de fem første radene med valgt kobling</caption><thead id="mapping-head"></thead><tbody id="mapping-preview"></tbody></table></div>
+<label class="check"><input id="mapping-confirm" type="checkbox">Jeg har kontrollert kobling, kilde og dato. Prisene er i NOK, ekskl. MVA og per m² kalkylepost, med riktige prisnøkler.</label><button id="confirm-import" disabled>Bekreft og importer alle radene</button></div></details>
 <div id="market-panel"><button id="refresh-prices" class="secondary">Hent oppdaterte markedspriser</button><p class="muted">Priser hentes fra RIGORs publiserte prisregister. En leverandørkilde er ennå ikke koblet til.</p></div>
 <p id="price-status" role="status"></p><ul id="price-coverage" class="muted"></ul></section>
 <p class="view-help">Enkel veiviser foreslår arbeidet ut fra svarene dine. Detaljert kalkyle viser hver post og lar deg justere mengder, materialkostnader og tidsbruk. Begge viser samme kalkyle.</p>

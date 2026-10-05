@@ -1,5 +1,6 @@
 import {jobs,propose,calculate} from './kalkyle-engine.js';
 import {parseCsv,validatePrices,applyPrices} from './kalkyle-prices.js';
+import {fields,prepareImport,sampleImport,checkMapping,mapImport} from './kalkyle-import.js';
 const $=id=>document.getElementById(id),money=n=>new Intl.NumberFormat('nb-NO',{style:'currency',currency:'NOK',maximumFractionDigits:2}).format(n),num=n=>new Intl.NumberFormat('nb-NO',{maximumFractionDigits:2}).format(n);
 const rateKeys=['wage','direct','indirect','billing','laborMarkup','materialMarkup'];
 let job='roof',rows=[],edited=false,lastSettings=null,result=null;
@@ -78,3 +79,47 @@ $('refresh-prices').onclick=async()=>{
  finally{$('refresh-prices').disabled=false;}
 };
 setupJob();generate();
+
+let importFile=null,importGeneration=0,importClient=null;
+const fieldNames={prisnokkel:'Prisnøkkel (RIGOR-post)',enhet:'Enhet',pris:'Innkjøpspris',kilde:'Leverandør / kilde',dato:'Prisdato',valuta:'Valuta',mva:'MVA-grunnlag'};
+function currentMapping(){return Object.fromEntries(fields.map(k=>[k,$('map-'+k).value===''?null:Number($('map-'+k).value)]));}
+function importDefaults(){return {kilde:$('default-source').value.trim(),dato:$('default-date').value,valuta:'NOK',enhet:'m2',mva:'ekskl'};}
+function previewMapping(){
+ $('mapping-confirm').checked=false;$('confirm-import').disabled=true;
+ const mapping=currentMapping(),defaults=importDefaults();$('mapping-preview').replaceChildren();
+ for(const row of importFile.records.slice(0,5)){const tr=document.createElement('tr');for(const k of fields){const td=document.createElement('td');td.textContent=mapping[k]===null?defaults[k]||'Mangler':row[mapping[k]];tr.append(td);}$('mapping-preview').append(tr);}
+}
+function renderMapping(mapping){
+ checkMapping(mapping,importFile.headers.length);$('mapping-fields').replaceChildren();
+ for(const k of fields){const label=document.createElement('label');label.textContent=fieldNames[k];const select=document.createElement('select');select.id='map-'+k;const empty=document.createElement('option');empty.value='';empty.textContent='Ingen kolonne – fyll inn / avklar';select.append(empty);
+ importFile.headers.forEach((title,i)=>{const option=document.createElement('option');option.value=i;option.textContent=`${i+1}: ${title}`;select.append(option);});select.value=mapping[k]===null?'':mapping[k];select.onchange=previewMapping;label.append(select);$('mapping-fields').append(label);}
+ $('mapping-head').replaceChildren();const tr=document.createElement('tr');for(const k of fields){const th=document.createElement('th');th.textContent=fieldNames[k];tr.append(th);}$('mapping-head').append(tr);previewMapping();
+}
+$('assist-file').onchange=async()=>{
+ const generation=++importGeneration;importFile=null;$('mapping-panel').hidden=true;const file=$('assist-file').files[0];if(!file)return;
+ try{if(file.size>2_000_000)throw Error('Filen er for stor (maks 2 MB).');const prepared=prepareImport(await file.text());if(generation!==importGeneration)return;importFile=prepared;$('mapping-panel').hidden=false;$('ai-import-status').textContent='Kolonner er foreslått med faste regler. Kontroller koblingen eller be AI om hjelp.';$('sample-info').textContent=`${prepared.records.length} rader og ${prepared.headers.length} kolonner. Originalfilen beholdes i nettleseren frem til import.`;renderMapping(prepared.mapping);}
+ catch(error){$('price-status').textContent='Analyse avvist: '+error.message;}
+};
+for(const id of ['default-source','default-date'])$(id).oninput=()=>{if(importFile)previewMapping();};
+$('mapping-confirm').onchange=()=>{$('confirm-import').disabled=!$('mapping-confirm').checked;};
+$('confirm-import').onclick=()=>{
+ if(!importFile||!$('mapping-confirm').checked)return;
+ try{const prices=mapImport(importFile,currentMapping(),importDefaults());if(rows.some(r=>r.manualPrice)&&!confirm('Import erstatter manuelt satte materialpriser. Fortsette?'))return;
+ importedPrices=prices;priceMode='import';$('price-mode').value=priceMode;applyCatalog();$('ai-import-status').textContent=`${prices.length} priser importert etter din bekreftelse. Kilde og dato følger prisene.`;$('mapping-confirm').checked=false;$('confirm-import').disabled=true;
+ }catch(error){$('ai-import-status').textContent='Import avvist: '+error.message+' Gjeldende priser er beholdt.';}
+};
+$('ai-map').onclick=async()=>{
+ if(!importFile)return;
+ let sample;try{sample=sampleImport(importFile);}catch(error){$('ai-import-status').textContent=error.message;return;}
+ const generation=importGeneration;
+ if(!confirm('Sende kolonneoverskrifter og opptil åtte rader til OpenAI for kolonneforslag? Se forhåndsvisningen før du fortsetter.'))return;
+ $('ai-map').disabled=true;$('ai-import-status').textContent='Analyserer kolonner …';
+ try{
+  if(!importClient){const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/+esm');importClient=createClient('https://hyqiqjuycivihsgjongj.supabase.co','sb_publishable_Y5qghQsmaJZEXYhwxgH6Eg_TjPiWOBl',{auth:{detectSessionInUrl:false}});}
+  const {data,error}=await importClient.auth.getSession();if(error||!data.session)throw Error('Logg inn som administrator i portalen først. Manuell kolonneimport fungerer uten AI.');
+  const response=await fetch('https://hyqiqjuycivihsgjongj.supabase.co/functions/v1/rigor-import-map',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+data.session.access_token,apikey:'sb_publishable_Y5qghQsmaJZEXYhwxgH6Eg_TjPiWOBl'},body:JSON.stringify(sample),signal:AbortSignal.timeout(30000)});
+  const answer=await response.json();if(!response.ok)throw Error(answer.error||'AI-import er ikke aktivert i Supabase ennå.');if(generation!==importGeneration)return;
+  renderMapping(checkMapping(answer.mapping,importFile.headers.length));$('ai-import-status').textContent=`AI-forslag klart. Kontroller alle felt før import. Forbruk: ${answer.usage?.input_tokens||0} input-tokens og ${answer.usage?.output_tokens||0} output-tokens.`;
+ }catch(error){if(generation===importGeneration)$('ai-import-status').textContent=error.message+' Ingen priser er endret.';}
+ finally{$('ai-map').disabled=false;}
+};

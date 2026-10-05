@@ -81,3 +81,15 @@ CSV-eksport av kalkylen venter på komplette priser. Manuelle priser merkes som
 manuelle og overstyrer katalogen til brukeren velger nytt prisgrunnlag.
 
 Kjør også `node tests/kalkyle-prices.test.mjs` for import- og datokontroller.
+
+### Importassistent
+
+CSV-kolonner kan kobles med forhåndsvisning og eksplisitt bekreftelse før
+hele prislisten importeres. Faste regler brukes først; en valgfri AI-knapp
+sender høyst åtte rader til en autentisert Supabase Edge Function.
+Backend må aktiveres separat: se [AI-IMPORT.md](supabase/AI-IMPORT.md).
+Nøkler lagres bare i Supabase, aldri i GitHub Pages. PDF/OCR og automatisk
+produkt-til-kalkylekobling er ikke implementert.
+
+Tester: `node tests/kalkyle-import.test.mjs` og
+`node tests/import-map-backend.test.mjs` (Node 24).

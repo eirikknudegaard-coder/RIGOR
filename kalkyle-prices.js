@@ -1,6 +1,6 @@
 // All imported prices are per calculation unit, NOK and excluding VAT.
 export const MAX_PRICE_AGE_DAYS = 30;
-export function parseCsv(text) {
+export function readCsv(text) {
  if (text.length > 2_000_000) throw Error('Prislisten er for stor (maks 2 MB).');
  text=text.replace(/^\uFEFF/,'');
  const first=text.split(/\r?\n/,1)[0];
@@ -17,6 +17,10 @@ export function parseCsv(text) {
  if(quoted)throw Error('Uavsluttet anførselstegn i CSV.');
  row.push(value.trim());if(row.some(Boolean))records.push(row);
  if(records.length<2)throw Error('Prislisten mangler priser.');
+ return records;
+}
+export function parseCsv(text) {
+ const records=readCsv(text);
  const headers=records.shift().map(v=>v.toLowerCase());
  const required=['prisnokkel','enhet','pris','kilde','dato','valuta','mva'];
  if(required.some(k=>!headers.includes(k))||new Set(headers).size!==headers.length)throw Error('Bruk kolonnene i CSV-malen: '+required.join(', ')+'.');
