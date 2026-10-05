@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="RIGOR Portal – innlogging for godkjente brukere">
+  <meta name="theme-color" content="#17191b">
+  <title>RIGOR Portal | Innlogging</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=portal-1">
+  <link rel="stylesheet" href="portal.css?v=1">
+</head>
+<body class="portal-body">
+  <div class="build-notice"><strong>Nettsted under bygging</strong><span>RIGOR Portal – kun for godkjente brukere</span></div>
+  <header class="site-header portal-header">
+    <a class="brand" href="index.html" aria-label="Til forsiden"><img src="assets/rigor-logo.svg" alt="RIGOR – Rådgivende ingeniører"></a>
+    <nav class="portal-header-links" aria-label="Portalmeny">
+      <a href="index.html">Til nettsiden</a>
+      <button id="logout" class="portal-logout" type="button" hidden>Logg ut</button>
+    </nav>
+  </header>
+  <main class="portal-main">
+    <section class="portal-intro">
+      <p class="eyebrow">RIGOR / Intern</p>
+      <h1>Én portal.<br><span>Riktig tilgang.</span></h1>
+      <p>Verktøy og faglige ressurser for personer med godkjent brukerkonto.</p>
+    </section>
+    <section class="portal-shell" aria-live="polite">
+      <div id="portal-notice" class="portal-notice" role="status" hidden></div>
+      <div id="portal-loading" class="portal-panel"><p>Kontrollerer innlogging …</p></div>
+      <section id="login-panel" class="portal-panel" hidden>
+        <h2>Logg inn</h2>
+        <p>Bruk e-postadressen som er invitert av RIGOR.</p>
+        <form id="login-form">
+          <label for="login-email">E-postadresse</label>
+          <input id="login-email" name="email" type="email" autocomplete="email" required maxlength="254" placeholder="navn@firma.no">
+          <label for="login-password">Passord</label>
+          <input id="login-password" name="password" type="password" autocomplete="current-password" required minlength="8" placeholder="Passord">
+          <button class="portal-primary" type="submit">Logg inn <span>→</span></button>
+        </form>
+        <div class="portal-alternatives">
+          <button type="button" id="forgot-button">Glemt passord?</button>
+          <a href="mailto:info@rigor.no?subject=Foresp%C3%B8rsel%20om%20tilgang%20til%20RIGOR%20Portal">Be om tilgang via e-post</a>
+        </div>
+        <p class="portal-fineprint">Ingen åpen registrering. Nye kontoer opprettes kun etter godkjenning fra administrator.</p>
+      </section>
+      <section id="password-panel" class="portal-panel" hidden>
+        <h2>Velg passord</h2>
+        <p>Fullfør invitasjonen eller tilbakestill passordet ditt.</p>
+        <form id="password-form">
+          <label for="new-password">Nytt passord</label>
+          <input id="new-password" type="password" autocomplete="new-password" minlength="12" maxlength="128" required placeholder="Minst 12 tegn">
+          <label for="confirm-password">Gjenta nytt passord</label>
+          <input id="confirm-password" type="password" autocomplete="new-password" minlength="12" maxlength="128" required placeholder="Gjenta passordet">
+          <button class="portal-primary" type="submit">Lagre passord <span>→</span></button>
+        </form>
+      </section>
+      <section id="denied-panel" class="portal-panel" hidden>
+        <p class="eyebrow">Tilgang ikke aktivert</p>
+        <h2>Avventer godkjenning</h2>
+        <p>Du er logget inn, men brukerkontoen har ikke aktiv tilgang til RIGOR-portalen. Kontakt administrator hvis dette virker feil.</p>
+        <a class="portal-inline-link" href="mailto:info@rigor.no?subject=Tilgang%20til%20RIGOR%20Portal">Kontakt RIGOR →</a>
+      </section>
+      <section id="dashboard-panel" class="portal-dashboard" hidden>
+        <div class="portal-dash-header">
+          <div><p class="eyebrow">Din arbeidsflate</p><h2>RIGOR Portal</h2><p id="signed-in-user"></p></div>
+          <span id="admin-badge" class="portal-role" hidden>Administrator</span>
+        </div>
+        <section class="portal-workspace">
+          <div class="portal-workspace-head"><h3>Verktøy</h3><p>Tilgjengelige ressurser basert på dine rettigheter.</p></div>
+          <div id="tools-list" class="portal-tool-grid"></div>
+        </section>
+        <section id="admin-section" class="portal-admin" hidden>
+          <div class="portal-workspace-head"><p class="eyebrow">Administrasjon</p><h3>Brukere og tilganger</h3></div>
+          <form id="invite-form" class="portal-invite-form">
+            <div><label for="invite-name">Navn (valgfritt)</label><input id="invite-name" maxlength="120" autocomplete="off" placeholder="Ola Nordmann"></div>
+            <div><label for="invite-email">E-postadresse</label><input id="invite-email" type="email" required maxlength="254" placeholder="bruker@firma.no"></div>
+            <button class="portal-primary" type="submit">Send invitasjon <span>→</span></button>
+          </form>
+          <p class="portal-muted">Inviterte får en engangslenke for å velge passord. Du kan deaktivere tilgang når som helst.</p>
+          <div class="portal-table-scroll">
+            <table class="portal-table"><thead><tr><th>Bruker</th><th>Rolle</th><th>Status</th><th>Handling</th></tr></thead><tbody id="users-list"></tbody></table>
+          </div>
+        </section>
+      </section>
+    </section>
+  </main>
+  <footer class="site-footer section-shell"><a class="footer-brand" href="index.html">RIGOR</a><p>Rådgivende ingeniører</p><p class="footer-small">© <span id="year"></span> RIGOR.</p></footer>
+  <script type="module" src="portal.js?v=1"></script>
+</body>
+</html>
