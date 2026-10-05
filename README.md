@@ -32,9 +32,10 @@ Bytt kontaktinformasjon og organisasjonsnummer i `index.html` når dette er klar
 
 Åpne `kalkyle.html` via den lokale HTTP-serveren. Enkel veiviser og detaljert
 postredigering deler samme beregningsmotor. Jobbmaler finnes for tak,
-utvendig etterisolering og et grovt tilbyggsbudsjett. Satser og grunntider er
-illustrerende eksempler og må erstattes med kvalitetssikrede RIGOR-data før
-bruk i tilbud. Takgeometrien forutsetter lik takvinkel; stillas, avfall og
+utvendig etterisolering og et grovt tilbyggsbudsjett. Arbeidstider og jobbmaler er
+illustrerende eksempler og må kvalitetssikres før bruk i tilbud. Materialprisene
+velges fra importert prisliste eller publisert prisregister. Demonstrasjon med
+eksempelpriser må velges eksplisitt. Takgeometrien forutsetter lik takvinkel; stillas, avfall og
 tekniske fag bruker forenklede avsetninger. Valgte poster er ikke en garanti
 for komplett omfang. Beregninger beholder desimalpresisjon frem til visning.
 
@@ -49,3 +50,34 @@ Supabase-rader eller tilganger. Beskyttelse av fremtidige kundedata og
 AI-nøkler må håndheves i en autentisert backend, ikke i GitHub Pages.
 
 Kjør beregningstestene med `node --test tests/kalkyle-engine.test.mjs`.
+
+
+### Prisgrunnlag og CSV-import
+
+Velg **Importer prisliste**, last ned CSV-malen og fyll inn priser for jobbens
+prisnøkler. Format: `prisnokkel;enhet;pris;kilde;dato;valuta;mva`.
+Enhet må være `m2`, valuta `NOK`, MVA `ekskl` og dato `ÅÅÅÅ-MM-DD`.
+Desimalkomma og sitert CSV støttes. Import er lokal i nettleseren; Excel må
+først eksporteres til CSV. Importen avvises samlet ved ugyldige rader og beholder
+gjeldende prisgrunnlag. Duplikate prisnøkler avvises.
+
+Dagens jobbmaler er samleposter. Prisene må derfor være samlet innkjøpskostnad
+per m² for posten, ikke rå butikkpriser per pakke, løpemeter eller stykk. Det
+kreves en produkt- og mengdeoppskrift før individuelle leverandørvarer kan
+omregnes automatisk. Rigg, avfall og tekniske fag er kostnadsavsetninger og må
+også ha dokumentert grunnlag eller en eksplisitt manuelt satt pris.
+
+**Bruk markedspriser** henter `assets/market-prices.json` med `cache: no-store`.
+Ingen ekte kilde er foreløpig tilkoblet: valget viser dette og gir ingen totalpris.
+Fremtidig leverandørintegrasjon må publisere `{ "prices": [...] }`, der hver
+rad har samme felt som CSV-formatet (numerisk `pris`). Ikke legg leverandørens
+innloggingsdata eller API-nøkler i GitHub Pages. Avtalepriser bør hentes via en
+autentisert backend og ikke publiseres i det offentlige prisregisteret.
+
+Kilde og dato vises per post og følger med CSV-eksport og lokal lagring.
+Priser eldre enn 30 dager eller med fremtidig dato brukes ikke. Dersom en valgt
+post mangler pris, vises arbeidstimer, men ingen samlet kostnad eller salgspris;
+CSV-eksport av kalkylen venter på komplette priser. Manuelle priser merkes som
+manuelle og overstyrer katalogen til brukeren velger nytt prisgrunnlag.
+
+Kjør også `node tests/kalkyle-prices.test.mjs` for import- og datokontroller.
