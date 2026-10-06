@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/sync-public-prices.mjs'
+      - 'scripts/price-register.mjs'
       - 'scripts/probe-material-pages.mjs'
       - 'market-public-core.js'
       - 'market-byggmax-core.js'
@@ -59,7 +60,9 @@ jobs:
         with:
           node-version: '24'
       - name: Test rules
-        run: node tests/market-public.test.mjs
+        run: |
+          node tests/market-public.test.mjs
+          node tests/price-register.test.mjs
       - uses: actions/download-artifact@v4
         with:
           name: supplier-format
@@ -100,6 +103,19 @@ jobs:
         with:
           name: public-price-check
           path: data
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check register before publication
+        run: |
+          node --input-type=module - <<'NODE'
+          import {readFile} from 'node:fs/promises';
+          import {validateRegister} from './scripts/price-register.mjs';
+          const catalog=JSON.parse(await readFile('data/market-prices.json','utf8'));
+          const queue=JSON.parse(await readFile('data/market-queue.json','utf8'));
+          validateRegister({catalog,queue});
+          if(!catalog.offers.length)throw Error('Refusing to replace published prices with an empty register');
+          NODE
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
