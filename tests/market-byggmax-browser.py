@@ -50,6 +50,17 @@ with sync_playwright() as p:
  page.locator('#restore').click()
  assert page.locator('#byggmax-store').input_value()=='2314'
  assert 'Arendal' in page.locator('#price-coverage').text_content()
+ # Recheck freshness at export, even if the page was left open overnight.
+ page.locator('#detailed').click()
+ for row in page.locator('tr[data-row-index]').all():
+  if 'Montere sløyfer' not in row.locator('td').nth(1).inner_text():row.locator('input[type=checkbox]').uncheck()
+ assert page.locator('#export').is_enabled()
+ page.evaluate('Date.now = () => '+str(int(datetime.now(timezone.utc).timestamp()*1000)+25*3600000))
+ downloads=[]
+ page.on('download',lambda d:downloads.append(d))
+ page.locator('#export').click()
+ assert page.locator('#export').is_disabled()
+ assert not downloads
  assert not errors,errors
- print('PASS: butikkvalg, eksakt SKU, omprising, lagring, sperring uten butikk og gjenåpning')
+ print('PASS: butikkvalg, eksakt SKU, omprising, lagring, sperring uten butikk, gjenåpning og utløpt pris ved eksport')
  browser.close()
