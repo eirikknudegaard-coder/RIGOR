@@ -6,6 +6,7 @@ on:
       - 'scripts/sync-public-prices.mjs'
       - 'scripts/probe-material-pages.mjs'
       - 'market-public-core.js'
+      - 'market-byggmax-core.js'
       - '.github/workflows/public-prices.yml'
   schedule:
     - cron: '19 */6 * * *'
@@ -68,6 +69,7 @@ jobs:
         continue-on-error: true
         env:
           RIGOR_CATALOG_BASE_URL: https://rigor.no
+          RIGOR_BYGGMAX_STORES: ${{ vars.RIGOR_BYGGMAX_STORES || '2327,2314' }}
         run: node scripts/sync-public-prices.mjs
       - uses: actions/upload-artifact@v4
         if: always()
