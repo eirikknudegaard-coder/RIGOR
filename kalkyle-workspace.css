@@ -53,3 +53,7 @@
 .kalkyle-app .assistant-answer-form>button{background:#fffdf9;border-color:#fffdf9;color:#704b30}
 .kalkyle-app #assistant-clarification .composer-actions{margin:0;justify-content:flex-start;flex-wrap:wrap}
 @media(max-width:650px){.kalkyle-app .assistant-clarification-fields{grid-template-columns:1fr}.kalkyle-app #assistant-clarification .composer-actions button{flex-basis:100%}}
+.kalkyle-app .project-card-actions{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.kalkyle-app .project-card button.project-delete{background:transparent;border-color:transparent;color:#8a493e}
+.kalkyle-app .project-card button.project-delete:hover{background:#f9eee9;border-color:#e2c7bd}
+.kalkyle-app #project-message button{font-size:12px;margin-left:8px}

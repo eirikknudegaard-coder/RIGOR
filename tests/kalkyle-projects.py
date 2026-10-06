@@ -16,6 +16,29 @@ with sync_playwright() as p:
  page.locator('#project-edit').click();page.locator('#project-state').select_option('Under arbeid');page.locator('#project-submit').click();assert 'Under arbeid' in page.locator('#project-meta').inner_text()
  page.locator('#project-back').click();page.set_viewport_size({'width':390,'height':844});assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
  page.locator('#start-detailed').click();assert page.locator('#project-dialog').is_visible();page.locator('#project-cancel').click();assert page.locator('#project-home').is_visible()
+ # Cancelling deletion and a failed local-storage write must preserve both projects.
+ before=page.evaluate('JSON.parse(localStorage.getItem("rigor-projects-v1"))')
+ page.once('dialog',lambda dialog:dialog.dismiss());page.get_by_role('button',name='Slett prosjekt Takprosjekt',exact=True).click()
+ assert page.evaluate('JSON.parse(localStorage.getItem("rigor-projects-v1"))')==before
+ page.evaluate('() => {window.originalSetItem=Storage.prototype.setItem; Storage.prototype.setItem=function(key,value){if(key==="rigor-projects-v1")throw Error("Test storage failure"); return window.originalSetItem.call(this,key,value)}}')
+ page.once('dialog',lambda dialog:dialog.accept());page.get_by_role('button',name='Slett prosjekt Takprosjekt',exact=True).click()
+ assert 'kunne ikke slettes' in page.locator('#project-message').inner_text()
+ assert page.evaluate('JSON.parse(localStorage.getItem("rigor-projects-v1"))')==before
+ page.evaluate('() => {Storage.prototype.setItem=window.originalSetItem}')
+ page.once('dialog',lambda dialog:dialog.accept());page.get_by_role('button',name='Slett prosjekt Takprosjekt',exact=True).click()
+ after=page.evaluate('JSON.parse(localStorage.getItem("rigor-projects-v1"))')
+ assert after==[project for project in before if project['name']!='Takprosjekt']
+ page.get_by_role('button',name='Angre sletting',exact=True).click()
+ restored=page.evaluate('JSON.parse(localStorage.getItem("rigor-projects-v1"))')
+ assert sorted(restored,key=lambda project:project['id'])==sorted(before,key=lambda project:project['id'])
+ page.once('dialog',lambda dialog:dialog.accept());page.get_by_role('button',name='Slett prosjekt Takprosjekt',exact=True).click()
+ page.reload();page.locator('#project-search').fill('');assert page.locator('.project-card').count()==1
+ assert 'Etterisolering' in page.locator('#project-list').inner_text()
+ assert 'Takprosjekt' not in page.locator('#project-list').inner_text()
+ page.once('dialog',lambda dialog:dialog.accept());page.get_by_role('button',name='Slett prosjekt Etterisolering',exact=True).click()
+ assert 'Ingen prosjekter ennå' in page.locator('#project-list').inner_text()
+ assert page.evaluate('localStorage.getItem("rigor-projects-v1")')=='[]'
+ assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
  assert not errors,errors
- print('PASS: forside, prosjektopprettelse, tom detaljkalkyle, separate kalkyler, lagring, søk, metadata og mobil')
+ print('PASS: forside, prosjektopprettelse, separate kalkyler, søk, bekreftet sletting, avbryt, lagringsfeil, angre, reload, tom liste og mobil')
  b.close()
