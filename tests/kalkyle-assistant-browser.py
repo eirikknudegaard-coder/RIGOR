@@ -10,7 +10,7 @@ with sync_playwright() as p:
  module='export async function assistantStatus(){return true;} export async function requestEstimate(brief){window.sentBrief=brief; if(window.aiFailure)throw Error("Test API-feil"); return '+json.dumps(proposal)+';}'
  page.route('**/ai-estimate-client.js',lambda r:r.fulfill(content_type='application/javascript',body=module))
  page.goto('http://127.0.0.1:8090/kalkyle.html');page.locator('#brief-generate').wait_for(state='visible');page.wait_for_function('!document.getElementById("brief-generate").disabled')
- page.locator('#job-brief').fill('Saltak, 30 grader og 100 m² takflate med undertak, sløyfer og lekter.');page.locator('#start-detailed').click();page.locator('#project-name').fill('AI test');page.locator('#project-submit').click();page.locator('#brief-generate').click();page.locator('#assistant-preview').wait_for(state='visible')
+ page.locator('#job-brief').fill('Saltak, 30 grader og 100 m² takflate med takstein, undertak, sløyfer og lekter.');page.locator('#start-detailed').click();page.locator('#project-name').fill('AI test');page.locator('#project-submit').click();page.locator('#brief-generate').click();page.locator('#assistant-preview').wait_for(state='visible')
  assert page.locator('tr[data-row-index]').count()==0
  assert page.locator('[data-assistant-quantity]').nth(0).input_value()=='100'
  assert page.locator('[data-assistant-quantity]').nth(1).input_value()==''

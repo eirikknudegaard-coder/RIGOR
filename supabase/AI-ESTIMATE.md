@@ -16,20 +16,20 @@ OpenAI-nøkkelen leses bare på serveren fra `RIGOR_OPENAI_KEY`, som allerede er
 
 For publisering fra Codex trengs separat Supabase-deploytilgang (`SUPABASE_ACCESS_TOKEN`, fra Supabase-kontoens access tokens). OpenAI-secreten gir ingen deploytilgang. Legg deploytilgang i sikre miljøinnstillinger, aldri i chatten eller repoet.
 
-### Klargjort publisering fra Codex
+### Publisering fra Codex
 
-Miljøet har et eksisterende secret-felt **`RIGOR_SUPABASE_MANAGEMENT_TOKEN`** som bindes til `SUPABASE_ACCESS_TOKEN` for `api.supabase.com`. Ved kontroll 6. oktober 2026 var feltet uten lagret verdi, og produksjonsfunksjonen svarte HTTP 404 «Requested function was not found». En [Supabase Access Token](https://supabase.com/dashboard/account/tokens) må legges i dette feltet i Codex-miljøets sikre innstillinger. `RIGOR_OPENAI_KEY` skal fortsatt være i Supabase.
+Den fungerende Codex-hemmeligheten heter **`RIGOR_SUPABASE_ACCESS_TOKEN`**, eksponeres med samme miljøvariabelnavn og er begrenset til `api.supabase.com`. Dette er en proxykobling; tokenverdien skal ikke kopieres til repo, logger eller chat. OpenAI-nøkkelen ligger fortsatt bare i Supabase som `RIGOR_OPENAI_KEY`.
 
-CLI 2.119.0 er klargjort uten Docker. Fra repository-roten, med deploytilgangen tilgjengelig:
+Fra repository-roten:
 
 ```sh
-node scripts/prepare-ai-estimate.mjs
-DO_NOT_TRACK=1 SUPABASE_TELEMETRY_DISABLED=true SUPABASE_NO_UPDATE_NOTIFIER=1 npm exec --offline --cache /tmp/rigor-npm-cache --package=supabase@2.119.0 -- supabase functions deploy rigor-ai-estimate --project-ref hyqiqjuycivihsgjongj --use-api --no-verify-jwt
+SUPABASE_ACCESS_TOKEN="$RIGOR_SUPABASE_ACCESS_TOKEN" NODE_USE_ENV_PROXY=1 node scripts/prepare-ai-estimate.mjs
+NODE_USE_ENV_PROXY=1 node /workspace/scratch/rigor-cloud/deploy-ai-estimate.mjs
 ```
 
-Første kommando kontrollerer eksisterende portalfunksjoner og oppretter bare AI-forslagenes forbruksregister og reservasjon. SQL-oppsettet kan kjøres igjen uten å slette tidligere forbruk. Andre migrations og Edge Functions berøres ikke. Databasekommandoen stopper før nettverkskall når tokenet mangler. CLI-versjon og deploy-flagg er kontrollert; databaseoppsett og produksjonsdeploy venter fortsatt på tilgang.
+Publiseringshjelperen opprettes av Codex-miljøets lagrede installasjonsskript utenfor repositoryet. Den bruker Supabase sitt dokumenterte multipart-API for å publisere kun `rigor-ai-estimate`, med `index.ts`, `handler.ts`, `proposal.js` og `catalog.js`. CLI 2.119.0 avviser proxyens tokenformat før nettverkskallet, så denne miljøtypen skal bruke Management API. Andre migrations og Edge Functions berøres ikke. SQL-oppsettet kan kjøres igjen uten å slette tidligere forbruk.
 
-Etter publisering skal offentlig GET returnere `ready: true`, og POST uten innlogging returnere 401. Ingen av disse kontrollene skal sende et OpenAI-kall. GET bekrefter serverkonfigurasjon, mens et autentisert forslag også krever portaltilgang, fungerende forbruksregister og OpenAI-modelltilgang.
+Funksjonen ble publisert 6. oktober 2026. Offentlig GET svarte `ready: true`, POST uten innlogging svarte 401, og CORS-preflight svarte 204. RLS og serverrollens tillatelser til forbruksregisteret ble kontrollert i databasen. Dette bekrefter publisering og tilgang, men en GET-status alene bekrefter ikke at et reelt AI-forslag lykkes.
 
 Statusfeltet i appen skiller nå mellom manglende funksjon (404), ufullstendig serveroppsett (`ready: false`), gateway-/origin-tilgang (401/403) og midlertidige nettverksfeil. Klikk statusfeltet for å sjekke på nytt; prosjektbeskrivelse og kalkyleposter beholdes. Feil eller ukjent status aktiverer ikke AI-knappen.
 
@@ -45,4 +45,13 @@ Tillatte produksjonsoriginer er rigor.no, www.rigor.no og eirikknudegaard-coder.
 
 ## Verifisert i utviklingsmiljøet
 
-Backendtester bruker simulerte Supabase/OpenAI-svar. Nettlesertest bruker simulert AI-modul og sjekker forhåndsvisning, eksplisitte og manglende mengder, fravalg, eksisterende poster, endret tekst, API-feil og mobil. `node tests/ai-estimate-client.test.mjs` og `python tests/ai-estimate-status-browser.py` kontrollerer faktiske klient-/UI-koden med simulerte statusresponser, inkludert ny kontroll uten tapt beskrivelse og uten AI-kall. Ingen betalt API-test eller produksjonsdeploy er utført fra dette miljøet uten deploytilgang.
+Backendtester bruker simulerte Supabase/OpenAI-svar. Nettlesertest bruker simulert AI-modul og sjekker forhåndsvisning, eksplisitte og manglende mengder, fravalg, eksisterende poster, endret tekst, API-feil og mobil. `node tests/ai-estimate-client.test.mjs` og `python tests/ai-estimate-status-browser.py` kontrollerer faktiske klient-/UI-koden med simulerte statusresponser, inkludert ny kontroll uten tapt beskrivelse og uten AI-kall. Produksjonsdeploy og de offentlige tilgangskontrollene er utført. Reelle brukerforespørsler har registrert tokenforbruk, men de korrigerte AI-svarene må også kontrolleres i en autentisert brukersesjon.
+
+
+## Oppfølgingsspørsmål
+
+Før API-kallet viser klienten konkrete felter for manglende taktype, vinkel, areal, arealgrunnlag og taktekking. Kledning avklarer materiale, profil/dimensjon, liggende/stående utførelse, netto veggareal og etterisolering. Allerede entydig oppgitte data etterspørres ikke igjen. Mansardtak har to vinkelfelt. Svarene lagres i prosjektbeskrivelsen og sendes med neste forespørsel. Et foreløpig forslag kan bestilles når opplysninger fortsatt er uavklarte; mengder gjettes ikke.
+
+Spørsmål i AI-forslaget har også svarfelt og en knapp for å oppdatere forslaget. Kalkyleposter legges fortsatt bare til ved eksplisitt godkjenning. AI-skjemaet begrenser element-ID og oppgave-ID per element; gjentatte gyldige oppgaver samles uten å godta ukjente oppgaver eller prisfelt.
+
+Ventetiden på 45 sekunder, dagsgrensene, utilgjengelig forbrukskontroll og feil hos OpenAI har ulike feilmeldinger. De skal ikke omtales som samme forbruksgrense.
