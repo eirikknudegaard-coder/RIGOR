@@ -24,7 +24,8 @@ for(const path of ['/23x48-lekt-p08123048','/48x98-konstruksjonsvirke-c24-p08148
  }
  const visible=html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').slice(0,180000);
  const configurations=[...html.matchAll(/initConfigurableOptions\(/g)].map(m=>html.slice(m.index,m.index+60000)).filter(s=>!s.startsWith('initConfigurableOptions(productId')).map(s=>s.replace(/(["']?(?:form_key|formKey)["']?\s*[:=]\s*)["'][^"']*["']/gi,'$1"[redacted]"')).slice(0,3);
- samples.push({url,title:html.match(/<title[^>]*>([\s\S]*?)<\/title>/)?.[1],scripts,attrs,links,unit,visible,configurations,csp,script_urls:[...html.matchAll(/<script\b[^>]*src=["']([^"']+)["']/gi)].map(m=>m[1]).slice(0,20)});
+ const variant_markup=[...html.matchAll(/.{0,140}(?:initConfigurableOptions|m2_per|package_quantity|package_size|skuData|optionData|data-nobb|data-ean)[\s\S]{0,3000}/gi)].slice(0,30).map(m=>m[0]);
+ samples.push({url,title:html.match(/<title[^>]*>([\s\S]*?)<\/title>/)?.[1],scripts,attrs,links,unit,visible,configurations,variant_markup,csp,script_urls:[...html.matchAll(/<script\b[^>]*src=["']([^"']+)["']/gi)].map(m=>m[1]).slice(0,20)});
  }catch(e){samples.push({url,error:e.message});}
 }
 await writeFile('data/byggmax-inspection.json',JSON.stringify({checked_at:new Date().toISOString(),robots,samples,assets},null,2)+'\n');
