@@ -28,4 +28,4 @@ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&active){clo
 window.addEventListener('resize',close);
 document.addEventListener('scroll',event=>{if(active&&!active.bubble.contains(event.target))close();},true);
 // Close help when its table is hidden by a view switch.
-for(const button of document.querySelectorAll('#simple,#detailed'))button.addEventListener('click',close);
+for(const button of document.querySelectorAll('#simple,#detailed,#pricing-tab,#rates-tab'))button.addEventListener('click',close);

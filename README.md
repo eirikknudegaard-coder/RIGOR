@@ -176,3 +176,29 @@ dokumentert i [docs/KALKYLE-DESIGN-RESEARCH.md](docs/KALKYLE-DESIGN-RESEARCH.md)
 Konkurrentenes nettsider kunne ikke leses på grunn av nettverksproxyens 403;
 Svenn-bildene er den verifiserte visuelle referansen.
 Nettlesertest: `python tests/kalkyle-workspace.py`.
+
+
+### Pris og tid etter AI-forslag
+
+AI velger oppgaver fra biblioteket. Kalkylen beholder bibliotekets registrerte
+grunntider og bruker prosjektets timekostnad og påslag. Takvinkel og adkomst
+bruker samme faktorberegning som veiviseren og biblioteket; faktoren kan
+overstyres per post. Ved gjenåpning repareres tidligere AI-poster som fikk
+nullstilt en kjent grunntid, uten å erstatte manuelt registrerte tider/faktorer.
+RIGOR-malenes tider er foreløpige. Svenn er ikke koblet til: dokumenterte
+grunntider kan importeres under «Timepris & påslag» med oppgavenøkkel eller
+identisk navn og enhet, timer/enhet, valgfri tidsfaktor og kilde.
+
+Velg markedsvare direkte på materialposten. Produkt, butikk, dato og pris
+per materialenhet vises sammen med omregnet materialkostnad per arbeidsenhet.
+Lagret produktvalg oppdateres fra det offentlige prisregisteret; ukjent
+produkt, feil enhet, annen varetype eller utløpt pris kan ikke prises som
+en gyldig materialpost. Takstein og metall kan ikke bruke en shingelpris.
+Kjente arbeids- og materialpriser vises med påslag mens totalpris/CSV venter
+på komplett grunnlag. Timesatser kan lagres som lokale standarder for nye
+prosjekter; eksisterende prosjekter beholder sine satser.
+
+Verifikasjon: `node tests/kalkyle-time.test.mjs` og
+`python3 tests/kalkyle-ai-costs-browser.py` (server på port 8090) dekker
+AI-poster, faktisk utslag av timesatser, vare-/butikkvalg, pakningsavrunding,
+importerte grunntider, overstyringer, prosjektseparasjon og mobil.

@@ -137,7 +137,7 @@ for(const [key,label,unit] of [['cabinets','kjøkkenskap og fronter','stk'],['ap
 export function instantiate(element,quantity,factor=1,selected=element.tasks.map(t=>t.id),instance=''){
  return element.tasks.filter(t=>selected.includes(t.id)).map(t=>({id:element.id+'.'+t.id+instance,elementId:element.id+instance,elementName:element.name,category:element.category,elementDescription:element.description||'',quantityNote:element.quantityNote||'',excludes:element.excludes||'',
  name:t.name,quantity,unit:element.unit,materialQuantity:quantity*t.materialRatio,materialRatio:t.materialRatio,materialUnit:t.materialUnit,material:0,exampleMaterial:t.exampleMaterial,
- hours:t.hours,factor,priceKey:t.priceKey,requiresTime:Boolean(t.requiresTime),needsExamplePrice:Boolean(t.priceKey)&&t.exampleMaterial===0,enabled:true,requiresQuantity:Boolean(element.measure)&&quantity===0}));
+ taskKey:element.id+'.'+t.id,hours:t.hours,timeSource:t.requiresTime?'':element.id.startsWith('local.')?'Mitt bibliotek':'RIGOR-mal (foreløpig)',factor,priceKey:t.priceKey,requiresTime:Boolean(t.requiresTime),needsExamplePrice:Boolean(t.priceKey)&&t.exampleMaterial===0,enabled:true,requiresQuantity:Boolean(element.measure)&&quantity===0}));
 }
 export function searchLibrary(elements,{search='',trade='Alle',type='Alle',category='Alle'}={}){
  const needle=search.toLocaleLowerCase('nb');

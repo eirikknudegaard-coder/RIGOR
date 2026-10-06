@@ -57,3 +57,42 @@
 .kalkyle-app .project-card button.project-delete{background:transparent;border-color:transparent;color:#8a493e}
 .kalkyle-app .project-card button.project-delete:hover{background:#f9eee9;border-color:#e2c7bd}
 .kalkyle-app #project-message button{font-size:12px;margin-left:8px}
+
+/* Keep the task visible while editing its quantities and prices. */
+.kalkyle-app .layout[data-pane=detailed]{grid-template-columns:minmax(0,1fr)}
+.kalkyle-app .layout[data-pane=detailed]>.summary{position:static}
+.kalkyle-app .layout[data-pane=detailed]>.summary dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 24px}
+.kalkyle-app .task-table table{min-width:1130px;table-layout:fixed;font-size:12px}
+.kalkyle-app .task-table th{white-space:normal;font-size:11px}
+.kalkyle-app .task-table th:nth-child(1){width:52px}
+.kalkyle-app .task-table th:nth-child(2){width:195px}
+.kalkyle-app .task-table th:nth-child(3),.kalkyle-app .task-table th:nth-child(5){width:95px}
+.kalkyle-app .task-table th:nth-child(4),.kalkyle-app .task-table th:nth-child(6){width:55px}
+.kalkyle-app .task-table th:nth-child(7){width:190px}
+.kalkyle-app .task-table th:nth-child(8){width:135px}
+.kalkyle-app .task-table th:nth-child(9){width:115px}
+.kalkyle-app .task-table th:nth-child(10){width:145px}
+.kalkyle-app .task-table tr[data-row-index]>td:nth-child(1),.kalkyle-app .task-table th:nth-child(1){position:sticky;left:0;background:#fffdf9;z-index:2}
+.kalkyle-app .task-table tr[data-row-index]>td:nth-child(2),.kalkyle-app .task-table th:nth-child(2){position:sticky;left:52px;background:#fffdf9;z-index:2;box-shadow:4px 0 5px -5px #25282b80;min-width:0}
+.kalkyle-app .task-table .element-title{position:sticky;left:0;z-index:2;white-space:normal}
+.kalkyle-app .task-table .element-title strong{display:block;font-weight:600}
+.kalkyle-app .task-table .element-title button{margin-top:8px;font-size:11px;padding:4px 8px}
+.kalkyle-app .task-table td{vertical-align:top;overflow-wrap:anywhere}
+.kalkyle-app .task-table td input[type=number]{min-width:0;width:100%;font-size:12px;padding:8px}
+.kalkyle-app .task-table td small{display:block;font-size:11px;margin-top:6px;line-height:1.5}
+.kalkyle-app .unit-price-label,.kalkyle-app .labor-unit-price{color:#655446}
+.kalkyle-app .time-meta{color:#606266}
+.kalkyle-app .price-meta{font-size:11px;margin-top:7px;line-height:1.5}
+.kalkyle-app .price-meta a{color:#704b30;text-decoration:underline}
+.kalkyle-app .row-market-button{font-size:11px;padding:5px 8px;margin-top:8px;text-align:left;white-space:normal}
+.kalkyle-app .field-help{display:block;font-size:12px;line-height:1.6;font-weight:400;color:#606266;margin-top:8px}
+.kalkyle-app #hourly{background:#f4eee6;border-radius:8px;padding:14px;font-weight:550}
+.kalkyle-app #time-import{border-top:1px solid #e1dcd5;margin-top:20px;padding-top:16px}
+.kalkyle-app #time-import summary{cursor:pointer;color:#704b30}
+.kalkyle-app #material-dialog{width:calc(100% - 32px);max-width:740px;max-height:90vh;overflow:auto;border:1px solid #ddd5cd;border-radius:14px;padding:26px}
+.kalkyle-app #material-dialog::backdrop{background:#25282b60}
+.kalkyle-app #material-dialog h2{margin-top:0;font-size:23px}
+.kalkyle-app #material-dialog select{max-width:100%;min-width:0;text-overflow:ellipsis}
+@media(max-width:650px){.kalkyle-app .layout[data-pane=detailed]>.summary dl{grid-template-columns:1fr}.kalkyle-app .task-table th:nth-child(2){width:135px}.kalkyle-app .task-table table{min-width:1070px}.kalkyle-app #material-dialog{padding:18px}.kalkyle-app #material-dialog h2{font-size:19px}}
+
+.kalkyle-app .task-table .column-label{display:flex;flex-wrap:wrap;align-items:flex-start;max-width:100%;gap:5px}
