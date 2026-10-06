@@ -23,7 +23,7 @@ for(const path of ['/23x48-lekt-p08123048','/48x98-konstruksjonsvirke-c24-p08148
   await new Promise(r=>setTimeout(r,policy.delay*1000));try{const r=await fetch(endpoint,{redirect:'error',signal:AbortSignal.timeout(20000),headers:{'User-Agent':agent,'X-Requested-With':'XMLHttpRequest',Accept:'application/json'}});if(!r.ok)throw Error('HTTP '+r.status);csp.push({url:endpoint.href,store_id:storeId,data:await r.json()});}catch(e){csp.push({url:endpoint.href,store_id:storeId,error:e.message});}
  }
  const visible=html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').slice(0,180000);
- const configurations=[...html.matchAll(/initConfigurableOptions\([\s\S]{0,100000}/g)].map(m=>m[0]).filter(s=>/initConfigurableOptions\(\s*\d/.test(s)).map(s=>s.replace(/(["']?(?:form_key|formKey)["']?\s*[:=]\s*)["'][^"']*["']/gi,'$1"[redacted]"').slice(0,50000)).slice(0,2);
+ const configurations=[...html.matchAll(/initConfigurableOptions\(/g)].map(m=>html.slice(m.index,m.index+60000)).filter(s=>!s.startsWith('initConfigurableOptions(productId')).map(s=>s.replace(/(["']?(?:form_key|formKey)["']?\s*[:=]\s*)["'][^"']*["']/gi,'$1"[redacted]"')).slice(0,3);
  samples.push({url,title:html.match(/<title[^>]*>([\s\S]*?)<\/title>/)?.[1],scripts,attrs,links,unit,visible,configurations,csp,script_urls:[...html.matchAll(/<script\b[^>]*src=["']([^"']+)["']/gi)].map(m=>m[1]).slice(0,20)});
  }catch(e){samples.push({url,error:e.message});}
 }
