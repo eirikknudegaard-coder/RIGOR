@@ -1,5 +1,7 @@
 # Materialpriser og synkronisering
 
+Det finnes nå også en GitHub-basert innhenting uten Supabase eller AI. Se [PUBLIC-PRICES.md](PUBLIC-PRICES.md) for dagens kjøring, verifisering og begrensninger. Dette dokumentet beskriver den separate Supabase-varianten.
+
 ## Status og avgrensninger
 
 Kode, migrasjon, adminvisning og tidsstyrt jobb er skrevet. **Ikke aktivert i
