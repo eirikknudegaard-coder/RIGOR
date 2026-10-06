@@ -27,7 +27,8 @@ with sync_playwright() as p:
     assert [r.locator('[data-field=hours]').input_value() for r in row.all()]==['0.25','0.12','0.13']
     assert all(r.locator('[data-field=factor]').input_value()=='1.25' for r in row.all())
     assert abs(amount(page.locator('#labor-total').inner_text())-23730.46875)<.01
-    assert page.locator('#total').inner_text()=='—'
+    assert page.locator('#estimate-kind').inner_text()=='KJENT DELSUM'
+    assert abs(amount(page.locator('#total').inner_text())-23730.46875)<.01
     assert 'Materialpris mangler' in row.nth(0).inner_text()
     assert 'kr/m ekskl. MVA' in row.nth(1).inner_text()
     assert 'roof.underlay' not in row.nth(0).inner_text()

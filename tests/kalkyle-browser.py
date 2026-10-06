@@ -12,7 +12,7 @@ with sync_playwright() as p:
  page.locator('#library-search').fill('PVC takmembran');card=page.locator('.library-card').filter(has=page.locator('summary',has_text='PVC takmembran')).first
  assert page.locator('.library-category-group[open]').count()==1
  card.locator('summary').click();assert 'på ferdig og egnet underlag' in card.locator('.library-scope').inner_text();assert 'Faktisk takflate' in card.locator('.library-scope').inner_text();assert 'beslag' in card.locator('.library-scope').inner_text()
- card.get_by_role('button',name='Legg til valgte oppgaver').click();assert page.locator('#total').inner_text()=='—';assert 'mangler grunntid' in page.locator('#status').inner_text()
+ card.get_by_role('button',name='Legg til valgte oppgaver').click();page.locator('#library-close').click();assert page.locator('#estimate-kind').inner_text()=='KJENT DELSUM';assert 'mangler grunntid' in page.locator('#status').inner_text()
  added=page.locator('tr[data-row-index]').all()[-2:]
  for row in added:
   assert row.locator('[data-field=hours]').input_value()==''

@@ -96,3 +96,42 @@
 @media(max-width:650px){.kalkyle-app .layout[data-pane=detailed]>.summary dl{grid-template-columns:1fr}.kalkyle-app .task-table th:nth-child(2){width:135px}.kalkyle-app .task-table table{min-width:1070px}.kalkyle-app #material-dialog{padding:18px}.kalkyle-app #material-dialog h2{font-size:19px}}
 
 .kalkyle-app .task-table .column-label{display:flex;flex-wrap:wrap;align-items:flex-start;max-width:100%;gap:5px}
+
+.kalkyle-app .estimate-state{font-size:12px;color:#705137;background:#f4e9dd;padding:8px 10px;border-radius:6px}
+.kalkyle-app .simple-ai-review{display:flex;align-items:center;gap:20px;border-top:1px solid #ddd5cd;border-bottom:1px solid #ddd5cd;padding:20px 0;margin:24px 0}
+.kalkyle-app .simple-ai-review h3{margin:0;font-size:17px}
+.kalkyle-app .simple-ai-review p{margin:8px 0 0}
+.kalkyle-app .simple-ai-review button{flex-shrink:0;max-width:200px;white-space:normal}
+.kalkyle-app .completion-heading{display:flex;gap:15px;justify-content:space-between;align-items:center}
+.kalkyle-app .completion-heading h3{font-size:20px}
+.kalkyle-app .completion-heading .workspace-label{white-space:normal;text-align:center}
+.kalkyle-app .completion-group{border:1px solid #ddd5cd;border-radius:9px;margin:12px 0;background:#fffdf9}
+.kalkyle-app .completion-group>summary{padding:14px;cursor:pointer;font-size:13px;font-weight:550;background:#f4eee6;border-radius:9px}
+.kalkyle-app .completion-task{padding:16px;border-top:1px solid #e7dfd6}
+.kalkyle-app .completion-task h4{font-size:14px;margin:0 0 7px}
+.kalkyle-app .completion-task p{font-size:12px;margin:7px 0 12px;overflow-wrap:anywhere}
+.kalkyle-app .completion-task button{font-size:12px;padding:9px 12px}
+.kalkyle-app .completion-task label{display:block;margin:12px 0;font-size:12px}
+.kalkyle-app .completion-task input{width:100%;min-width:0}
+.kalkyle-app .completion-manual{margin-top:14px;font-size:12px}
+.kalkyle-app .completion-manual>summary{cursor:pointer;color:#704b30}
+.kalkyle-app .completion-price-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}
+.kalkyle-app .completion-price-fields label:first-child{grid-column:1/-1}
+.kalkyle-app .post-code{display:block;font-size:10px;color:#705137;margin:4px 0;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.kalkyle-app .code-button{background:transparent;color:#704b30;border:1px solid #e1d2c2;padding:3px 7px;margin-top:4px;font-size:10px}
+.kalkyle-app .export-basis{margin:15px 0;border-top:1px solid #ddd5cd;padding-top:15px}
+.kalkyle-app .export-basis summary{cursor:pointer;font-size:13px;color:#704b30}
+.kalkyle-app .export-basis button{display:block;width:100%;margin-top:10px}
+.kalkyle-app #codes-dialog{width:calc(100% - 32px);max-width:650px;border:1px solid #ddd5cd;border-radius:14px;padding:24px;max-height:90vh;overflow:auto}
+.kalkyle-app #codes-dialog h2{font-size:23px;margin-top:0}
+.kalkyle-app #codes-dialog::backdrop{background:#25282b60}
+.kalkyle-app #library-dialog{position:fixed;inset:0 0 0 auto;margin:0;width:min(760px,100%);height:100dvh;max-height:100dvh;max-width:100%;box-sizing:border-box;border:0;border-left:1px solid #ddd5cd;padding:24px;background:#fffdf9;overflow:auto;box-shadow:-12px 0 40px #25282b20}
+.kalkyle-app #library-dialog::backdrop{background:#25282b40}
+.kalkyle-app .library-drawer-heading{display:flex;justify-content:space-between;align-items:center;gap:16px;position:sticky;top:-24px;background:#fffdf9;z-index:3;padding:16px 0;border-bottom:1px solid #ddd5cd}
+.kalkyle-app .library-drawer-heading h2{font-size:23px;margin:0}
+.kalkyle-app .library-drawer-heading .eyebrow{margin:0 0 5px}
+.kalkyle-app .library-drawer-footer{position:sticky;bottom:-24px;background:#fffdf9;padding:15px 0;border-top:1px solid #ddd5cd;text-align:right;z-index:2}
+.kalkyle-app #library-dialog .library-card{margin:0;border-radius:0;border-width:0 0 1px}
+.kalkyle-app #library-dialog .library-card>summary{font-size:13px}
+.kalkyle-app #library-dialog label.check{font-size:12px;align-items:flex-start;padding:12px}
+@media(max-width:650px){.kalkyle-app .simple-ai-review{display:block}.kalkyle-app .simple-ai-review button{max-width:none;width:100%;margin-top:14px}.kalkyle-app .completion-price-fields{grid-template-columns:1fr}.kalkyle-app .completion-heading{align-items:flex-start}.kalkyle-app #library-dialog{padding:16px}.kalkyle-app .library-drawer-heading{top:-16px}.kalkyle-app .library-drawer-heading h2{font-size:19px}.kalkyle-app .library-drawer-footer{bottom:-16px}.kalkyle-app #codes-dialog{padding:18px}}

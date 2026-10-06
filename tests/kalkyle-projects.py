@@ -6,9 +6,10 @@ with sync_playwright() as p:
  page.goto((sys.argv[1] if len(sys.argv)>1 else 'http://127.0.0.1:8080')+'/kalkyle.html')
  assert page.locator('#project-home').is_visible();assert not page.locator('#project-workspace').is_visible()
  page.locator('#start-detailed').click();page.locator('#project-name').fill('Takprosjekt');page.locator('#project-customer').fill('Kari');page.locator('#project-address').fill('Vestliveien 55');page.locator('#project-submit').click()
- assert page.locator('tr[data-row-index]').count()==0;assert page.locator('#library-browser').get_attribute('open') is not None
+ assert page.locator('tr[data-row-index]').count()==0
+ page.locator('#library-browser summary').click();page.locator('#library-dialog').wait_for(state='visible')
  page.locator('#library-search').fill('Riving av benkeplate');card=page.locator('.library-card').first;card.locator('summary').click();card.get_by_role('button',name='Legg til valgte oppgaver').click()
- assert page.locator('tr[data-row-index]').count()==1
+ assert page.locator('tr[data-row-index]').count()==1;page.locator('#library-close').click()
  page.locator('#project-back').click();assert 'Kari' in page.locator('#project-list').inner_text()
  page.locator('#start-simple').click();page.locator('#project-name').fill('Etterisolering');page.locator('#project-submit').click();assert page.locator('#wizard').is_visible();assert page.locator('tr[data-row-index]').count()>1
  page.locator('#project-back').click();page.reload();assert page.locator('.project-card').count()==2

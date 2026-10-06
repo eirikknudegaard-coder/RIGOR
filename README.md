@@ -194,11 +194,52 @@ per materialenhet vises sammen med omregnet materialkostnad per arbeidsenhet.
 Lagret produktvalg oppdateres fra det offentlige prisregisteret; ukjent
 produkt, feil enhet, annen varetype eller utløpt pris kan ikke prises som
 en gyldig materialpost. Takstein og metall kan ikke bruke en shingelpris.
-Kjente arbeids- og materialpriser vises med påslag mens totalpris/CSV venter
-på komplett grunnlag. Timesatser kan lagres som lokale standarder for nye
+Kjente arbeids- og materialpriser vises med påslag som «Kjent delsum» mens
+komplett prisanslag/CSV venter på komplett grunnlag. Timesatser kan lagres som lokale standarder for nye
 prosjekter; eksisterende prosjekter beholder sine satser.
 
 Verifikasjon: `node tests/kalkyle-time.test.mjs` og
 `python3 tests/kalkyle-ai-costs-browser.py` (server på port 8090) dekker
 AI-poster, faktisk utslag av timesatser, vare-/butikkvalg, pakningsavrunding,
 importerte grunntider, overstyringer, prosjektseparasjon og mobil.
+
+## Forenklet prisavklaring og eksportgrunnlag
+
+Forenkletvisningen har materialposter med markedsvarevalg og registrering av
+leverandørpris, kilde og dato. Manglende arbeidsmengde og grunntid kan fylles
+inn samme sted. Kjent delsum utelater uavklarte pris-/tidsdeler og merkes som
+ufullstendig; alle nødvendige poster må avklares før komplett prisanslag og
+salgsgrunnlag kan eksporteres. Manuelle priser med dato utløper etter 30 dager;
+markedsobservasjoner utløper fortsatt etter 24 timer. Produktvalg er eksplisitt:
+en pris fra feil varetype/dimensjon skal ikke erstatte en manglende pris.
+
+«AI: kontroller arbeidslisten» sender gjeldende veiviservalg, beskrivelse og
+valgte oppgaver til den eksisterende AI-tjenesten etter et klikk. Merkede
+takdata har forrang over eldre mål i friteksten. Horisontalt areal omregnes
+én gang til takflate; lengder og antall etterspørres. Forslaget vises før
+oppgaver legges inn. Eksisterende oppgaver beholdes og er avvalgt i forslaget.
+AI finner oppgaver i biblioteket; priser og grunntider kommer fra det
+kontrollerte prisgrunnlaget, import eller brukerens registrering.
+
+Biblioteket åpnes i et sidepanel med søk, fag, arbeidstype, numerisk sorterte
+kategorier og oppgaver. `kalkyle-code-register.js` inneholder permanente
+interne elementidentifikatorer. Nye elementer må få nye identifikatorer;
+eksisterende identifikatorer skal aldri nummereres om. Arbeids-, innkjøps- og
+salgskoder følger malens oppgavenøkkel, også for kopier og AI-poster. Dette
+er egne RIGOR-koder, ikke Svenn-/NS-koder, regnskapskontoer eller lønnsarter.
+Brukeren kan lagre egne kodekoblinger per prosjektpost via «Koder».
+
+Tre generelle UTF-8 CSV-grunnlag eksporteres separat: arbeidsplan med planlagte
+timer og valgfri lønnsart, innkjøp med faktisk valgt leverandørvarenummer og
+pakningsavrunding, og salg med separate arbeid-/materiallinjer og påslag.
+Arbeidsplanen krever gyldige mengder/tider, innkjøp krever gyldige mengder/priser,
+og salg krever komplett grunnlag. Lønnsart står tom inntil system og kobling er
+valgt. Beregnede timer er ikke faktisk timeregistrering og kan ikke alene brukes
+til lønnskjøring. Ingen av eksportene sender ordre, lønn eller faktura til et
+eksternt system. Salgsgrunnlaget avstemmes mot samme kalkylemotor som anslaget.
+
+Verifikasjon: `node tests/kalkyle-codes.test.mjs` og
+`python3 tests/kalkyle-simple-price-browser.py` (server på port 8090) kontrollerer
+kodebestandighet, avstemte eksportbeløp, mangler, prisavklaring, lagring, AI-kontroll,
+sidepanel og mobil. Nettlesertesten bruker kontrollerte lokale produktdata og
+et simulert AI-svar; den gjør ingen betalte AI-kall.

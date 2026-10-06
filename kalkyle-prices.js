@@ -59,7 +59,7 @@ export function applyPrices(rows,mode,records,today) {
   const r={...original,marketMaterialCost:undefined,marketPackages:undefined,marketPurchasedQuantity:undefined};
   if(mode==='example'&&r.needsExamplePrice&&!r.manualPrice)return {...r,material:0,priceSource:'Ingen eksempelpris',priceDate:'',priceIssue:'pris må registreres'};
   if(mode==='example')return {...r,material:r.manualPrice?r.material:(r.exampleMaterial??r.material),priceSource:r.manualPrice?'Manuelt satt':'Eksempelpris',priceDate:'',priceIssue:null};
-  if(r.manualPrice)return {...r,priceSource:'Manuelt satt',priceDate:'',priceIssue:null};
+  if(r.manualPrice){const status=r.manualPriceDate?priceStatus({dato:r.manualPriceDate},today):'gyldig';return {...r,priceSource:r.manualPriceSource||'Manuelt satt',priceDate:r.manualPriceDate||'',priceIssue:status==='gyldig'?null:status};}
   if(!r.priceKey)return {...r,material:0,priceSource:'Ingen materialkostnad',priceDate:'',priceIssue:null};
   const p=catalog.get(r.priceKey);let status=priceStatus(p,today);
   const unit=(r.materialUnit||r.unit||'m²').replace('m²','m2');if(status==='gyldig'&&p.enhet!==unit)status='feil enhet';

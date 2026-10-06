@@ -1,4 +1,4 @@
-import {library,instantiate} from './kalkyle-library.js?v=20261006-ai-kostnader';
+import {library,instantiate} from './kalkyle-library.js?v=20261006-enkel-pris';
 // Illustrative rates only. Replace with RIGOR's maintained cost and time data.
 export const jobs = {
  roof: {name:'Bytte tak', options:[['removal','Rive eksisterende tekking',true],['underlay','Nytt undertak, sløyfer og lekter',true],['cover','Ny taktekking',true],['rig','Stillas og fallsikring',true],['waste','Transport og avfall',true]], uncertainty:'Beslag, takrenner, piper, takvinduer og råteskader er ikke inkludert. Avklar høyde, geometri og faktisk stillasbehov.'},
