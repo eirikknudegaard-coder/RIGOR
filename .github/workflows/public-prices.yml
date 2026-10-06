@@ -18,7 +18,32 @@ concurrency:
   group: public-material-prices
   cancel-in-progress: true
 jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Inspect supplier document format
+        continue-on-error: true
+        run: |
+          node scripts/probe-material-pages.mjs
+          python3 - <<'PYSUMMARY'
+          import json, os
+          with open('data/market-diagnostics.json') as f: evidence=json.load(f)
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
+              f.write('### Supplier document evidence\n\n```json\n'+json.dumps(evidence,ensure_ascii=False).replace('<','\\u003c').replace('>','\\u003e')+'\n```\n')
+          PYSUMMARY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: supplier-format
+          path: data/market-diagnostics.json
   collect:
+    needs: inspect
     runs-on: ubuntu-latest
     timeout-minutes: 14
     outputs:
@@ -33,16 +58,10 @@ jobs:
           node-version: '24'
       - name: Test rules
         run: node tests/market-public.test.mjs
-      - name: Inspect supplier document format
-        continue-on-error: true
-        run: |
-          node scripts/probe-material-pages.mjs
-          python3 - <<'PYSUMMARY'
-          import json, os
-          with open('data/market-diagnostics.json') as f: evidence=json.load(f)
-          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
-              f.write('### Supplier document evidence\n\n```json\n'+json.dumps(evidence,ensure_ascii=False).replace('<','\\u003c').replace('>','\\u003e')+'\n```\n')
-          PYSUMMARY
+      - uses: actions/download-artifact@v4
+        with:
+          name: supplier-format
+          path: data
       - name: Collect prices without AI
         id: collect
         continue-on-error: true
