@@ -4,7 +4,7 @@ import {assistantStatus,requestEstimate} from './ai-estimate-client.js';
 import {proposalRows,extractMeasurements,validateProposal} from './kalkyle-assistant.js';
 import {jobs,propose,calculate,roofGeometry,roofConsumption} from './kalkyle-engine.js?v=20261005-sortiment';
 import {library,roofTypes,instantiate,searchLibrary} from './kalkyle-library.js?v=20261005-kategorier';
-import {parseCsv,validatePrices,applyPrices} from './kalkyle-prices.js?v=20261005-sortiment';
+import {parseCsv,validatePrices,applyPrices} from './kalkyle-prices.js?v=20261006-prisenhet';
 import {fields,prepareImport,sampleImport,checkMapping,mapImport} from './kalkyle-import.js?v=20261005-kategorier';
 const $=id=>document.getElementById(id),money=n=>new Intl.NumberFormat('nb-NO',{style:'currency',currency:'NOK',maximumFractionDigits:2}).format(n),num=n=>new Intl.NumberFormat('nb-NO',{maximumFractionDigits:2}).format(n);
 const rateKeys=['wage','direct','indirect','billing','laborMarkup','materialMarkup'];

@@ -43,7 +43,7 @@ export function validatePrices(records) {
   if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(Date.parse(date))||new Date(date).toISOString().slice(0,10)!==date)throw Error('Dato må være en gyldig dato i format ÅÅÅÅ-MM-DD.');
   if(!source||source.length>300)throw Error('Hver pris må ha en kilde.');
   if(r.valuta!=='NOK'||r.mva!=='ekskl'||!['m2','m','stk','rs'].includes(r.enhet))throw Error('Prisene må være NOK, ekskl. MVA, i m2, m, stk eller rs. Omregn pakningspriser før import.');
-  let market={};if(r.checked_at!==undefined){if(!Number.isFinite(Date.parse(r.checked_at))||!Number.isFinite(r.package_quantity)||r.package_quantity<=0||!Number.isSafeInteger(r.package_price_ex_vat_ore)||r.package_price_ex_vat_ore<0)throw Error('Ugyldig markedspris eller pakningsinnhold.');market={checked_at:r.checked_at,package_quantity:r.package_quantity,package_price_ex_vat_ore:r.package_price_ex_vat_ore,original_unit:String(r.original_unit||'pakke')};}
+  let market={};if(r.checked_at!==undefined){if(!Number.isFinite(Date.parse(r.checked_at))||!Number.isFinite(r.package_quantity)||r.package_quantity<=0||!Number.isSafeInteger(r.package_price_ex_vat_ore)||r.package_price_ex_vat_ore<0)throw Error('Ugyldig markedspris eller pakningsinnhold.');if(r.quantity_basis!==undefined&&!['unit','package'].includes(r.quantity_basis))throw Error('Ugyldig prisenhetsgrunnlag.');market={quantity_basis:r.quantity_basis||'package',checked_at:r.checked_at,package_quantity:r.package_quantity,package_price_ex_vat_ore:r.package_price_ex_vat_ore,original_unit:String(r.original_unit||'pakke')};}
   keys.add(key);return {...market,prisnokkel:key,enhet:r.enhet,pris:price,kilde:source,dato:date,valuta:'NOK',mva:'ekskl'};
  });
 }
@@ -63,7 +63,7 @@ export function applyPrices(rows,mode,records,today) {
   if(!r.priceKey)return {...r,material:0,priceSource:'Ingen materialkostnad',priceDate:'',priceIssue:null};
   const p=catalog.get(r.priceKey);let status=priceStatus(p,today);
   const unit=(r.materialUnit||r.unit||'m²').replace('m²','m2');if(status==='gyldig'&&p.enhet!==unit)status='feil enhet';
-  const purchase=status==='gyldig'&&mode==='market'&&p.checked_at?{marketPackages:Math.ceil((r.materialQuantity??r.quantity)/p.package_quantity),marketPurchasedQuantity:Math.ceil((r.materialQuantity??r.quantity)/p.package_quantity)*p.package_quantity,marketMaterialCost:Math.ceil((r.materialQuantity??r.quantity)/p.package_quantity)*p.package_price_ex_vat_ore/100}:{};
-  return {...r,...purchase,material:status==='gyldig'?p.pris:0,priceSource:(p?.kilde||'')+(purchase.marketPackages!==undefined?' · kjøp '+purchase.marketPackages+' '+p.original_unit+' / '+purchase.marketPurchasedQuantity+' '+p.enhet+' · frakt ikke inkludert':''),priceDate:p?.dato||'',priceIssue:status==='gyldig'?null:status};
+  const purchase=status==='gyldig'&&mode==='market'&&p.checked_at&&p.quantity_basis!=='unit'?{marketPackages:Math.ceil((r.materialQuantity??r.quantity)/p.package_quantity),marketPurchasedQuantity:Math.ceil((r.materialQuantity??r.quantity)/p.package_quantity)*p.package_quantity,marketMaterialCost:Math.ceil((r.materialQuantity??r.quantity)/p.package_quantity)*p.package_price_ex_vat_ore/100}:{};
+  return {...r,...purchase,material:status==='gyldig'?p.pris:0,priceSource:(p?.kilde||'')+(p?.quantity_basis==='unit'?' · enhetspris; pakningsavrunding og frakt ikke inkludert':'')+(purchase.marketPackages!==undefined?' · kjøp '+purchase.marketPackages+' '+p.original_unit+' / '+purchase.marketPurchasedQuantity+' '+p.enhet+' · frakt ikke inkludert':''),priceDate:p?.dato||'',priceIssue:status==='gyldig'?null:status};
  });
 }
