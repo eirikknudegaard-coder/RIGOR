@@ -18,3 +18,23 @@
 /* Readable secondary copy, including small labels on light backgrounds. */
 .kalkyle-app .muted,.kalkyle-app .view-help,.kalkyle-app .home-heading p,.kalkyle-app .mode-cards p:last-child,.kalkyle-app #wizard>.muted,.kalkyle-app .composer-description,.kalkyle-app .job-composer #brief-status,.kalkyle-app .summary>p:not(.eyebrow),.kalkyle-app .summary #status,.kalkyle-app .summary dt,.kalkyle-app .project-card p{color:#606266}.kalkyle-app .tabs button{color:#606266}.kalkyle-app .brief-examples button{color:#655446}.kalkyle-app .mode-heading p{color:#606266}.kalkyle-app .mode-cards .eyebrow{color:#79604c}.kalkyle-app .workspace-label{color:#655446}.kalkyle-app .composer-description,.kalkyle-app .view-help{font-size:12px}.kalkyle-app .job-composer #brief-status{font-size:11px}.kalkyle-app .summary #status{font-size:11px}
 @media(max-width:650px){.kalkyle-app .tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;overflow:visible}.kalkyle-app .tabs button{white-space:normal;text-align:center;padding:9px 7px}}
+/* More distinct brand accents, using the logo's bronze (#9a7758). */
+.kalkyle-app{--logo-bronze:#9a7758;--action-bronze:#805d41}
+.kalkyle-app .job-composer{background:linear-gradient(115deg,#77563e,#896449);border-color:var(--logo-bronze);box-shadow:0 5px 20px #77563e12}
+.kalkyle-app .job-composer .composer-heading h2,.kalkyle-app .job-composer .composer-description,.kalkyle-app .job-composer #brief-status{color:#fff}
+.kalkyle-app .composer-symbol{background:#ffffff20;color:#fff}
+.kalkyle-app .assistant-badge{background:#ffffff14;border-color:#ffffff45;color:#fff}
+.kalkyle-app .job-composer textarea{border-color:#ffffff80;background:#fffdfb;color:#25282b}
+.kalkyle-app .job-composer textarea::placeholder{color:#66696d}
+.kalkyle-app .job-composer .brief-examples button{background:#ffffff0f;border-color:#ffffff70;color:#fff}
+.kalkyle-app .job-composer .brief-examples button:hover{background:#ffffff25}
+.kalkyle-app .job-composer .composer-actions button.secondary{background:#fffdfb;border-color:#fffdfb;color:#704b30}
+.kalkyle-app .job-composer .composer-actions button.secondary:hover{background:#f0e3d5}
+.kalkyle-app .job-composer .composer-actions button:disabled{background:#ffffff17;border-color:#ffffff40;color:#fff}
+.kalkyle-app .mode-cards article{border-top:3px solid var(--logo-bronze)}
+.kalkyle-app .mode-cards article:first-child{background:#f4e9dd}
+.kalkyle-app .mode-icon{color:var(--logo-bronze)}
+.kalkyle-app .tabs button[aria-pressed=true]{background:var(--action-bronze);border-color:var(--action-bronze);color:#fff}
+.kalkyle-app .summary>button#save{background:var(--action-bronze);border-color:var(--action-bronze)}
+.kalkyle-app .summary>button#save:hover{background:#6f4f37}
+.kalkyle-app .summary{border-top:3px solid var(--logo-bronze)}
