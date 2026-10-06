@@ -87,7 +87,7 @@ jobs:
         run: exit 1
   publish:
     needs: collect
-    if: always() && (needs.collect.outputs.collected == 'success' || needs.collect.outputs.collected == 'failure')
+    if: ${{ !cancelled() && (needs.collect.outputs.collected == 'success' || needs.collect.outputs.collected == 'failure') }}
     concurrency:
       group: pages
       cancel-in-progress: false
