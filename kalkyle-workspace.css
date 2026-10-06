@@ -24,6 +24,10 @@
 .kalkyle-app .job-composer .composer-heading h2,.kalkyle-app .job-composer .composer-description,.kalkyle-app .job-composer #brief-status{color:#fff}
 .kalkyle-app .composer-symbol{background:#ffffff20;color:#fff}
 .kalkyle-app .assistant-badge{background:#ffffff14;border-color:#ffffff45;color:#fff}
+.kalkyle-app button.assistant-badge{font-size:10px;font-weight:450;padding:4px 9px;border-radius:20px;white-space:normal;line-height:1.4;max-width:230px}
+.kalkyle-app .job-composer button.assistant-badge:hover{background:#ffffff26}
+.kalkyle-app .job-composer button.assistant-badge:disabled{background:#ffffff14;color:#fff;border-color:#ffffff45;cursor:wait}
+@media(max-width:650px){.kalkyle-app button.assistant-badge{font-size:9px;max-width:120px}.composer-heading>div{min-width:0}.composer-symbol{flex-shrink:0}}
 .kalkyle-app .job-composer textarea{border-color:#ffffff80;background:#fffdfb;color:#25282b}
 .kalkyle-app .job-composer textarea::placeholder{color:#66696d}
 .kalkyle-app .job-composer .brief-examples button{background:#ffffff0f;border-color:#ffffff70;color:#fff}

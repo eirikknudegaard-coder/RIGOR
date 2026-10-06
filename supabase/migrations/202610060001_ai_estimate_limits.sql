@@ -1,10 +1,10 @@
-create table public.rigor_ai_estimate_usage (
+create table if not exists public.rigor_ai_estimate_usage (
  id uuid primary key default gen_random_uuid(),
  user_id uuid not null references auth.users(id) on delete cascade,
  reserved_at timestamptz not null default now(),
  input_tokens integer, output_tokens integer
 );
-create index on public.rigor_ai_estimate_usage(user_id,reserved_at);
+create index if not exists rigor_ai_estimate_usage_user_reserved_idx on public.rigor_ai_estimate_usage(user_id,reserved_at);
 alter table public.rigor_ai_estimate_usage enable row level security;
 revoke all on public.rigor_ai_estimate_usage from anon,authenticated;
 create or replace function public.reserve_rigor_ai_estimate(p_user_id uuid)

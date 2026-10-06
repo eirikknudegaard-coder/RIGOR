@@ -250,6 +250,15 @@ $('assistant-apply').onclick=()=>{
  const m=proposal.measurements;if(!$('assistant-settings-label').hidden&&$('assistant-use-settings').checked&&m.roofType){job='roof';setupJob();$('roofType').value=m.roofType;if(m.area!==null)$('area').value=m.area;if(m.angle!==null)$('angle').value=m.angle;if(m.basis)$('basis').value=m.basis;configureRoof();lastSettings=settings();}
  rows.push(...additions.map(r=>roofConsumption(r,lastSettings)));edited=true;renderRows();update();view(true);clearAssistantProposal();$('brief-status').textContent=additions.length+' oppgaver lagt til. Registrer manglende mengder, grunntider og materialpriser.';saveProject();
 };
-assistantStatus().then(ready=>{assistantReady=ready;$('brief-generate').disabled=!ready;$('assistant-badge').textContent=ready?'AI-assistent · krever innlogging':'AI ikke aktivert på serveren';$('brief-generate').title=ready?'Lager et forslag som du kontrollerer før det legges til':'Serverfunksjonen må deployes til Supabase';});
+async function refreshAssistantConnection(){
+ $('assistant-badge').disabled=true;$('assistant-badge').textContent='Sjekker AI-tilkobling';
+ const response=await assistantStatus();const status=typeof response==='boolean'?{ready:response,state:response?'ready':'unavailable'}:response;
+ assistantReady=status.ready===true;$('brief-generate').disabled=!assistantReady||assistantBusy;
+ $('assistant-badge').textContent=({'ready':'AI-assistent klar','missing-function':'AI-assistenten er ikke publisert','missing-secrets':'AI-oppsettet er ufullstendig','gateway-auth':'AI-tilkoblingen må konfigureres','unavailable':'AI-tilkoblingen kunne ikke bekreftes'})[status.state]||'AI-tilkoblingen kunne ikke bekreftes';
+ $('assistant-badge').disabled=false;$('assistant-badge').title='Sjekk AI-tilkoblingen på nytt';
+ $('brief-generate').title=assistantReady?'Lager et forslag som du kontrollerer før det legges til':'AI-assistenten må være tilgjengelig før forslag kan lages';
+}
+$('assistant-badge').onclick=refreshAssistantConnection;
+refreshAssistantConnection();
 
 refreshMarketPrices();

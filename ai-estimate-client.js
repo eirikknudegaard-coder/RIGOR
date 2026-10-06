@@ -1,6 +1,17 @@
 const endpoint='https://hyqiqjuycivihsgjongj.supabase.co/functions/v1/rigor-ai-estimate';
 const publicKey='sb_publishable_Y5qghQsmaJZEXYhwxgH6Eg_TjPiWOBl';let client;
-export async function assistantStatus(){try{const r=await fetch(endpoint,{headers:{apikey:publicKey},signal:AbortSignal.timeout(10000)});if(!r.ok)return false;return (await r.json()).ready===true;}catch{return false;}}
+export async function assistantStatus(fetcher=fetch){
+ try{
+  const r=await fetcher(endpoint,{headers:{apikey:publicKey},cache:'no-store',signal:AbortSignal.timeout(10000)});
+  if(r.status===404)return {ready:false,state:'missing-function'};
+  if(r.status===401||r.status===403)return {ready:false,state:'gateway-auth'};
+  if(!r.ok)return {ready:false,state:'unavailable'};
+  const data=await r.json();
+  if(data.ready===true)return {ready:true,state:'ready'};
+  if(data.ready===false)return {ready:false,state:'missing-secrets'};
+  return {ready:false,state:'unavailable'};
+ }catch{return {ready:false,state:'unavailable'};}
+}
 export async function requestEstimate(brief){
  if(!client){const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/+esm');client=createClient('https://hyqiqjuycivihsgjongj.supabase.co',publicKey);}
  const {data}=await client.auth.getSession();if(!data.session)throw Error('Logg inn i RIGOR-portalen før du bruker AI-assistenten.');
