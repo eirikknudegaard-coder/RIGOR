@@ -34,7 +34,14 @@ jobs:
         run: node tests/market-public.test.mjs
       - name: Inspect supplier document format
         continue-on-error: true
-        run: node scripts/probe-material-pages.mjs
+        run: |
+          node scripts/probe-material-pages.mjs
+          python3 - <<'PYSUMMARY'
+          import json, os
+          with open('data/market-diagnostics.json') as f: evidence=json.load(f)
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
+              f.write('### Supplier document evidence\n\n```json\n'+json.dumps(evidence,ensure_ascii=False).replace('<','\\u003c').replace('>','\\u003e')+'\n```\n')
+          PYSUMMARY
       - name: Collect prices without AI
         id: collect
         continue-on-error: true
