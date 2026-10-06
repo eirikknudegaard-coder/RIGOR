@@ -32,6 +32,9 @@ jobs:
           node-version: '24'
       - name: Test rules
         run: node tests/market-public.test.mjs
+      - name: Inspect supplier document format
+        continue-on-error: true
+        run: node scripts/probe-material-pages.mjs
       - name: Collect prices without AI
         id: collect
         continue-on-error: true
@@ -45,6 +48,7 @@ jobs:
           path: |
             data/market-prices.json
             data/market-queue.json
+            data/market-diagnostics.json
       - name: Report failure
         if: steps.collect.outcome == 'failure'
         run: exit 1
