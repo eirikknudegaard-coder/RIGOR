@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/sync-public-prices.mjs'
+      - 'scripts/probe-material-pages.mjs'
       - 'market-public-core.js'
       - '.github/workflows/public-prices.yml'
   schedule:
