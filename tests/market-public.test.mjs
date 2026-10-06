@@ -1,3 +1,4 @@
+import {readFileSync} from 'node:fs';
 import {validatePrices,applyPrices} from '../kalkyle-prices.js';
 import {test} from 'node:test';import assert from 'node:assert/strict';
 import {publicSources,sourceUrl,retailerTaxEvidence,readPublicProducts,robotsPolicy,sitemapLinks,readPublicProduct,usableOffer,selectedPrices,offersForRow,materialPriority} from '../market-public-core.js';
@@ -37,3 +38,13 @@ test('Nye byggevarer prioriteres foran gamle verktøyadresser og lavere material
  const r=await syncPublicPrices({queue,fetcher,clock:()=>Date.parse(now),pause:async()=>{},maxProducts:2});
  assert.equal(r.catalog.offers.length,1);assert.equal(r.catalog.offers[0].kind,'insulation');assert(!calls.some(u=>u.includes('elektroverktoy')||u.includes('parkett')));
 });
+
+
+const recorded=JSON.parse(readFileSync(new URL('./fixtures/obs-public-evidence-20261006.json',import.meta.url)));
+const recordedSource={...source,tax_evidence:retailerTaxEvidence('Alle priser er inkludert merverdiavgift.',source.vat_policy_url,source,recorded.checked_at)};
+function recordedHtml(s){return s.ld_json.map(v=>'<script type="application/ld+json">'+v+'</script>').join('')+(s.price_markup||[]).join('')+'<p>'+s.visible+'</p>';}
+test('Faktisk Obs-markup for 11x36 lekt gir 10,80 kr per løpemeter ekskl. MVA',()=>{const s=recorded.samples.find(s=>s.url.includes('2100592'));const o=readPublicProducts(recordedHtml(s),s.url,recordedSource,recorded.checked_at)[0];assert.equal(o.normalized_ore,1080);assert.equal(o.unit,'m');assert.equal(o.kind,'battens');assert.equal(o.quantity_basis,'unit');const mismatched=recordedHtml(s).replace('13 kroner','14 kroner');assert.throws(()=>readPublicProducts(mismatched,s.url,recordedSource,recorded.checked_at));});
+test('Faktisk gipsplate omregnes fra stykk til m² med dokumenterte platedimensjoner',()=>{const s=recorded.samples.find(s=>s.url.includes('2126273'));const o=readPublicProducts(recordedHtml(s),s.url,recordedSource,recorded.checked_at)[0];assert.equal(o.unit,'m2');assert.equal(o.package_quantity,3.12);assert.equal(o.original_unit,'plate');assert.equal(o.normalized_ore,16026);assert.equal(o.quantity_basis,'package');});
+test('Fire dokumenterte Hunton-varianter brukes; 70 mm uten pakningsareal holdes ute',()=>{const s=recorded.samples.find(s=>s.url.includes('2113834')),rejected=[];const o=readPublicProducts(recordedHtml(s),s.url,recordedSource,recorded.checked_at,e=>rejected.push(e));assert.equal(o.length,4);assert.equal(rejected.length,1);assert(rejected[0].error.includes('Prisenhet'));assert.equal(o.find(o=>o.name.includes('100 MM')).normalized_ore,13971);});
+test('Et priset stykk med 100-pk i navnet kan ikke regnes som én skrue eller plugg',()=>{const p={...product,name:'Fischer isolasjonsplugg 100-pk',offers:{...product.offers,priceSpecification:{...product.offers.priceSpecification,referenceQuantity:{value:1,unitCode:'C62'}}}};assert.throws(()=>readPublicProduct(html(p),url,source,now),/pakning/);});
+test('Andre kontroll av samme kildeprodukt gir ingen dupliserte produkter eller uendrede historikkpriser',async()=>{const first=await syncPublicPrices({fetcher:fixtureFetch().fn,clock:()=>Date.parse(now),pause:async()=>{},maxProducts:2});const second=await syncPublicPrices({previous:first.catalog,queue:first.queue,fetcher:fixtureFetch().fn,clock:()=>Date.parse(now)+21600001,pause:async()=>{},maxProducts:2});assert.equal(second.catalog.offers.length,1);assert.equal(second.catalog.price_history.length,1);assert.equal(second.catalog.job_history.length,2);assert.equal(second.catalog.last_run.succeeded,1);assert(second.catalog.offers[0].checked_at>first.catalog.offers[0].checked_at);});
