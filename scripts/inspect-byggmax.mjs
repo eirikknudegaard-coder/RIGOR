@@ -17,7 +17,14 @@ for(const path of ['/23x48-lekt-p08123048','/48x98-konstruksjonsvirke-c24-p08148
  const attrs=[...html.matchAll(/<[^>]*itemprop=["'](?:price|priceCurrency|availability|sku|name)[^>]*>/gi)].map(m=>m[0]).slice(0,30);
  const links=[...html.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)].filter(m=>/vilk|beting|terms/i.test(m[1]+' '+m[2])).map(m=>({url:new URL(m[1],source.origin).href,text:m[2].replace(/<[^>]*>/g,' ')})).slice(0,20);
  const unit=[...html.matchAll(/.{0,100}(?:package-unit|salesUnit|unitLabel|quantity_unit|unit_name|packageQuantity|package_size|NOBB|EAN|m2|m²)[\s\S]{0,220}/gi)].slice(-30).map(m=>m[0]);
- samples.push({url,title:html.match(/<title[^>]*>([\s\S]*?)<\/title>/)?.[1],scripts,attrs,links,unit,script_urls:[...html.matchAll(/<script\b[^>]*src=["']([^"']+)["']/gi)].map(m=>m[1]).slice(0,20)});
+ const csp=[],productId=scripts.find(s=>s.includes('function fetchCsp'))?.match(/const productId = '([^']+)'/)?.[1];
+ if(productId)for(const storeId of ['0','2327','2314']){
+  const endpoint=new URL('/gcsp',source.origin);endpoint.search=new URLSearchParams({productId,storeId,customerType:'0'}).toString();if(!policy.allows(endpoint.href))continue;
+  await new Promise(r=>setTimeout(r,policy.delay*1000));try{const r=await fetch(endpoint,{redirect:'error',signal:AbortSignal.timeout(20000),headers:{'User-Agent':agent,'X-Requested-With':'XMLHttpRequest',Accept:'application/json'}});if(!r.ok)throw Error('HTTP '+r.status);csp.push({url:endpoint.href,store_id:storeId,data:await r.json()});}catch(e){csp.push({url:endpoint.href,store_id:storeId,error:e.message});}
+ }
+ const visible=html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').slice(0,180000);
+ const configurations=[...html.matchAll(/initConfigurableOptions\([\s\S]{0,100000}/g)].map(m=>m[0]).filter(s=>/initConfigurableOptions\(\s*\d/.test(s)).map(s=>s.replace(/(["']?(?:form_key|formKey)["']?\s*[:=]\s*)["'][^"']*["']/gi,'$1"[redacted]"').slice(0,50000)).slice(0,2);
+ samples.push({url,title:html.match(/<title[^>]*>([\s\S]*?)<\/title>/)?.[1],scripts,attrs,links,unit,visible,configurations,csp,script_urls:[...html.matchAll(/<script\b[^>]*src=["']([^"']+)["']/gi)].map(m=>m[1]).slice(0,20)});
  }catch(e){samples.push({url,error:e.message});}
 }
 await writeFile('data/byggmax-inspection.json',JSON.stringify({checked_at:new Date().toISOString(),robots,samples,assets},null,2)+'\n');
