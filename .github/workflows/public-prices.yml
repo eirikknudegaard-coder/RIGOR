@@ -35,6 +35,7 @@ jobs:
           python3 - <<'PYSUMMARY'
           import json, os
           with open('data/market-diagnostics.json') as f: evidence=json.load(f)
+          for sample in evidence.get('samples',[]): sample.pop('visible',None)
           with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
               f.write('### Supplier document evidence\n\n```json\n'+json.dumps(evidence,ensure_ascii=False).replace('<','\\u003c').replace('>','\\u003e')+'\n```\n')
           PYSUMMARY
