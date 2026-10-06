@@ -48,7 +48,7 @@ jobs:
   collect:
     needs: inspect
     runs-on: ubuntu-latest
-    timeout-minutes: 14
+    timeout-minutes: 26
     outputs:
       collected: ${{ steps.collect.outcome }}
     steps:
