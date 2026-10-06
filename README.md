@@ -167,3 +167,12 @@ festemidler, kledning, listverk, gulv, vinduer og dører. Kildeprodukter må for
 registreres og verifiseres. Køen behandler forfalte varer hvert kvarter etter
 aktivering, med separat kontrollintervall per kilde. Takveiviseren har egne
 felt for sløyfeavstand, lekteavstand og svinn.
+
+Arbeidsflaten har nå egne faner for Forenklet, Detaljert, Prisgrunnlag og
+Timepris & påslag. Beskrivelsesfeltet øverst lagrer en lokal kladd på forsiden
+og en egen beskrivelse per prosjekt. AI-knappen er deaktivert; ingen oppgaver
+genereres fra teksten ennå. Designgrunnlag og fremtidig forslagflyt er
+dokumentert i [docs/KALKYLE-DESIGN-RESEARCH.md](docs/KALKYLE-DESIGN-RESEARCH.md).
+Konkurrentenes nettsider kunne ikke leses på grunn av nettverksproxyens 403;
+Svenn-bildene er den verifiserte visuelle referansen.
+Nettlesertest: `python tests/kalkyle-workspace.py`.
