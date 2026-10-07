@@ -13,6 +13,7 @@ on:
     - cron: '19 */6 * * *'
   workflow_dispatch:
 permissions:
+  actions: read
   contents: read
   pages: write
   id-token: write
@@ -118,7 +119,17 @@ jobs:
           NODE
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
+        id: page-artifact
         with:
           path: '.'
+          name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Wait for uploaded artifact metadata
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PAGES_ARTIFACT_ID: ${{ steps.page-artifact.outputs.artifact_id }}
+          PAGES_ARTIFACT_NAME: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
+        run: node scripts/wait-pages-artifact.mjs
       - uses: actions/deploy-pages@v4
         id: deployment
+        with:
+          artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
