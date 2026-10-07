@@ -293,6 +293,27 @@ nettlesertesten er simulert og utløser ingen betalte kall.
 
 ### Arbeidstimer og rivingsanslag
 
+AI-forhåndsvisningen kontrollerer oppgavenøkler, ikke bare hele elementer.
+`kalkyle-task-overlap.js` har eksplisitte koblinger for terrassebord i rivingspakker,
+lekter i takrivingspakker og vindsperre i etterisolerings-/kledningspakker. Samme
+oppgave velges én gang, mens tillegg som bjelkelag og rensk beholdes. Valg som tas
+bort frigjør oppgaven i andre foreslåtte elementer. Ønsket arbeid prioriteres
+foran tilhørende og valgfrie tillegg. Ulike produkter, enheter og arbeidsflater
+slås ikke sammen bare fordi oppgavenavnene er like.
+
+En ny kontroll ved innlegging hindrer gjentatte AI-kjøringer i å legge inn de
+samme oppgavene igjen, også når eksisterende oppgaver er valgt bort. Manglende
+oppgaver i et delvis utfylt element kan fortsatt legges til. Eksisterende mengder,
+priser, tider og manuelle tilpasninger endres ikke. For en separat flate brukes
+biblioteket; AI tolker et nytt areal som noe som må avklares på eksisterende post.
+
+Lagrede oppgaver med lik oppgavenøkkel og mengde får «Kontroller dobbeltposter»
+i både Forenklet og Detaljert. Brukeren bekrefter samme arbeid og velger posten
+som skal beholdes. Øvrige velges bort fra pris, timer og eksport, men radene og
+deres registrerte verdier beholdes. Ingen automatisk sletting av eldre poster.
+Kontroll: `node tests/kalkyle-task-overlap.test.mjs` og
+`python3 tests/kalkyle-task-overlap-browser.py` (lokal server på port 8090).
+
 Mengde × grunntid × tidsfaktor gir personarbeidstimer. Timer og arbeidspris vises
 på hver post, i elementsummen og i Forenklet. Arbeidsprisen bruker prosjektets
 timekostnad og arbeidspåslag én gang, også når materialprisgrunnlaget er ufullstendig.

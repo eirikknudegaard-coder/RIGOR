@@ -12,6 +12,7 @@ import {fields,prepareImport,sampleImport,checkMapping,mapImport} from './kalkyl
 import {rowCodes,codesFor,exportBasis,csvText} from './kalkyle-codes.js?v=20261007-arbeidstimer';
 import {renderCompletion} from './kalkyle-completion.js?v=20261007-arbeidstimer';
 import {followupFields} from './kalkyle-questions.js?v=20261007-avklaringer';
+import {reviewAssistantTasks,uniqueAssistantRows,findWorkOverlaps} from './kalkyle-task-overlap.js?v=20261007-overlapp';
 const $=id=>document.getElementById(id),money=n=>new Intl.NumberFormat('nb-NO',{style:'currency',currency:'NOK',maximumFractionDigits:2}).format(n),num=n=>new Intl.NumberFormat('nb-NO',{maximumFractionDigits:2}).format(n);
 const rateKeys=['wage','direct','indirect','billing','laborMarkup','materialMarkup'];
 let timeCatalog=[];const rateDefaultKey='rigor-rate-defaults-v1';
@@ -20,6 +21,7 @@ let priceMode='market',importedPrices=[],marketPrices=[],marketMessage='Leser de
 let publicCatalog=null,marketBindings={},marketStores={},marketSelectionSignature='';
 const roofKeys=['roofType','lowerAngle','upperShare','ridgeLength','hipLength','breakLength','edgeLength','drainCount','battenSpacing','lathSpacing','roofWaste'];
 let assistantWizardReview=false;
+let overlapReview=[];
 let renderedGroups=[];let calculationMode='simple';let assistantReady=false,assistantBusy=false,assistantTicket=0,assistantProposal=null,assistantClarifications=[];
 function settings(){return {...Object.fromEntries(roofKeys.map(k=>[k,k==='roofType'?$(k).value:Number($(k).value)])),job,area:Number($('area').value),angle:Number($('angle').value),basis:$('basis').value,material:$('material').value,difficulty:Number($('difficulty').value),options:[...document.querySelectorAll('#options input:checked')].map(e=>e.value)};}
 function rates(){return Object.fromEntries(rateKeys.map(k=>[k,Number($(k).value)]));}
@@ -96,7 +98,7 @@ function update(){
  const pricedRows=applyPrices(rows,priceMode,priceMode==='import'?importedPrices:marketPrices);rows.forEach((row,i)=>Object.assign(row,pricedRows[i]));
  const missing=rows.filter(r=>r.enabled&&r.priceIssue),missingTimes=rows.filter(r=>r.enabled&&r.requiresTime),missingQuantities=rows.filter(r=>r.enabled&&r.requiresQuantity&&r.quantity===0);
  const rateValid=rateKeys.every(k=>$(k).checkValidity()),rate=rates(),hourly=rateValid?calculate([],rate,1).hourly:null;
- $('time-overlap').textContent=rows.filter(r=>r.enabled&&r.quantity>0&&r.name==='Demontere terrassebord').length>1?'Demontere terrassebord er valgt i flere elementer. Hvis postene gjelder samme terrasse, fjern én av dem for å unngå dobbel arbeidstid.':'';
+ const overlaps=findWorkOverlaps(rows);$('overlap-notice').hidden=!overlaps.length;$('time-overlap').textContent=overlaps.length?overlaps.map(group=>group[0].name).join('; ')+' er valgt flere ganger med samme mengde. Kontroller om postene gjelder samme arbeid for å unngå dobbel arbeidstid.':'';
  renderCompletion($('simple-completion'),{rows,priceMode,hourly:hourly===null?null:hourly*(1+rate.laborMarkup/100),onMarket:r=>openMaterialDialog(r.id),onPrice:(r,p)=>{if(!p.source){$('status').textContent='Oppgi leverandør eller kilde.';return;}Object.assign(r,{material:p.price,manualPrice:true,manualPriceSource:p.source,manualPriceDate:p.date,priceIssue:null});edited=true;renderRows();update();saveProject();},onQuantity:(r,q)=>{r.quantity=q;r.materialQuantity=q*(r.materialRatio??1);edited=true;renderRows();update();saveProject();},onTime:(r,t)=>{Object.assign(r,{hours:t,requiresTime:false,manualTime:true,timeSource:'Registrert i prosjektet',timeEstimate:false,timeNote:''});edited=true;renderRows();update();saveProject();},onDetails:()=>view(true)});
  $('import-panel').hidden=priceMode!=='import';$('market-panel').hidden=priceMode!=='market';$('price-status').textContent=priceMode==='market'?marketMessage:priceMode==='import'?`Prislisten inneholder ${importedPrices.length} priser. Priser eldre enn 30 dager må oppdateres.`:'Demonstrasjon: prisene er eksempler, ikke markedspriser.';
  renderMarketProducts();$('price-coverage').replaceChildren();rows.forEach(renderRowPrice);
@@ -346,12 +348,68 @@ $('nav-projects').onclick=()=>{if(activeProject)$('project-back').click();else w
 restoreBriefDraft();
 
 function clearAssistantProposal(){assistantTicket++;assistantProposal=null;assistantClarifications=[];$('assistant-clarification').hidden=true;$('assistant-preview').hidden=true;$('assistant-items').replaceChildren();$('assistant-apply').disabled=false;}
+function renderAssistantItems(proposal,brief,measurements){
+ const selections=proposal.items.map(item=>({...item,selected:item.scope!=='optional',selectedTaskIds:[...item.taskIds]})),cards=[];
+ $('assistant-items').replaceChildren();
+ for(const selection of selections){
+  const e=library.find(e=>e.id===selection.elementId),card=document.createElement('article');card.className='assistant-item';card.dataset.elementId=e.id;
+  const label=document.createElement('label');label.className='check';const selected=document.createElement('input');selected.type='checkbox';selected.dataset.assistantElement='';label.append(selected,document.createTextNode(e.name));card.append(label);
+  const scope=document.createElement('p');scope.className='muted';const reason=document.createElement('p');reason.textContent=selection.reason;card.append(scope,reason);
+  const tasks=new Map();
+  for(const id of selection.taskIds){const task=e.tasks.find(t=>t.id===id),label=document.createElement('label');label.className='check';const check=document.createElement('input');check.type='checkbox';check.dataset.assistantTask=id;const text=document.createElement('span');text.textContent=task.name;const note=document.createElement('small');text.append(note);label.append(check,text);card.append(label);tasks.set(id,{check,note});check.onchange=()=>{selection.selectedTaskIds=selection.selectedTaskIds.filter(t=>t!==id);if(check.checked)selection.selectedTaskIds.push(id);refresh();};}
+  const q=document.createElement('label');q.textContent='Mengde ('+e.unit+')';const input=document.createElement('input');input.type='number';input.min='0';input.max='1000000';input.step='any';input.dataset.assistantQuantity='';input.placeholder='Må avklares';input.setAttribute('aria-label','Forslagsmengde '+e.name);
+  if(e.id.startsWith('roof.')&&e.unit==='m²'&&measurements.area!==null){if(measurements.basis==='surface')input.value=measurements.area;else if(measurements.basis==='footprint'&&measurements.angle!==null&&measurements.roofType&&measurements.roofType!=='mansard')input.value=roofGeometry({...lastSettings,...measurements}).area;}
+  else if(assistantWizardReview&&e.unit==='m²'&&job==='insulation'&&e.id.startsWith('insulation.'))input.value=lastSettings.area;
+  else{const area=terraceProposalArea(e,brief,measurements);if(area!==null)input.value=area;}
+  q.append(input);card.append(q);$('assistant-items').append(card);cards.push({selected,scope,tasks,input});selected.onchange=()=>{selection.selected=selected.checked;refresh();};
+ }
+ function refresh(){
+  const plans=reviewAssistantTasks(selections,rows,library);let blockedCount=0;
+  for(const plan of plans){const ui=cards[plan.index],available=plan.tasks.filter(t=>!t.blocked);ui.selected.disabled=!available.length;ui.selected.checked=plan.selected&&available.length>0;ui.input.disabled=!available.length;
+   const existing=plan.tasks.filter(t=>t.blocked?.kind==='existing').length,overlap=plan.tasks.filter(t=>t.blocked?.kind==='proposal').length;blockedCount+=existing+overlap;
+   ui.scope.textContent=({requested:'Ønsket arbeid',related:'Tilhørende arbeid – vurder behovet',optional:'Valgfritt tillegg'}[plan.scope])+(existing?' · '+existing+(existing===1?' oppgave finnes':' oppgaver finnes')+' allerede i kalkylen':'')+(overlap?' · '+overlap+(overlap===1?' oppgave er':' oppgaver er')+' tatt med i et annet element':'');
+   for(const task of plan.tasks){const {check,note}=ui.tasks.get(task.task.id);check.disabled=Boolean(task.blocked);check.checked=task.wanted&&!task.blocked;
+    note.textContent=task.blocked?.kind==='existing'?'Finnes allerede i «'+(task.blocked.row.elementName||task.blocked.row.name)+'»'+(!task.blocked.row.enabled?' (valgt bort)':'')+'. Mengden endres på eksisterende post.':task.blocked?'Tatt med under «'+task.blocked.element.name+'». Telles én gang.':'';
+   }
+  }
+  $('assistant-overlap-note').hidden=!blockedCount;$('assistant-overlap-note').textContent=blockedCount+' overlappende oppgavevalg legges ikke til på nytt. Oppgaver på en annen flate kan legges til fra biblioteket.';
+  $('assistant-apply').disabled=!plans.some(plan=>plan.tasks.some(task=>task.included));
+ }
+ refresh();
+}
+
+$('overlap-review').onclick=()=>{
+ overlapReview=findWorkOverlaps(rows);$('overlap-groups').replaceChildren();$('overlap-apply').disabled=true;$('overlap-status').textContent='';
+ for(const [index,group] of overlapReview.entries()){
+  const fieldset=document.createElement('fieldset'),legend=document.createElement('legend');legend.textContent=group[0].name+' · '+num(group[0].quantity)+' '+group[0].unit;fieldset.append(legend);
+  const label=document.createElement('label');label.className='check';const check=document.createElement('input');check.type='checkbox';check.dataset.overlapGroup=index;label.append(check,document.createTextNode('Disse postene gjelder samme flate og arbeid'));fieldset.append(label);
+  const keep=document.createElement('label');keep.textContent='Behold posten fra';const select=document.createElement('select');select.dataset.overlapKeep=index;
+  for(const row of group){const hours=row.requiresTime?'grunntid mangler':num(row.quantity*row.hours*row.factor)+' timer';select.add(new Option((row.elementName||row.name)+' · '+hours+' · '+(row.timeSource||'Registrert grunntid'),row.id));}
+  keep.append(select);fieldset.append(keep);$('overlap-groups').append(fieldset);check.onchange=()=>{$('overlap-apply').disabled=!$('overlap-groups').querySelector('[data-overlap-group]:checked');};
+ }
+ $('overlap-dialog').showModal();
+};
+$('overlap-cancel').onclick=()=>$('overlap-dialog').close();
+$('overlap-form').onsubmit=event=>{
+ event.preventDefault();const current=findWorkOverlaps(rows),excluded=new Set();
+ for(const check of $('overlap-groups').querySelectorAll('[data-overlap-group]:checked')){
+  const index=Number(check.dataset.overlapGroup),group=overlapReview[index],keep=$('overlap-groups').querySelector(`[data-overlap-keep='${index}']`).value;
+  if(!group.some(row=>row.id===keep)||!current.some(g=>g.length===group.length&&g.every(row=>group.some(old=>old.id===row.id)))){$('overlap-status').textContent='Postene er endret. Lukk kontrollen og åpne den på nytt.';return;}
+  for(const row of group)if(row.id!==keep)excluded.add(row.id);
+ }
+ if(!excluded.size)return;
+ const previous=rows.map(row=>row.enabled);
+ for(const row of rows)if(excluded.has(row.id))row.enabled=false;
+ edited=true;renderRows();update();
+ if(saveProject()){$('overlap-dialog').close();$('status').textContent=excluded.size+' dobbeltposter er valgt bort. Registrerte verdier er beholdt; postene kan aktiveres i Detaljert.';}
+ else{rows.forEach((row,index)=>row.enabled=previous[index]);renderRows();update();$('overlap-status').textContent='Endringen kunne ikke lagres. Postene er beholdt. Frigjør lagringsplass og prøv igjen.';}
+};
 function renderAssistantProposal(proposal,brief){
  const measurements=extractMeasurements(brief);assistantProposal={...proposal,measurements,brief,projectId:activeProject,fromWizard:assistantWizardReview};$('assistant-summary').textContent=proposal.summary;$('assistant-measurements').textContent=[measurements.roofType?roofTypes[measurements.roofType].name:'',measurements.area!==null?num(measurements.area)+' m²':'',measurements.angle!==null?num(measurements.angle)+'°':'',measurements.roofType?(measurements.basis==='surface'?'Oppgitt takflate':measurements.basis==='footprint'?'Horisontalt areal':'Arealgrunnlag må avklares'):''].filter(Boolean).join(' · ');
- $('assistant-items').replaceChildren();for(const item of proposal.items){const e=library.find(e=>e.id===item.elementId);const card=document.createElement('article');card.className='assistant-item';card.dataset.elementId=e.id;const label=document.createElement('label');label.className='check';const selected=document.createElement('input');selected.type='checkbox';selected.dataset.assistantElement='';const exists=rows.some(r=>r.elementId===e.id||r.elementId?.startsWith(e.id+'-'));selected.checked=item.scope!=='optional'&&!exists;label.append(selected,document.createTextNode(e.name));card.append(label);const scope=document.createElement('p');scope.textContent=({requested:'Ønsket arbeid',related:'Tilhørende arbeid – vurder behovet',optional:'Valgfritt tillegg'}[item.scope])+(exists?' · Finnes allerede i kalkylen':'');scope.className='muted';const reason=document.createElement('p');reason.textContent=item.reason;card.append(scope,reason);for(const id of item.taskIds){const t=e.tasks.find(t=>t.id===id);const l=document.createElement('label');l.className='check';const check=document.createElement('input');check.type='checkbox';check.dataset.assistantTask=id;check.checked=true;l.append(check,document.createTextNode(t.name));card.append(l);}const q=document.createElement('label');q.textContent='Mengde ('+e.unit+')';const input=document.createElement('input');input.type='number';input.min='0';input.max='1000000';input.step='any';input.dataset.assistantQuantity='';input.placeholder='Må avklares';input.setAttribute('aria-label','Forslagsmengde '+e.name);if(e.id.startsWith('roof.')&&e.unit==='m²'&&measurements.area!==null){if(measurements.basis==='surface')input.value=measurements.area;else if(measurements.basis==='footprint'&&measurements.angle!==null&&measurements.roofType&&measurements.roofType!=='mansard')input.value=roofGeometry({...lastSettings,...measurements}).area;}else if(assistantWizardReview&&e.unit==='m²'&&job==='insulation'&&e.id.startsWith('insulation.'))input.value=lastSettings.area;else{const terraceArea=terraceProposalArea(e,brief,measurements);if(terraceArea!==null)input.value=terraceArea;}q.append(input);card.append(q);$('assistant-items').append(card);}
+ renderAssistantItems(proposal,brief,measurements);
  $('assistant-questions').replaceChildren();const heading=document.createElement('h4');heading.textContent='Dette må avklares';$('assistant-questions').append(heading);const allQuestions=[...proposal.questions,...(measurements.roofType&&measurements.area!==null&&!measurements.basis?['Gjelder arealet målt takflate eller horisontalt projisert areal?']:[])];const list=document.createElement('ul');for(const question of allQuestions){const li=document.createElement('li');li.textContent=question;list.append(li);}if(!list.childElementCount){const li=document.createElement('li');li.textContent='Kontroller oppbygging, materialspesifikasjoner, mengder og arbeidstid.';list.append(li);}$('assistant-questions').append(list);
  if(allQuestions.length){const form=document.createElement('form');form.className='assistant-answer-form';const fields=document.createElement('div');fields.className='assistant-clarification-fields';const questions=followupFields(allQuestions,brief);renderClarificationFields(fields,questions);const button=document.createElement('button');button.type='submit';button.textContent='Oppdater forslag med svarene';form.append(fields,button);list.remove();form.onsubmit=event=>{event.preventDefault();continueWithAnswers(questions,fields);};$('assistant-questions').append(form);}
- $('assistant-settings-label').hidden=!(measurements.roofType&&measurements.roofType!=='mansard'&&measurements.area!==null&&measurements.angle!==null&&measurements.basis&&(measurements.roofType!=='flat'||measurements.angle<=5));$('assistant-use-settings').checked=Boolean(!$('assistant-settings-label').hidden&&!rows.length);$('assistant-apply').disabled=!proposal.items.length;$('assistant-preview').hidden=false;
+ $('assistant-settings-label').hidden=!(measurements.roofType&&measurements.roofType!=='mansard'&&measurements.area!==null&&measurements.angle!==null&&measurements.basis&&(measurements.roofType!=='flat'||measurements.angle<=5));$('assistant-use-settings').checked=Boolean(!$('assistant-settings-label').hidden&&!rows.length);$('assistant-preview').hidden=false;
 }
 async function generateAssistant(skipClarification=false){
  if(!assistantReady||assistantBusy)return;if(!activeProject){projectDialog('detailed');$('project-form-error').textContent='Opprett prosjektet først. Beskrivelsen følger med.';return;}const brief=$('job-brief').value.trim();if(brief.length<10){$('brief-status').textContent='Skriv minst ti tegn om jobben.';return;}if(!saveProject())return;
@@ -379,9 +437,12 @@ $('assistant-preliminary').onclick=()=>generateAssistant(true);
 $('assistant-apply').onclick=()=>{
  const proposal=assistantProposal;if(!proposal||proposal.projectId!==activeProject||proposal.brief!==$('job-brief').value.trim()){$('brief-status').textContent='Beskrivelsen eller prosjektet er endret. Lag et nytt forslag.';return;}
  const selections=[];for(const card of $('assistant-items').children){if(!card.querySelector('[data-assistant-element]').checked)continue;const e=library.find(e=>e.id===card.dataset.elementId);const input=card.querySelector('[data-assistant-quantity]');if(!input.checkValidity()){$('brief-status').textContent='Kontroller mengdene i forslaget.';return;}const selected=[...card.querySelectorAll('[data-assistant-task]:checked')].map(t=>t.dataset.assistantTask);if(!selected.length)continue;const subset={...e,tasks:e.tasks.filter(t=>selected.includes(t.id))};selections.push({element:subset,quantity:input.value===''?0:Number(input.value)});}
- if(!selections.length){$('brief-status').textContent='Velg minst én oppgave.';return;}if(rows.length+selections.reduce((sum,s)=>sum+s.element.tasks.length,0)>500){$('brief-status').textContent='Maks 500 oppgaver i kalkylen.';return;}
+ if(!selections.length){$('brief-status').textContent='Velg minst én ny oppgave.';return;}
+ const unique=uniqueAssistantRows(selections.flatMap(s=>proposalRows(s.element,s.quantity,'-ai-'+crypto.randomUUID(),lastSettings)),rows);
+ if(!unique.rows.length){renderAssistantItems(proposal,proposal.brief,proposal.measurements);$('brief-status').textContent='De valgte oppgavene finnes allerede i kalkylen. Ingen dobbeltposter er lagt til.';return;}
+ if(rows.length+unique.rows.length>500){$('brief-status').textContent='Maks 500 oppgaver i kalkylen.';return;}
  const m=proposal.measurements;if(!$('assistant-settings-label').hidden&&$('assistant-use-settings').checked&&m.roofType){job='roof';setupJob();$('roofType').value=m.roofType;if(m.area!==null)$('area').value=m.area;if(m.angle!==null)$('angle').value=m.angle;if(m.basis)$('basis').value=m.basis;configureRoof();lastSettings=settings();}
- const additions=applyTimeCatalog(selections.flatMap(s=>proposalRows(s.element,s.quantity,'-ai-'+crypto.randomUUID(),lastSettings)).map(r=>roofConsumption(r,lastSettings)),timeCatalog);
+ const additions=applyTimeCatalog(unique.rows.map(r=>roofConsumption({...r,factor:timeFactor(templateTask(r).element,lastSettings)},lastSettings)),timeCatalog);
  rows.push(...additions);edited=true;renderRows();update();view(proposal.fromWizard?calculationMode==='detailed':true);$('library-browser').open=false;clearAssistantProposal();$('brief-status').textContent=additions.length+' oppgaver lagt til med bibliotekets grunntider og prosjektets timesatser. Velg markedsvarer og kontroller manglende opplysninger.';saveProject();
 };
 async function refreshAssistantConnection(){

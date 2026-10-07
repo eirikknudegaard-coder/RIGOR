@@ -91,6 +91,16 @@
 .kalkyle-app #time-import summary{cursor:pointer;color:#704b30}
 .kalkyle-app #material-dialog{width:calc(100% - 32px);max-width:740px;max-height:90vh;overflow:auto;border:1px solid #ddd5cd;border-radius:14px;padding:26px}
 .kalkyle-app #material-dialog::backdrop{background:#25282b60}
+.kalkyle-app .assistant-item .check small{display:block;margin-top:4px;font-size:11px;color:#65564a;line-height:1.5}
+.kalkyle-app .overlap-notice{border:1px solid #d8bda7;background:#f8eee3;border-radius:9px;padding:14px;margin-bottom:18px;font-size:12px}
+.kalkyle-app .overlap-notice p{margin:0 0 10px}
+.kalkyle-app #overlap-dialog{width:calc(100% - 32px);max-width:700px;max-height:90vh;overflow:auto;border:1px solid #ddd5cd;border-radius:14px;padding:24px}
+.kalkyle-app #overlap-dialog::backdrop{background:#25282b60}
+.kalkyle-app #overlap-dialog h2{margin-top:0;font-size:23px}
+.kalkyle-app #overlap-dialog fieldset{border:1px solid #ddd5cd;border-radius:9px;margin:16px 0;padding:14px;min-width:0}
+.kalkyle-app #overlap-dialog legend{font-weight:600;font-size:13px}
+.kalkyle-app #overlap-dialog select{min-width:0;max-width:100%;text-overflow:ellipsis}
+@media(max-width:650px){.kalkyle-app #overlap-dialog{padding:16px}.kalkyle-app #overlap-dialog h2{font-size:19px}}
 .kalkyle-app #material-dialog h2{margin-top:0;font-size:23px}
 .kalkyle-app #material-dialog select{max-width:100%;min-width:0;text-overflow:ellipsis}
 @media(max-width:650px){.kalkyle-app .layout[data-pane=detailed]>.summary dl{grid-template-columns:1fr}.kalkyle-app .task-table th:nth-child(2){width:135px}.kalkyle-app .task-table table{min-width:1070px}.kalkyle-app #material-dialog{padding:18px}.kalkyle-app #material-dialog h2{font-size:19px}}

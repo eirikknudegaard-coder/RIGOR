@@ -17,7 +17,10 @@ with sync_playwright() as p:
  assert page.locator('[data-assistant-quantity]').nth(1).input_value()==''
  page.locator('[data-assistant-task="laths"]').uncheck();page.locator('#assistant-apply').click();assert page.locator('tr[data-row-index]').count()==2+len(ridge)
  assert not page.locator('#assistant-preview').is_visible()
- page.locator('#brief-generate').click();page.locator('#assistant-preview').wait_for(state='visible');assert page.locator('[data-assistant-element]:checked').count()==0
+ page.locator('#brief-generate').click();page.locator('#assistant-preview').wait_for(state='visible');assert page.locator('[data-assistant-element]:checked').count()==1
+ assert page.locator('[data-assistant-task="underlay"]').is_disabled()
+ assert page.locator('[data-assistant-task="battens"]').is_disabled()
+ assert page.locator('[data-assistant-task="laths"]').is_checked()
  page.locator('#job-brief').fill('En endret beskrivelse av takjobben');assert not page.locator('#assistant-preview').is_visible()
  page.evaluate('window.aiFailure=true');page.locator('#brief-generate').click();page.wait_for_function('document.getElementById("brief-status").textContent.includes("Test API-feil")');assert page.locator('tr[data-row-index]').count()==2+len(ridge)
  page.set_viewport_size({'width':390,'height':844});assert page.evaluate('document.documentElement.scrollWidth<=innerWidth');assert not errors,errors
