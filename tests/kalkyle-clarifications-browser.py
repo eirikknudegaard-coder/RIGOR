@@ -56,7 +56,7 @@ with sync_playwright() as p:
     assert page.evaluate('window.sentBriefs[2].includes("Kledningsretning: Stående (vertikal)")')
     assert page.locator('#assistant-summary').inner_text() == 'Stående kledning'
     assert page.locator('tr[data-row-index]').count() == 3
-    stored = page.evaluate('JSON.parse(localStorage.getItem("rigor-projects-v1"))[0].brief')
+    stored = page.evaluate('JSON.parse(window.testReadStorage("rigor-projects-v1"))[0].brief')
     assert 'Kledningsprofil: Dobbelfals' in stored
     page.locator('#job-brief').fill('Jeg skal bytte tak på huset.')
     page.locator('#brief-generate').click()

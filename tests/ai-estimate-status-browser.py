@@ -26,7 +26,7 @@ with sync_playwright() as p:
         page.wait_for_function('(text)=>document.getElementById("assistant-badge").textContent.includes(text)',arg=label)
         assert page.locator('#brief-generate').is_disabled()==(body.get('ready') is not True)
         assert page.locator('#job-brief').input_value()==brief
-        assert page.evaluate('localStorage.getItem("rigor-job-brief-v1")')==brief
+        assert page.evaluate('window.testReadStorage("rigor-job-brief-v1")')==brief
     answer.update({'http':404,'body':{'code':'NOT_FOUND'}})
     page.set_viewport_size({'width':390,'height':844})
     page.locator('#assistant-badge').click()

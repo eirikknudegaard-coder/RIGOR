@@ -14,12 +14,12 @@ export async function checkToolAccess(client){
   if(tool.error)return {status:'unavailable'};
   if(tool.data&&tool.data.enabled!==true)return {status:'denied',message:'Kalkyleverktøyet er deaktivert.'};
   // Retain the existing administrator preview before the tool is registered.
-  if(admin.data===true)return {status:'ready',user};
+  if(admin.data===true)return {status:'ready',user,isAdmin:true};
   if(!tool.data)return {status:'denied',message:'Kalkyleverktøyet må være tildelt kontoen din.'};
   const access=await client.from('portal_tool_access').select('tool_key').eq('user_id',user.id).eq('tool_key','kalkyle');
   if(access.error)return {status:'unavailable'};
   if(!Array.isArray(access.data)||!access.data.some(a=>a.tool_key==='kalkyle'))return {status:'denied',message:'Kalkyleverktøyet må være tildelt kontoen din.'};
-  return {status:'ready',user};
+  return {status:'ready',user,isAdmin:false};
  }catch{return {status:'unavailable'};}
 }
 

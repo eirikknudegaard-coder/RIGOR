@@ -42,7 +42,7 @@ with sync_playwright() as p:
  assert selector.input_value()=='byggmax:08123048:2314'
  assert 'Arendal' in page.locator('#price-coverage').text_content()
  page.locator('#save').click()
- saved=page.evaluate("JSON.parse(localStorage.getItem('rigor-calculation-v1'))")
+ saved=page.evaluate("JSON.parse(window.testReadStorage('rigor-calculation-v1'))")
  assert saved['marketStores']['byggmax']=='2314'
  assert any(v=='byggmax:08123048:2314' for v in saved['marketBindings'].values())
  page.locator('#byggmax-store').select_option('')

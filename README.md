@@ -39,7 +39,19 @@ eksempelpriser må velges eksplisitt. Takgeometrien forutsetter lik takvinkel; s
 tekniske fag bruker forenklede avsetninger. Valgte poster er ikke en garanti
 for komplett omfang. Beregninger beholder desimalpresisjon frem til visning.
 
-Kalkyler lagres lokalt i nettleseren og kan eksporteres til CSV. Kalkyle og
+Kalkyler lagres lokalt per verifisert Supabase-bruker-ID og kan eksporteres til CSV.
+Prosjekter, sist lagret kalkyle, eget bibliotek, beskrivelsesutkast og standardsatser
+bruker én kontoavgrenset lagringspost. Kontoene får separate prosjektlister på samme
+nettleser. Lokal lagring er ikke kryptert eller skysynkronisert; den som har tilgang
+til nettleseren og utviklerverktøyene kan fortsatt lese den.
+
+Eldre globale lagringsnøkler åpnes ikke automatisk. Bare serververifisert administrator
+får et eksplisitt overføringsvalg på prosjektoversikten. Prosjekter og bibliotek
+slås sammen etter ID, med kontodata prioritert; kalkyle, utkast og satser kopieres
+bare når kontoverdien mangler. Overføring og markering skjer i én atomisk skriveoperasjon,
+og originalene beholdes. Vanlige medlemmer får aldri dette overføringsvalget.
+
+Kalkyle og
 Materialpriser krever verifisert Supabase-innlogging, aktiv portalkonto og
 kalkyletilgang før appen starter. Administrator har fortsatt tilgang når
 `kalkyle` ikke er registrert; en eksplisitt deaktivert registrering respekteres.
@@ -53,8 +65,9 @@ ikke serverbeskyttelse av konfidensielle data. AI- og administrator-API-ene
 kontrollerer token og rettigheter på serveren. Prosjekter er fortsatt lokale;
 ingen skysynkronisering eller nye konto-/tilgangsrader opprettes her.
 
-Tester: `node tests/portal-access.test.mjs` og
-`python3 tests/portal-tool-browser.py` (lokal server på port 8090). Nettlesertestene
+Tester: `node tests/portal-access.test.mjs`, `node tests/portal-user-storage.test.mjs`,
+`python3 tests/portal-tool-browser.py` og `python3 tests/portal-user-storage-browser.py`
+(lokal server på port 8090). Nettlesertestene
 simulerer verifiserte Supabase-svar via `tests/portal_test_support.py`; det finnes
 ingen testomgåelse i produksjonskoden.
 

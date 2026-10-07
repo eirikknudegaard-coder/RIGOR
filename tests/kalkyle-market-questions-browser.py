@@ -62,7 +62,7 @@ with sync_playwright() as p:
     assert all(word in detail for word in ['70,45','75 m² brutto','hele ruller','overlapp og svinn'])
     page.locator('#material-dialog').screenshot(path='/tmp/rigor-undertak-dialog.png')
     page.locator('#material-submit').click()
-    snapshot=page.evaluate('JSON.parse(localStorage.getItem("rigor-projects-v1"))[0].snapshot')
+    snapshot=page.evaluate('JSON.parse(window.testReadStorage("rigor-projects-v1"))[0].snapshot')
     row=next(r for r in snapshot['rows'] if r['name']=='Legge undertak')
     assert row['marketPackages']==2 and row['marketPurchasedQuantity']==150 and row['marketMaterialCost']==10568
     assert row['priceDate']==catalog['offers'][1]['checked_at'][:10]

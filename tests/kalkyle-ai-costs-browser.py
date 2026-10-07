@@ -34,9 +34,9 @@ with sync_playwright() as p:
     assert 'kr/m ekskl. MVA' in row.nth(1).inner_text()
     assert 'roof.underlay' not in row.nth(0).inner_text()
     # Cancelling a store selection must not alter the project's price basis.
-    before_store=page.evaluate('JSON.parse(localStorage.getItem("rigor-projects-v1"))[0].snapshot.marketStores')
+    before_store=page.evaluate('JSON.parse(window.testReadStorage("rigor-projects-v1"))[0].snapshot.marketStores')
     row.nth(1).get_by_role('button',name='Velg markedsvare til Montere sløyfer').click();page.locator('#material-store').select_option('2327');page.locator('#material-cancel').click()
-    assert page.evaluate('JSON.parse(localStorage.getItem("rigor-projects-v1"))[0].snapshot.marketStores')==before_store
+    assert page.evaluate('JSON.parse(window.testReadStorage("rigor-projects-v1"))[0].snapshot.marketStores')==before_store
     for i,product in enumerate(['underlay','batten','lath']):
         row.nth(i).locator('.row-market-button').click()
         if i>0: page.locator('#material-store').select_option('2314')

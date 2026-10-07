@@ -29,17 +29,17 @@ with sync_playwright() as p:
         page.wait_for_url('**/'+file);page.locator('#protected-app').wait_for(state='visible')
         if file=='kalkyle.html':
             page.locator('#start-detailed').click();page.locator('#project-name').fill('Behold ved utlogging');page.locator('#project-submit').click()
-            stored=page.evaluate('localStorage.getItem("rigor-projects-v1")')
+            stored=page.evaluate('window.testReadStorage("rigor-projects-v1")')
             page.locator('#library-browser summary').click();page.locator('#library-dialog').wait_for(state='visible')
             checks=page.evaluate('window.testPortalCalls.filter(c=>c==="getUser").length')
             page.evaluate('window.testAuthEmit("TOKEN_REFRESHED")')
             page.wait_for_function('(checks)=>window.testPortalCalls.filter(c=>c==="getUser").length>checks',arg=checks)
             assert page.locator('#library-dialog').is_visible()
         else:
-            stored=page.evaluate('localStorage.getItem("rigor-projects-v1")')
+            stored=page.evaluate('window.testReadStorage("rigor-projects-v1")')
         page.evaluate('window.testAuthEmit("SIGNED_OUT","anonymous")')
         page.wait_for_url('**/portal.html?returnTo=*')
-        assert page.evaluate('localStorage.getItem("rigor-projects-v1")')==stored
+        assert page.evaluate('window.testReadStorage("rigor-projects-v1")')==stored
         page.close()
     for mode in ['inactive','no-tool','disabled','expired']:
         page=new_page(mode);requests=[];page.on('request',lambda r:requests.append(r.url))

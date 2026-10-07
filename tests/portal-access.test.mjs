@@ -14,12 +14,12 @@ test('Anonymous, fake/expired sessions and inactive accounts cannot open a tool'
  }
 });
 test('Admin preview remains available before registration, but an explicitly disabled tool is respected',async()=>{
- assert.equal((await checkToolAccess(fixture().client)).status,'ready');
+ const access=await checkToolAccess(fixture().client);assert.equal(access.status,'ready');assert.equal(access.isAdmin,true);
  assert.equal((await checkToolAccess(fixture({tool:{tool_key:'kalkyle',enabled:false}}).client)).status,'denied');
 });
 test('A member needs the enabled tool and access for the verified user ID',async()=>{
  const f=fixture({admin:false,tool:{tool_key:'kalkyle',enabled:true},access:[{tool_key:'kalkyle'}]});
- assert.equal((await checkToolAccess(f.client)).status,'ready');
+ const access=await checkToolAccess(f.client);assert.equal(access.status,'ready');assert.equal(access.isAdmin,false);
  assert.deepEqual(f.calls.at(-1),{name:'portal_tool_access',filters:{user_id:'verified-user',tool_key:'kalkyle'}});
  for(const options of [{admin:false},{admin:false,tool:{tool_key:'kalkyle',enabled:true}},{admin:false,tool:{tool_key:'kalkyle',enabled:true},access:[{tool_key:'other'}]}])assert.equal((await checkToolAccess(fixture(options).client)).status,'denied');
 });
