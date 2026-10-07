@@ -1,3 +1,4 @@
+from portal_test_support import authorize_portal
 import json,subprocess
 from pathlib import Path
 from datetime import datetime,timezone
@@ -17,7 +18,7 @@ process.stdout.write(JSON.stringify({version:1,offers,stores,sources:[{chain:'by
 """],cwd=root))
 with sync_playwright() as p:
  browser=p.chromium.launch(executable_path='/usr/bin/chromium',args=['--no-sandbox'])
- page=browser.new_page(viewport={'width':1440,'height':1100})
+ page=browser.new_page(viewport={'width':1440,'height':1100});authorize_portal(page)
  errors=[]
  page.on('pageerror',lambda e:errors.append(str(e)))
  page.route('**/data/market-prices.json*',lambda route:route.fulfill(json=catalog))

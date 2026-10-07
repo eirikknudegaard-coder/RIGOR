@@ -1,10 +1,7 @@
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/+esm";
-
-const sb = createClient(
-  "https://hyqiqjuycivihsgjongj.supabase.co",
-  "sb_publishable_Y5qghQsmaJZEXYhwxgH6Eg_TjPiWOBl",
-  {auth:{autoRefreshToken:true,persistSession:true,detectSessionInUrl:true}}
-);
+import {getPortalClient} from './portal-session.js?v=20261007-innlogging';
+import {checkToolAccess,safeToolReturn} from './portal-access.js?v=20261007-innlogging';
+const sb = await getPortalClient();
+const returnTo=safeToolReturn(new URLSearchParams(location.search).get('returnTo'),location.href);
 
 const panels = ["portal-loading","login-panel","password-panel","denied-panel","dashboard-panel"];
 const $ = (id) => document.getElementById(id);
@@ -130,6 +127,13 @@ async function render() {
   $("signed-in-user").textContent=user.email||"";
   $("admin-badge").hidden=!admin;
   $("admin-section").hidden=!admin;
+  if(returnTo){
+    const access=await checkToolAccess(sb);
+    if(version!==stateVersion)return;
+    if(access.status==='ready'){location.replace(returnTo);return;}
+    ui.notice(access.message||'Kalkyletilgangen kunne ikke bekreftes. Prøv igjen senere.');
+    ui.show('denied-panel');return;
+  }
   ui.show("dashboard-panel");
   await loadTools(Boolean(admin));
   if(admin) await loadUsers();

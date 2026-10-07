@@ -1,3 +1,4 @@
+from portal_test_support import authorize_portal
 """Actual recorded roll evidence, legacy register units, mixed AI controls and home guide."""
 import json, subprocess
 from pathlib import Path
@@ -29,7 +30,7 @@ module = 'export async function assistantStatus(){return true;} export async fun
 
 with sync_playwright() as p:
     browser=p.chromium.launch(executable_path='/usr/bin/chromium', args=['--no-sandbox'])
-    page=browser.new_page(viewport={'width':1440,'height':1000})
+    page=browser.new_page(viewport={'width':1440,'height':1000});authorize_portal(page)
     errors=[]
     page.on('pageerror', lambda e:errors.append(str(e)))
     page.add_init_script('Date.now=()=>Date.parse("2026-10-07T05:40:00Z")')
@@ -38,7 +39,7 @@ with sync_playwright() as p:
         requests.append(route.request.url)
         route.fulfill(json=catalog)
     page.route('**/data/market-prices.json*', register)
-    page.route('**/ai-estimate-client.js', lambda route:route.fulfill(content_type='application/javascript',body=module))
+    page.route('**/ai-estimate-client.js*', lambda route:route.fulfill(content_type='application/javascript',body=module))
     page.goto('http://127.0.0.1:8090/kalkyle.html')
     guide=page.locator('#calculation-guide')
     assert guide.is_visible() and guide.locator('.guide-cards article').count()==3

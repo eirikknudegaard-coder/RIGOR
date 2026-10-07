@@ -1,6 +1,7 @@
+import {getPortalClient} from './portal-session.js?v=20261007-innlogging';
 import {loadPublicCatalog} from './market-public-client.js?v=20261007-avklaringer';
 import {selectedPrices,offersForRow,usableOffer} from './market-public-core.js?v=20261007-avklaringer';
-import {assistantStatus,requestEstimate} from './ai-estimate-client.js';
+import {assistantStatus,requestEstimate} from './ai-estimate-client.js?v=20261007-innlogging';
 import {proposalRows,extractMeasurements,validateProposal,clarificationQuestions,appendClarificationAnswers,wizardBrief} from './kalkyle-assistant.js?v=20261007-avklaringer';
 import {jobs,propose,calculate,roofGeometry,roofConsumption,timeFactor} from './kalkyle-engine.js?v=20261007-avklaringer';
 import {library,roofTypes,instantiate,searchLibrary} from './kalkyle-library.js?v=20261007-avklaringer';
@@ -260,7 +261,7 @@ $('ai-map').onclick=async()=>{
  if(!confirm('Sende kolonneoverskrifter og opptil åtte rader til OpenAI for kolonneforslag? Se forhåndsvisningen før du fortsetter.'))return;
  $('ai-map').disabled=true;$('ai-import-status').textContent='Analyserer kolonner …';
  try{
-  if(!importClient){const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/+esm');importClient=createClient('https://hyqiqjuycivihsgjongj.supabase.co','sb_publishable_Y5qghQsmaJZEXYhwxgH6Eg_TjPiWOBl',{auth:{detectSessionInUrl:false}});}
+  if(!importClient)importClient=await getPortalClient();
   const {data,error}=await importClient.auth.getSession();if(error||!data.session)throw Error('Logg inn som administrator i portalen først. Manuell kolonneimport fungerer uten AI.');
   const response=await fetch('https://hyqiqjuycivihsgjongj.supabase.co/functions/v1/rigor-import-map',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+data.session.access_token,apikey:'sb_publishable_Y5qghQsmaJZEXYhwxgH6Eg_TjPiWOBl'},body:JSON.stringify(sample),signal:AbortSignal.timeout(30000)});
   const answer=await response.json();if(!response.ok)throw Error(answer.error||'AI-import er ikke aktivert i Supabase ennå.');if(generation!==importGeneration)return;

@@ -1,3 +1,4 @@
+from portal_test_support import authorize_portal
 import json
 from datetime import datetime,timezone
 from playwright.sync_api import sync_playwright
@@ -5,7 +6,7 @@ stamp=datetime.now(timezone.utc).isoformat()
 offer={'id':'obs:fixture','chain':'obs','name':'Sløyfe 23x48 – testfixture','url':'https://www.obsbygg.no/testfixture','source_id':'fixture','kind':'battens','unit':'m','vat':'inkl','price_kind':'public','original_unit':'m','package_quantity':1,'original_ore':2500,'package_price_ex_vat_ore':2000,'normalized_ore':2000,'checked_at':stamp,'valid_until':None,'availability':'https://schema.org/InStock','evidence':'Testfixture'}
 catalog={'version':1,'updated_at':stamp,'last_run':{'finished_at':stamp,'succeeded':1},'offers':[offer],'sources':[]}
 with sync_playwright() as p:
- b=p.chromium.launch(executable_path='/usr/bin/chromium',args=['--no-sandbox']);page=b.new_page(viewport={'width':1440,'height':1000});errors=[];page.on('pageerror',lambda e:errors.append(str(e)));requests=[];page.on('request',lambda r:requests.append(r.url))
+ b=p.chromium.launch(executable_path='/usr/bin/chromium',args=['--no-sandbox']);page=b.new_page(viewport={'width':1440,'height':1000});authorize_portal(page);errors=[];page.on('pageerror',lambda e:errors.append(str(e)));requests=[];page.on('request',lambda r:requests.append(r.url))
  page.route('**/data/market-prices.json*',lambda r:r.fulfill(content_type='application/json',body=json.dumps(catalog)))
  page.goto('http://127.0.0.1:8090/kalkyle.html');page.wait_for_function('document.getElementById("price-status").textContent.includes("1 ferske")')
  page.locator('#start-simple').click();page.locator('#project-name').fill('Markedsprisprosjekt');page.locator('#project-submit').click();page.locator('#pricing-tab').click()

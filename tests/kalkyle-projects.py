@@ -1,8 +1,9 @@
+from portal_test_support import authorize_portal
 import sys
 from playwright.sync_api import sync_playwright
 with sync_playwright() as p:
  b=p.chromium.launch(executable_path='/usr/bin/chromium',args=['--no-sandbox'])
- page=b.new_page(); errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
+ page=b.new_page();authorize_portal(page); errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
  page.goto((sys.argv[1] if len(sys.argv)>1 else 'http://127.0.0.1:8080')+'/kalkyle.html')
  assert page.locator('#project-home').is_visible();assert not page.locator('#project-workspace').is_visible()
  page.locator('#start-detailed').click();page.locator('#project-name').fill('Takprosjekt');page.locator('#project-customer').fill('Kari');page.locator('#project-address').fill('Vestliveien 55');page.locator('#project-submit').click()

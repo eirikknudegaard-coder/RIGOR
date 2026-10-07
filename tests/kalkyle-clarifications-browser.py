@@ -1,3 +1,4 @@
+from portal_test_support import authorize_portal
 from playwright.sync_api import sync_playwright
 import json
 
@@ -7,10 +8,10 @@ module = 'export async function assistantStatus(){return true;} export async fun
 
 with sync_playwright() as p:
     browser = p.chromium.launch(executable_path='/usr/bin/chromium', args=['--no-sandbox'])
-    page = browser.new_page(viewport={'width': 1440, 'height': 1000})
+    page = browser.new_page(viewport={'width': 1440, 'height': 1000});authorize_portal(page)
     errors = []
     page.on('pageerror', lambda error: errors.append(str(error)))
-    page.route('**/ai-estimate-client.js', lambda route: route.fulfill(content_type='application/javascript', body=module))
+    page.route('**/ai-estimate-client.js*', lambda route: route.fulfill(content_type='application/javascript', body=module))
     page.goto('http://127.0.0.1:8090/kalkyle.html')
     page.wait_for_function('!document.getElementById("brief-generate").disabled')
     page.locator('#job-brief').fill('Skal bytte tak. Det er saltak, ca 20m2. Hele taket utenom takstoler skal byttes. Ta med nytt undertak, sutak, sløyfer, takstein og vindskier.')

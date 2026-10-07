@@ -1,7 +1,8 @@
+from portal_test_support import authorize_portal
 import sys
 from playwright.sync_api import sync_playwright
 with sync_playwright() as p:
- b=p.chromium.launch(executable_path='/usr/bin/chromium',args=['--no-sandbox']);page=b.new_page(viewport={'width':1440,'height':1000});errors=[];page.on('pageerror',lambda e:errors.append(str(e)));requests=[];page.on('request',lambda r:requests.append((r.method,r.url)))
+ b=p.chromium.launch(executable_path='/usr/bin/chromium',args=['--no-sandbox']);page=b.new_page(viewport={'width':1440,'height':1000});authorize_portal(page);errors=[];page.on('pageerror',lambda e:errors.append(str(e)));requests=[];page.on('request',lambda r:requests.append((r.method,r.url)))
  page.goto((sys.argv[1] if len(sys.argv)>1 else 'http://127.0.0.1:8080')+'/kalkyle.html')
  assert page.locator('#home-brief-anchor #job-composer').is_visible();assert page.locator('#brief-generate').is_disabled()
  page.locator('[data-brief-example=roof]').click();roof=page.locator('#job-brief').input_value();assert 'sløyfer' in roof and 'sutak' in roof and '30 grader' in roof

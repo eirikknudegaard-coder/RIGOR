@@ -39,15 +39,24 @@ eksempelpriser må velges eksplisitt. Takgeometrien forutsetter lik takvinkel; s
 tekniske fag bruker forenklede avsetninger. Valgte poster er ikke en garanti
 for komplett omfang. Beregninger beholder desimalpresisjon frem til visning.
 
-Kalkyler lagres lokalt i nettleseren og kan eksporteres til CSV. Ingen AI,
-skylagring eller kundedata er koblet til. Siden er en offentlig statisk
-prototype, ikke et tilgangsbeskyttet portalverktøy. Portalens verktøyliste
-viser prototypen for administrator dersom `kalkyle` ikke er registrert. En
-eksplisitt deaktivert registrering respekteres. Andre brukere får lenken når
-et aktivert verktøy med `tool_key = kalkyle` finnes og de har verktøytilgang.
-Denne endringen oppretter ingen
-Supabase-rader eller tilganger. Beskyttelse av fremtidige kundedata og
-AI-nøkler må håndheves i en autentisert backend, ikke i GitHub Pages.
+Kalkyler lagres lokalt i nettleseren og kan eksporteres til CSV. Kalkyle og
+Materialpriser krever verifisert Supabase-innlogging, aktiv portalkonto og
+kalkyletilgang før appen starter. Administrator har fortsatt tilgang når
+`kalkyle` ikke er registrert; en eksplisitt deaktivert registrering respekteres.
+Andre brukere trenger et aktivert verktøy med `tool_key = kalkyle` og egen
+verktøytildeling. Direkte lenker sender til portalen med en kontrollert lokal
+returadresse. Utlogging skjuler appen; gjenopprettede faner kontrolleres på nytt.
+
+GitHub Pages leverer fortsatt HTML, JavaScript og offentlige markedspriser
+uten HTTP-autentisering. Innloggingskontrollen styrer appstart og erstatter
+ikke serverbeskyttelse av konfidensielle data. AI- og administrator-API-ene
+kontrollerer token og rettigheter på serveren. Prosjekter er fortsatt lokale;
+ingen skysynkronisering eller nye konto-/tilgangsrader opprettes her.
+
+Tester: `node tests/portal-access.test.mjs` og
+`python3 tests/portal-tool-browser.py` (lokal server på port 8090). Nettlesertestene
+simulerer verifiserte Supabase-svar via `tests/portal_test_support.py`; det finnes
+ingen testomgåelse i produksjonskoden.
 
 Kjør beregningstestene med `node --test tests/kalkyle-engine.test.mjs`.
 

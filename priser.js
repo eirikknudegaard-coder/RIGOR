@@ -1,7 +1,7 @@
 import {loadPublicCatalog} from './market-public-client.js?v=20261007-avklaringer';
 import {usableOffer,materialKind} from './market-public-core.js?v=20261007-avklaringer';
 import {productTypes} from './market-product-types.js';
-import {priceApi} from './market-price-client.js';
+import {priceApi} from './market-price-client.js?v=20261007-innlogging';
 import {purchaseCost} from './market-price-core.js';
 const kindSelect=document.querySelector('#group-form [name=kind]');kindSelect.replaceChildren();for(const [key,type] of Object.entries(productTypes)){const option=document.createElement('option');option.value=key;option.textContent=type.name;kindSelect.append(option);}kindSelect.value='insulation';function typeHelp(){const type=productTypes[kindSelect.value];document.querySelector('#group-form [name=unit]').value=type.unit;document.querySelector('#group-spec-help').textContent='Obligatoriske spesifikasjoner: '+type.fields.join(', ')+'. Mål i mm; lambda i W/(m·K). Pakningsinnhold registreres på kildeproduktet. Ukjente verdier må avklares før godkjenning.';}kindSelect.onchange=typeHelp;typeHelp();
 const $=id=>document.getElementById(id);let catalog={offers:[]},admin;

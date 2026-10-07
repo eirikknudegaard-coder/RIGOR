@@ -1,0 +1,8 @@
+#protected-app[hidden],#portal-access-shell[hidden]{display:none!important}
+.portal-access-shell{width:min(520px,calc(100% - 32px));margin:12vh auto;padding:32px;background:#fffdf9;border:1px solid #ddd5cd;border-top:3px solid #896447;border-radius:12px;color:#25282b;font:15px/1.7 system-ui,sans-serif}
+.portal-access-shell img{display:block;width:150px;height:auto;margin-bottom:24px}
+.portal-access-shell h1{font-size:25px;font-weight:600;letter-spacing:-.02em;margin:12px 0}
+.portal-access-shell p{font-size:14px;color:#606266}
+.portal-access-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:24px}
+.portal-access-actions button{font:inherit;padding:9px 14px;border:1px solid #896447;border-radius:6px;background:#896447;color:#fff;cursor:pointer}
+.portal-access-actions a{font-size:14px;color:#704b30}

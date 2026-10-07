@@ -1,3 +1,4 @@
+from portal_test_support import authorize_portal
 from playwright.sync_api import sync_playwright
 from datetime import datetime, timezone
 import csv, io, json, re
@@ -13,8 +14,8 @@ proposal={'summary':'Kontroll av underlag og avslutninger','items':[{'elementId'
 module='export async function assistantStatus(){return true;} export async function requestEstimate(brief){window.testBrief=brief;window.testAICalls=(window.testAICalls||0)+1;return '+json.dumps(proposal)+';}'
 with sync_playwright() as p:
     browser=p.chromium.launch(executable_path='/usr/bin/chromium',args=['--no-sandbox'])
-    page=browser.new_page(viewport={'width':1440,'height':1000});errors=[];page.on('pageerror',lambda error:errors.append(str(error)))
-    page.route('**/ai-estimate-client.js',lambda route:route.fulfill(content_type='application/javascript',body=module))
+    page=browser.new_page(viewport={'width':1440,'height':1000});authorize_portal(page);errors=[];page.on('pageerror',lambda error:errors.append(str(error)))
+    page.route('**/ai-estimate-client.js*',lambda route:route.fulfill(content_type='application/javascript',body=module))
     page.route('**/data/market-prices.json*',lambda route:route.fulfill(content_type='application/json',body=json.dumps(catalog)))
     page.on('dialog',lambda d:d.accept())
     page.goto('http://127.0.0.1:8090/kalkyle.html')

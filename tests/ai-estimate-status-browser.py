@@ -1,9 +1,10 @@
+from portal_test_support import authorize_portal
 from playwright.sync_api import sync_playwright
 import json
 
 with sync_playwright() as p:
     browser=p.chromium.launch(executable_path='/usr/bin/chromium',args=['--no-sandbox'])
-    page=browser.new_page(viewport={'width':1440,'height':1000})
+    page=browser.new_page(viewport={'width':1440,'height':1000});authorize_portal(page)
     errors=[];requests=[]
     page.on('pageerror',lambda error:errors.append(str(error)))
     page.on('request',lambda request:requests.append(request.url))
