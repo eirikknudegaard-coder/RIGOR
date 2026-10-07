@@ -1,10 +1,14 @@
-import {clarificationQuestions} from './kalkyle-assistant.js?v=20261007-avklaringer';
+import {clarificationQuestions} from './supabase/functions/rigor-ai-estimate/proposal.js?v=20261007-terrassevalg';
+import {terraceQuestionFields,cleanTerraceQuestions} from './supabase/functions/rigor-ai-estimate/terrace-questions.js?v=20261007-terrassevalg';
+export {cleanTerraceQuestions as cleanFollowupQuestions};
 
 // The model supplies question text; this small catalogue determines the input
 // controls. Unknown or compound specifications keep an open text answer.
 export function followupFields(labels,brief){
  const known=clarificationQuestions(brief);
- return labels.map((label,i)=>{
+ const fields=labels.flatMap((label,i)=>{
+  const terrace=terraceQuestionFields(label,brief);
+  if(terrace!==null)return terrace;
   const exact=known.find(q=>q.label===label);
   const base={id:'ai-'+i,label,type:'text'};
   if(exact)return {...exact,id:base.id};
@@ -32,4 +36,5 @@ export function followupFields(labels,brief){
   if(/^(?:skal|ønsker|vil|må|er)\b/.test(text)&&/bytte|skifte|beholde|inkludere|ta med|montere|rives|riving|utskift|still(?:as)|fallsikring|avfall|isolert/.test(text)&&!/hvilken|hvilke|type|dimensjon|hvordan|eller/.test(text))return select(label,['Ja','Nei']);
   return base;
  });
+ const seen=new Set();return fields.filter(field=>{const keys=['label:'+field.label,...(field.prefix?['prefix:'+field.prefix]:[])];if(keys.some(key=>seen.has(key)))return false;keys.forEach(key=>seen.add(key));return true;}).sort((a,b)=>Number(a.label.includes('(valgfritt)'))-Number(b.label.includes('(valgfritt)'))).map((field,i)=>({...field,id:'ai-'+i}));
 }

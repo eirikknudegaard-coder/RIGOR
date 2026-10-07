@@ -3,7 +3,7 @@ import {userStorage} from './portal-user-storage.js?v=20261007-brukerlagring';
 import {loadPublicCatalog} from './market-public-client.js?v=20261007-avklaringer';
 import {selectedPrices,offersForRow,usableOffer} from './market-public-core.js?v=20261007-avklaringer';
 import {assistantStatus,requestEstimate} from './ai-estimate-client.js?v=20261007-innlogging';
-import {proposalRows,terraceProposalArea,extractMeasurements,validateProposal,clarificationQuestions,appendClarificationAnswers,wizardBrief} from './kalkyle-assistant.js?v=20261007-arbeidstimer';
+import {proposalRows,terraceProposalArea,extractMeasurements,validateProposal,clarificationQuestions,appendClarificationAnswers,wizardBrief} from './kalkyle-assistant.js?v=20261007-terrassevalg';
 import {jobs,propose,calculate,roofGeometry,roofConsumption,timeFactor} from './kalkyle-engine.js?v=20261007-arbeidstimer';
 import {library,roofTypes,instantiate,searchLibrary} from './kalkyle-library.js?v=20261007-arbeidstimer';
 import {parseCsv,validatePrices,applyPrices} from './kalkyle-prices.js?v=20261007-avklaringer';
@@ -11,7 +11,7 @@ import {parseTimeCsv,validateTimeCatalog,applyTimeCatalog,restoreAssistantTimes,
 import {fields,prepareImport,sampleImport,checkMapping,mapImport} from './kalkyle-import.js?v=20261005-kategorier';
 import {rowCodes,codesFor,exportBasis,csvText} from './kalkyle-codes.js?v=20261007-arbeidstimer';
 import {renderCompletion} from './kalkyle-completion.js?v=20261007-arbeidstimer';
-import {followupFields} from './kalkyle-questions.js?v=20261007-avklaringer';
+import {followupFields,cleanFollowupQuestions} from './kalkyle-questions.js?v=20261007-terrassevalg';
 import {reviewAssistantTasks,uniqueAssistantRows,findWorkOverlaps} from './kalkyle-task-overlap.js?v=20261007-overlapp';
 const $=id=>document.getElementById(id),money=n=>new Intl.NumberFormat('nb-NO',{style:'currency',currency:'NOK',maximumFractionDigits:2}).format(n),num=n=>new Intl.NumberFormat('nb-NO',{maximumFractionDigits:2}).format(n);
 const rateKeys=['wage','direct','indirect','billing','laborMarkup','materialMarkup'];
@@ -407,8 +407,13 @@ $('overlap-form').onsubmit=event=>{
 function renderAssistantProposal(proposal,brief){
  const measurements=extractMeasurements(brief);assistantProposal={...proposal,measurements,brief,projectId:activeProject,fromWizard:assistantWizardReview};$('assistant-summary').textContent=proposal.summary;$('assistant-measurements').textContent=[measurements.roofType?roofTypes[measurements.roofType].name:'',measurements.area!==null?num(measurements.area)+' m²':'',measurements.angle!==null?num(measurements.angle)+'°':'',measurements.roofType?(measurements.basis==='surface'?'Oppgitt takflate':measurements.basis==='footprint'?'Horisontalt areal':'Arealgrunnlag må avklares'):''].filter(Boolean).join(' · ');
  renderAssistantItems(proposal,brief,measurements);
- $('assistant-questions').replaceChildren();const heading=document.createElement('h4');heading.textContent='Dette må avklares';$('assistant-questions').append(heading);const allQuestions=[...proposal.questions,...(measurements.roofType&&measurements.area!==null&&!measurements.basis?['Gjelder arealet målt takflate eller horisontalt projisert areal?']:[])];const list=document.createElement('ul');for(const question of allQuestions){const li=document.createElement('li');li.textContent=question;list.append(li);}if(!list.childElementCount){const li=document.createElement('li');li.textContent='Kontroller oppbygging, materialspesifikasjoner, mengder og arbeidstid.';list.append(li);}$('assistant-questions').append(list);
+ $('assistant-questions').replaceChildren();const heading=document.createElement('h4');heading.textContent='Dette må avklares';$('assistant-questions').append(heading);const allQuestions=cleanFollowupQuestions([...proposal.questions,...(measurements.roofType&&measurements.area!==null&&!measurements.basis?['Gjelder arealet målt takflate eller horisontalt projisert areal?']:[])],brief);const list=document.createElement('ul');for(const question of allQuestions){const li=document.createElement('li');li.textContent=question;list.append(li);}if(!list.childElementCount){const li=document.createElement('li');li.textContent='Kontroller oppbygging, materialspesifikasjoner, mengder og arbeidstid.';list.append(li);}$('assistant-questions').append(list);
  if(allQuestions.length){const form=document.createElement('form');form.className='assistant-answer-form';const fields=document.createElement('div');fields.className='assistant-clarification-fields';const questions=followupFields(allQuestions,brief);renderClarificationFields(fields,questions);const button=document.createElement('button');button.type='submit';button.textContent='Oppdater forslag med svarene';form.append(fields,button);list.remove();form.onsubmit=event=>{event.preventDefault();continueWithAnswers(questions,fields);};$('assistant-questions').append(form);}
+ if(/\b(terrasse|terrassen|terrassebord|platting)\b/i.test(brief)){
+  const sources=document.createElement('details');sources.className='assistant-sources';const summary=document.createElement('summary');summary.textContent='Hvorfor spør vi om dette?';const note=document.createElement('p');note.textContent='Mål, høyde, grunnforhold, materialvalg og innfesting påvirker omfang og pris. Bjelkelag må avklares med spenn og belastning; rekkverk med riktig høyde og utførelse. Spørsmålene er kontrollert mot disse norske veiledningene. Produktets monteringsanvisning og prosjektets tegninger må fortsatt brukes.';sources.append(summary,note);
+  for(const [label,url] of [['Montér: planlegging og bygging av terrasse','https://www.monter.no/byggeprosjekter/slik-bygger-du-terrasse'],['Montér: valg av terrassebord','https://www.monter.no/tips-og-inspirasjon/terrasse/hvilke-terrassebord-skal-jeg-velge-her-far-du-oversikten'],['Byggmakker: materialvalg og innfesting','https://www.byggmakker.no/rad-og-guider/terrasse-og-uterom/alt-du-trenger-a-vite-for-a-bygge-terrasse'],['Direktoratet for byggkvalitet: TEK17 § 12-15, rekkverk','https://www.dibk.no/regelverk/byggteknisk-forskrift-tek17/12/iii/12-15']]){const p=document.createElement('p'),a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=label;p.append(a);sources.append(p);}
+  $('assistant-questions').append(sources);
+ }
  $('assistant-settings-label').hidden=!(measurements.roofType&&measurements.roofType!=='mansard'&&measurements.area!==null&&measurements.angle!==null&&measurements.basis&&(measurements.roofType!=='flat'||measurements.angle<=5));$('assistant-use-settings').checked=Boolean(!$('assistant-settings-label').hidden&&!rows.length);$('assistant-preview').hidden=false;
 }
 async function generateAssistant(skipClarification=false){
@@ -425,7 +430,7 @@ function renderClarificationFields(container,questions){
  container.replaceChildren();for(const q of questions){const label=document.createElement('label');label.textContent=q.label;let input;
   if(q.type==='select'){input=document.createElement('select');input.add(new Option('Velg …',''));for(const value of q.options)input.add(new Option(value,value));}
   else{input=document.createElement('input');input.type=q.type||'text';input.maxLength=500;if(q.type==='number'){input.min=q.min;input.max=q.max;input.step=q.step||'any';}}
-  input.dataset.clarification=q.id;label.append(input);if(q.type==='number'&&q.unit){const hint=document.createElement('small');hint.className='muted';hint.textContent='Oppgi i '+q.unit;label.append(hint);}container.append(label);
+  if(q.placeholder)input.placeholder=q.placeholder;input.dataset.clarification=q.id;label.append(input);if(q.type==='number'&&q.unit){const hint=document.createElement('small');hint.className='muted';hint.textContent='Oppgi i '+q.unit;label.append(hint);}if(q.help){const hint=document.createElement('small');hint.className='muted';hint.textContent=q.help;label.append(hint);}container.append(label);
  }
 }
 function continueWithAnswers(questions,container){

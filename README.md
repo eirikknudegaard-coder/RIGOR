@@ -293,6 +293,17 @@ nettlesertesten er simulert og utløser ingen betalte kall.
 
 ### Arbeidstimer og rivingsanslag
 
+Terrasseavklaringer bruker et delt faglig spørsmålsregister i
+`supabase/functions/rigor-ai-estimate/terrace-questions.js`: materiale, overflate,
+rekkverkstype og kjente valg blir nedtrekksmenyer; mål har tall og enhet;
+prosjekterte dimensjoner og særlige ønsker har tekst. Sammensatte spørsmål
+deles. Spørsmål om stående/liggende terrassebord fjernes på server og klient.
+Bekreftede svar beholdes, og terrasseareal lagres med riktig navn. Spørsmål
+om nye bordmaterialer fjernes ved kun riving. [Kildekontrollen](docs/terrasse-avklaringer.md)
+beskriver faglige avklaringer og lenker til Montér, Byggmakker og TEK17.
+Test: `node tests/kalkyle-terrace-questions.test.mjs` og
+`python3 tests/kalkyle-terrace-questions-browser.py` (lokal server på port 8090).
+
 AI-forhåndsvisningen kontrollerer oppgavenøkler, ikke bare hele elementer.
 `kalkyle-task-overlap.js` har eksplisitte koblinger for terrassebord i rivingspakker,
 lekter i takrivingspakker og vindsperre i etterisolerings-/kledningspakker. Samme

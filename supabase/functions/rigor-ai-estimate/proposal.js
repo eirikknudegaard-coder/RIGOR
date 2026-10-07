@@ -2,11 +2,12 @@ export function extractMeasurements(brief){
  const text=brief.toLocaleLowerCase('nb');const areaMatches=[...text.matchAll(/(\d+(?:[.,]\d+)?)\s*(?:m²(?![a-zæøå0-9])|m2\b|kvadratmeter\b)/g)].map(m=>Number(m[1].replace(',','.')));
  const angles=[...text.matchAll(/(\d+(?:[.,]\d+)?)\s*(?:grader\b|°)/g)].map(m=>Number(m[1].replace(',','.')));
  const labelledArea=[...text.matchAll(/(?:^|\n)takareal:\s*(\d+(?:[.,]\d+)?)\s*m[²2]/g)].at(-1);
+ const terraceArea=!/\b(tak|saltak|pulttak|valmtak|mansardtak|yttervegg|kledning)\b/.test(text)?[...text.matchAll(/(?:^|\n)terrasseareal:\s*(\d+(?:[.,]\d+)?)\s*m[²2]/g)].at(-1):null;
  const labelledAngle=[...text.matchAll(/(?:^|\n)takvinkel:\s*(\d+(?:[.,]\d+)?)\s*grader/g)].at(-1);
  const shapeLabel=[...text.matchAll(/(?:^|\n)taktype:\s*([^\n]+)/g)].at(-1);
  const basisLabel=[...text.matchAll(/(?:^|\n)arealgrunnlag:\s*([^\n]+)/g)].at(-1);
  const shapes={flat:/\bflatt\s+tak\b/,shed:/\bpulttak\b/,gable:/\bsaltak\b/,hip:/\bvalmtak\b/,mansard:/\bmansardtak\b/};const matched=Object.entries(shapes).filter(([,re])=>re.test(shapeLabel?.[1]||text));
- const areas=labelledArea?[Number(labelledArea[1].replace(',','.'))]:areaMatches,angleValues=labelledAngle?[Number(labelledAngle[1].replace(',','.'))]:angles;
+ const areaLabel=terraceArea||labelledArea;const areas=areaLabel?[Number(areaLabel[1].replace(',','.'))]:areaMatches,angleValues=labelledAngle?[Number(labelledAngle[1].replace(',','.'))]:angles;
  const basisText=basisLabel?.[1]||text;
  return {area:areas.length===1&&areas[0]>0&&areas[0]<=100000?areas[0]:null,angle:angleValues.length===1&&angleValues[0]>=0&&angleValues[0]<=75?angleValues[0]:null,roofType:matched.length===1?matched[0][0]:null,basis:/\b(horisontalt|projisert|grunnflate)\b/.test(basisText)?'footprint':/\b(takflate|overflate|målt)\b/.test(basisText)?'surface':null};
 }

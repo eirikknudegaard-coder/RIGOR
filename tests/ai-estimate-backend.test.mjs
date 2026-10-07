@@ -48,3 +48,12 @@ test('Ventetid, dagsgrense og serverfeil får forskjellige svar',async()=>{
   const deps=setup({quota});const r=await handleEstimate(request(),deps);assert.equal(r.status,status);assert.equal((await r.json()).code,code);assert.equal(deps.calls(),0);
  }
 });
+test('Terrassefilter stopper kledningsspørsmål og deler faglige spesifikasjoner',async()=>{
+ const text='Jeg skal bytte terrassebord og bjelkelag på en terrasse på 50 m².';
+ const output={summary:'Avklar materialvalg',items:[{elementId:'terrace.strip.joists',taskIds:['step0','step1'],scope:'requested',reason:'Eksisterende bord og bjelkelag skal rives'}],questions:['Ønskes stående eller liggende terrassebord?','Hvilket materiale og profil ønskes på terrassebordene?','Hva er arealet på terrassen (m²)?']};
+ const deps=setup({proposal:output});const response=await handleEstimate(request({brief:text}),deps);assert.equal(response.status,200);
+ const value=await response.json();assert(!value.questions.some(q=>/stående|liggende|arealet/.test(q)));
+ assert(value.questions.includes('Hvilket materiale ønsker du til terrassebordene?'));
+ assert(value.questions.includes('Hvilken overflate ønsker du på terrassebordene?'));
+ const system=deps.payload().messages[0].content;assert(system.includes('Spør aldri om terrassebord er stående eller liggende'));assert(system.includes('spenn og belastning'));
+});
