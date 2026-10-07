@@ -135,3 +135,18 @@
 .kalkyle-app #library-dialog .library-card>summary{font-size:13px}
 .kalkyle-app #library-dialog label.check{font-size:12px;align-items:flex-start;padding:12px}
 @media(max-width:650px){.kalkyle-app .simple-ai-review{display:block}.kalkyle-app .simple-ai-review button{max-width:none;width:100%;margin-top:14px}.kalkyle-app .completion-price-fields{grid-template-columns:1fr}.kalkyle-app .completion-heading{align-items:flex-start}.kalkyle-app #library-dialog{padding:16px}.kalkyle-app .library-drawer-heading{top:-16px}.kalkyle-app .library-drawer-heading h2{font-size:19px}.kalkyle-app .library-drawer-footer{bottom:-16px}.kalkyle-app #codes-dialog{padding:18px}}
+
+.kalkyle-app .calculation-guide{margin:32px 0 42px;padding:28px;border:1px solid #ddd5cd;border-radius:12px;background:#fbf8f4}
+.kalkyle-app .calculation-guide>h2{font-size:25px;margin:8px 0 24px}
+.kalkyle-app .calculation-guide>.eyebrow{color:#805d41;margin:0}
+.kalkyle-app .guide-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.kalkyle-app .guide-cards article{border-top:2px solid #9a7758;padding-top:16px}
+.kalkyle-app .guide-number{color:#805d41;font-size:12px;letter-spacing:.12em}
+.kalkyle-app .guide-cards h3,.kalkyle-app .guide-price-note h3{font-size:17px;margin:10px 0}
+.kalkyle-app .guide-cards p,.kalkyle-app .guide-price-note p{font-size:13px;color:#606266;line-height:1.7;margin:0}
+.kalkyle-app .guide-price-note{border-top:1px solid #ddd5cd;margin-top:24px;padding-top:16px}
+.kalkyle-app .guide-price-note p:last-child{margin-top:12px;font-size:12px}
+.kalkyle-app .assistant-clarification-fields small.muted{color:#fff3e8;font-size:11px;font-weight:400}
+.kalkyle-app .material-alternatives{display:flex;flex-wrap:wrap;gap:10px;border-top:1px solid #ddd5cd;padding-top:15px;margin-top:15px}
+.kalkyle-app .material-alternatives button{font-size:12px;padding:9px 12px}
+@media(max-width:650px){.kalkyle-app .calculation-guide{padding:20px;margin:24px 0 30px}.kalkyle-app .guide-cards{grid-template-columns:1fr;gap:20px}.kalkyle-app .calculation-guide>h2{font-size:23px}.kalkyle-app .material-alternatives button{flex:1}}

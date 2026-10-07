@@ -1,5 +1,5 @@
-import {codeRegister} from './kalkyle-code-register.js?v=20261006-enkel-pris';
-import {calculate} from './kalkyle-engine.js?v=20261006-enkel-pris';
+import {codeRegister} from './kalkyle-code-register.js?v=20261007-avklaringer';
+import {calculate} from './kalkyle-engine.js?v=20261007-avklaringer';
 
 // Identifiers belong to the template, so adding copies, sorting and AI selection
 // cannot renumber them. Company mappings are optional and belong to the project.

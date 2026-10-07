@@ -28,11 +28,12 @@ with sync_playwright() as p:
     assert page.evaluate('window.sentBriefs[0].includes("Takvinkel: 30 grader")')
     assert page.locator('[data-assistant-quantity]').input_value() == '20'
     assert page.locator('tr[data-row-index]').count() == 0
-    page.locator('.assistant-answer-form input').fill('6 m')
+    assert page.locator('.assistant-answer-form input').get_attribute('type') == 'number'
+    page.locator('.assistant-answer-form input').fill('6')
     page.locator('.assistant-answer-form button').click()
     page.wait_for_function('window.sentBriefs.length===2')
     page.locator('#assistant-preview').wait_for(state='visible')
-    assert page.evaluate('window.sentBriefs[1].includes("Hva er mønelengden?: 6 m")')
+    assert page.evaluate('window.sentBriefs[1].includes("Mønelengde: 6 m")')
     assert page.locator('tr[data-row-index]').count() == 0
     page.locator('#assistant-apply').click()
     assert page.locator('tr[data-row-index]').count() == 3

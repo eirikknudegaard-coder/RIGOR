@@ -6,7 +6,7 @@ offer={'id':'obs:fixture','chain':'obs','name':'Sløyfe 23x48 – testfixture','
 catalog={'version':1,'updated_at':stamp,'last_run':{'finished_at':stamp,'succeeded':1},'offers':[offer],'sources':[]}
 with sync_playwright() as p:
  b=p.chromium.launch(executable_path='/usr/bin/chromium',args=['--no-sandbox']);page=b.new_page(viewport={'width':1440,'height':1000});errors=[];page.on('pageerror',lambda e:errors.append(str(e)));requests=[];page.on('request',lambda r:requests.append(r.url))
- page.route('**/data/market-prices.json',lambda r:r.fulfill(content_type='application/json',body=json.dumps(catalog)))
+ page.route('**/data/market-prices.json*',lambda r:r.fulfill(content_type='application/json',body=json.dumps(catalog)))
  page.goto('http://127.0.0.1:8090/kalkyle.html');page.wait_for_function('document.getElementById("price-status").textContent.includes("1 ferske")')
  page.locator('#start-simple').click();page.locator('#project-name').fill('Markedsprisprosjekt');page.locator('#project-submit').click();page.locator('#pricing-tab').click()
  select=page.locator('[data-market-key="roof.underlay.sloyfer"]');select.select_option('obs:fixture')

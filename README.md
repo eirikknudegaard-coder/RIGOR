@@ -243,3 +243,28 @@ Verifikasjon: `node tests/kalkyle-codes.test.mjs` og
 kodebestandighet, avstemte eksportbeløp, mangler, prisavklaring, lagring, AI-kontroll,
 sidepanel og mobil. Nettlesertesten bruker kontrollerte lokale produktdata og
 et simulert AI-svar; den gjør ingen betalte AI-kall.
+
+## Prisvalg og avklaringer på kalkyleforsiden
+
+Forsiden forklarer Forenklet, Detaljert og AI, og hva som må avklares før et
+prisanslag blir komplett. AI-spørsmål gjenkjennes også når modellen bruker en
+annen formulering: taktype, tekking og kledningsretning får nedtrekksvalg;
+mål får tallfelt med enhet. Sammensatte spesifikasjoner og åpne spørsmål
+beholder tekstfelt. Svarene tas med i neste forslag før noen poster legges til.
+
+Obs-undertak med dokumenterte rullmål i det eksakte SKU-navnet omregnes fra
+stykkpris til m². Brutto rullareal brukes til kjøp av hele ruller; overlapp og
+svinn må legges til i materiellmengden. Enhetsretting av eksisterende
+observasjoner beholder den opprinnelige kontrolltiden og eventuelle kildefeil.
+Prisjobben sammenligner gamle og nye priser i samme enhet, og beholder tidligere
+enhetshistorikk. Gamle priser og feil fra kilden sperres fortsatt.
+
+Markedsvarevinduet kan oppdatere prisregisteret eller åpne registrering av
+leverandørpris på den aktuelle posten. Valgt Byggmax-butikk gjelder bare lokale
+Byggmax-priser; offentlige Obs-priser vises uavhengig av butikkvalget.
+
+Verifikasjon: `node tests/market-public.test.mjs`,
+`node tests/kalkyle-questions.test.mjs` og
+`python3 tests/kalkyle-market-questions-browser.py` (lokal server på port 8090).
+Rulltestene bruker faktiske produktdata lagret fra Obs. AI-svarene i
+nettlesertesten er simulert og utløser ingen betalte kall.

@@ -1,0 +1,74 @@
+{
+  "checked_at": "2026-10-07T05:36:52.367719+00:00",
+  "source": "Public Obs BYGG product JSON-LD and same product-price aria label, captured directly from the product URLs.",
+  "samples": [
+    {
+      "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/undertaksbelegg/2139208?v=ObsBygg-7057754300125",
+      "product": {
+        "name": "Filmtex 1,30x25m Diffusjonstett Undertak",
+        "description": "Diffusjonstett armert plastfolie for undertak. Egner seg godt i uisolerte takkonstruksjoner (garasje, drifts- og landbruksbygg).",
+        "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/undertaksbelegg/2139208",
+        "brand": {
+          "name": "ISOLA",
+          "@type": "Brand"
+        },
+        "variesBy": [],
+        "hasVariant": [
+          {
+            "name": "Filmtex 1,30x25m Diffusjonstett Undertak",
+            "image": "/globalassets/productimages/686145_7057754300125_.jfif?ref=28D171F3F5",
+            "sku": "ObsBygg-7057754300125",
+            "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/undertaksbelegg/2139208?v=ObsBygg-7057754300125",
+            "offers": {
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/undertaksbelegg/2139208?v=ObsBygg-7057754300125",
+              "price": "3219.00",
+              "priceCurrency": "NOK",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "@type": "Offer"
+            },
+            "@type": "Product"
+          }
+        ],
+        "@context": "https://schema.org",
+        "@type": "ProductGroup"
+      },
+      "price_aria": "3219 kroner  per stk Sammenligningspris er 99 kroner  og 05 øre  per m2 ",
+      "checked_at": "2026-10-07T05:36:50.035718+00:00"
+    },
+    {
+      "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/undertaksbelegg/2801570?v=ObsBygg-7057755641982",
+      "product": {
+        "name": "Isola undertak basic 1,50x50 m",
+        "description": "Diffusjonsåpent undertak fra ISOLA med høy styrke og regntetthet. Enkel montering med selvklebende omlegg. Perfekt for skrå tretak.",
+        "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/undertaksbelegg/2801570",
+        "brand": {
+          "name": "ISOLA",
+          "@type": "Brand"
+        },
+        "variesBy": [],
+        "hasVariant": [
+          {
+            "name": "Isola undertak basic 1,50x50 m",
+            "image": "/globalassets/productimages/995067_7057755641982_.jpg?ref=5D720E009A",
+            "sku": "ObsBygg-7057755641982",
+            "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/undertaksbelegg/2801570?v=ObsBygg-7057755641982",
+            "offers": {
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/undertaksbelegg/2801570?v=ObsBygg-7057755641982",
+              "price": "6605.00",
+              "priceCurrency": "NOK",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "@type": "Offer"
+            },
+            "@type": "Product"
+          }
+        ],
+        "@context": "https://schema.org",
+        "@type": "ProductGroup"
+      },
+      "price_aria": "6605 kroner  per stk Sammenligningspris er 87 kroner  og 85 øre  per kvadratmeter ",
+      "checked_at": "2026-10-07T05:36:52.367719+00:00"
+    }
+  ]
+}

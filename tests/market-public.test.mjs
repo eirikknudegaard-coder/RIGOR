@@ -1,7 +1,7 @@
 import {readFileSync} from 'node:fs';
 import {validatePrices,applyPrices} from '../kalkyle-prices.js';
 import {test} from 'node:test';import assert from 'node:assert/strict';
-import {publicSources,sourceUrl,retailerTaxEvidence,readPublicProducts,robotsPolicy,sitemapLinks,readPublicProduct,usableOffer,selectedPrices,offersForRow,materialPriority} from '../market-public-core.js';
+import {publicSources,sourceUrl,retailerTaxEvidence,readPublicProducts,robotsPolicy,sitemapLinks,readPublicProduct,usableOffer,selectedPrices,offersForRow,materialPriority,normalizePublicOffer} from '../market-public-core.js';
 import {syncPublicPrices} from '../scripts/sync-public-prices.mjs';
 import {readByggmaxPage,byggmaxPriceUrl,readByggmaxPrices} from '../market-byggmax-core.js';
 const source=publicSources[0],url=source.origin+'/trelast/sloyfer/1234567',now='2026-10-06T12:00:00.000Z';
@@ -48,6 +48,40 @@ test('Nye byggevarer prioriteres foran gamle verktøyadresser og lavere material
 
 const recorded=JSON.parse(readFileSync(new URL('./fixtures/obs-public-evidence-20261006.json',import.meta.url)));
 const recordedSource={...source,tax_evidence:retailerTaxEvidence('Alle priser er inkludert merverdiavgift.',source.vat_policy_url,source,recorded.checked_at)};
+const rolls=JSON.parse(readFileSync(new URL('./fixtures/obs-undertak-evidence-20261007.json',import.meta.url)));
+function rollHtml(s){return html(s.product,'<div data-test-id="product-price-section"><div aria-description="'+s.price_aria+'"></div></div>');}
+function rollOffer(index=1){const s=rolls.samples[index];return readPublicProducts(rollHtml(s),s.url,recordedSource,s.checked_at)[0];}
+function legacyRoll(o=rollOffer()){return {...o,unit:'stk',original_unit:'stk',quantity_basis:'unit',package_quantity:1,normalized_ore:o.package_price_ex_vat_ore,package_area_basis:undefined,source_price_unit:undefined};}
+test('Faktiske undertaksruller får m²-pris fra samme SKU og hele ruller i innkjøpet',()=>{
+ const film=rollOffer(0),basic=rollOffer();
+ assert.equal(film.package_quantity,32.5);assert.equal(film.normalized_ore,7924);assert.equal(film.package_price_ex_vat_ore,257520);
+ assert.equal(basic.package_quantity,75);assert.equal(basic.normalized_ore,7045);assert.equal(basic.package_price_ex_vat_ore,528400);
+ for(const o of [film,basic]){assert.equal(o.unit,'m2');assert.equal(o.original_unit,'rull');assert.equal(o.package_area_basis,'gross');assert.equal(o.quantity_basis,'package');assert(o.evidence.includes('brutto'));}
+ const row={name:'Legge undertak',priceKey:'roof.underlay.undertak',materialUnit:'m²',quantity:115.47,materialQuantity:115.47};
+ const at=Date.parse(basic.checked_at),store={byggmax:'2327'};
+ assert.deepEqual(offersForRow(row,[basic,film],at,store).map(o=>o.id),[basic.id,film.id]);
+ const prices=validatePrices(selectedPrices([basic],{[row.priceKey]:basic.id},at,store));
+ const priced=applyPrices([row],'market',prices,basic.checked_at.slice(0,10))[0];
+ assert.equal(priced.material,70.45);assert.equal(priced.marketPackages,2);assert.equal(priced.marketPurchasedQuantity,150);assert.equal(priced.marketMaterialCost,10568);
+});
+test('Enhetsretting beholder kildekontroll, feil og foreldelse og avviser tvetydige rullmål',()=>{
+ const raw=legacyRoll(),fixed=normalizePublicOffer(raw);
+ assert.equal(fixed.checked_at,raw.checked_at);assert.deepEqual(normalizePublicOffer(fixed),fixed);assert.equal(raw.unit,'stk');
+ const failed=normalizePublicOffer({...raw,last_error:'HTTP 403'});assert.equal(failed.last_error,'HTTP 403');assert(!usableOffer(failed,Date.parse(raw.checked_at)));
+ assert(!usableOffer(fixed,Date.parse(raw.checked_at)+25*3600000));
+ for(const patch of [{name:'Undertak 2 ruller 1,50x50 m'},{name:'Undertak 1,50x50 mm'},{name:'Undertak 1,50x50 m eller 1,30x25 m'},{name:'Undertak',shipping_dimensions:'1,50x50 m'},{kind:'roofing'},{chain:'byggmax'},{quantity_basis:'package'}]){const o={...raw,...patch};assert.equal(normalizePublicOffer(o),o);}
+});
+test('Prissynk kontrollerer ruller tidlig, migrerer enhetshistorikk og flagger reelle prishopp',async()=>{
+ const sample=rolls.samples[1],raw=legacyRoll(),otherUrl=source.origin+'/isolasjon/isolasjon-ukjent/2345678';
+ for(const multiplier of [1,2]){
+  const calls=[],fetcher=async u=>{calls.push(u);if(u===source.vat_policy_url)return new Response('Alle priser er inkludert merverdiavgift.');if(u.endsWith('/robots.txt'))return new Response('User-agent: *\nAllow: /');if(u===sample.url){const s=structuredClone(sample);s.product.hasVariant[0].offers.price=String(6605*multiplier);s.price_aria=s.price_aria.replace('6605 kroner',String(6605*multiplier)+' kroner');return new Response(rollHtml(s));}return new Response('blocked',{status:403});};
+  const previous={offers:[raw],price_history:[{product_id:raw.id,unit:'stk',package_quantity:1,original_ore:raw.original_ore,normalized_ore:raw.normalized_ore}]};
+  const r=await syncPublicPrices({previous,queue:{parser_version:8,urls:[{url:otherUrl,chain:'obs',priority:100},{url:sample.url,chain:'obs',priority:65,next_attempt_at:'2026-10-08T00:00:00Z'}],last_discovery:{obs:rolls.checked_at,byggmax:rolls.checked_at}},fetcher,clock:()=>Date.parse(rolls.checked_at)+1000,pause:async()=>{},maxProducts:2});
+  assert(!calls.includes(otherUrl));assert.equal(r.catalog.offers[0].unit,'m2');assert.equal(r.catalog.offers[0].normalized_ore,7045);
+  if(multiplier===1){assert.equal(r.catalog.last_run.succeeded,1);assert.equal(r.catalog.price_history.length,2);assert.equal(r.catalog.price_history[1].unit,'m2');assert(r.catalog.offers[0].checked_at>raw.checked_at);}
+  else{assert.equal(r.catalog.last_run.failed,1);assert.match(r.catalog.offers[0].last_error,/50 %/);assert.equal(r.catalog.offers[0].checked_at,raw.checked_at);assert.equal(r.catalog.price_history.length,1);}
+ }
+});
 function recordedHtml(s){return s.ld_json.map(v=>'<script type="application/ld+json">'+v+'</script>').join('')+(s.price_markup||[]).join('')+'<p>'+s.visible+'</p>';}
 test('Faktisk Obs-markup for 11x36 lekt gir 10,80 kr per løpemeter ekskl. MVA',()=>{const s=recorded.samples.find(s=>s.url.includes('2100592'));const o=readPublicProducts(recordedHtml(s),s.url,recordedSource,recorded.checked_at)[0];assert.equal(o.normalized_ore,1080);assert.equal(o.unit,'m');assert.equal(o.kind,'battens');assert.equal(o.quantity_basis,'unit');const mismatched=recordedHtml(s).replace('13 kroner','14 kroner');assert.throws(()=>readPublicProducts(mismatched,s.url,recordedSource,recorded.checked_at));});
 test('Faktisk gipsplate omregnes fra stykk til m² med dokumenterte platedimensjoner',()=>{const s=recorded.samples.find(s=>s.url.includes('2126273'));const o=readPublicProducts(recordedHtml(s),s.url,recordedSource,recorded.checked_at)[0];assert.equal(o.unit,'m2');assert.equal(o.package_quantity,3.12);assert.equal(o.original_unit,'plate');assert.equal(o.normalized_ore,16026);assert.equal(o.quantity_basis,'package');});

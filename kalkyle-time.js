@@ -1,6 +1,6 @@
 import {readCsv} from './kalkyle-prices.js';
-import {library} from './kalkyle-library.js?v=20261006-enkel-pris';
-import {timeFactor} from './kalkyle-engine.js?v=20261006-enkel-pris';
+import {library} from './kalkyle-library.js?v=20261007-avklaringer';
+import {timeFactor} from './kalkyle-engine.js?v=20261007-avklaringer';
 
 // Stable task identifiers also work for snapshots created before taskKey existed.
 export function templateTask(row){

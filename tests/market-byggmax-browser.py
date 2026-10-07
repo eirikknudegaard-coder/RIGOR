@@ -20,7 +20,7 @@ with sync_playwright() as p:
  page=browser.new_page(viewport={'width':1440,'height':1100})
  errors=[]
  page.on('pageerror',lambda e:errors.append(str(e)))
- page.route('**/data/market-prices.json',lambda route:route.fulfill(json=catalog))
+ page.route('**/data/market-prices.json*',lambda route:route.fulfill(json=catalog))
  page.goto('http://127.0.0.1:8090/kalkyle.html')
  page.locator('#start-simple').click()
  page.locator('#project-name').fill('Byggmax verifisering')

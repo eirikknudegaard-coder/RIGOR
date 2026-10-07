@@ -15,7 +15,7 @@ with sync_playwright() as p:
     browser=p.chromium.launch(executable_path='/usr/bin/chromium',args=['--no-sandbox'])
     page=browser.new_page(viewport={'width':1440,'height':1000});errors=[];page.on('pageerror',lambda error:errors.append(str(error)))
     page.route('**/ai-estimate-client.js',lambda route:route.fulfill(content_type='application/javascript',body=module))
-    page.route('**/data/market-prices.json',lambda route:route.fulfill(content_type='application/json',body=json.dumps(catalog)))
+    page.route('**/data/market-prices.json*',lambda route:route.fulfill(content_type='application/json',body=json.dumps(catalog)))
     page.on('dialog',lambda d:d.accept())
     page.goto('http://127.0.0.1:8090/kalkyle.html')
     page.locator('#start-simple').click();page.locator('#project-name').fill('Forenklet pris');page.locator('#project-submit').click()

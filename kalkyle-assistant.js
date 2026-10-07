@@ -1,5 +1,5 @@
-import {instantiate} from './kalkyle-library.js?v=20261006-enkel-pris';
-import {timeFactor} from './kalkyle-engine.js?v=20261006-enkel-pris';
+import {instantiate} from './kalkyle-library.js?v=20261007-avklaringer';
+import {timeFactor} from './kalkyle-engine.js?v=20261007-avklaringer';
 export {extractMeasurements,validateProposal,clarificationQuestions,appendClarificationAnswers} from './supabase/functions/rigor-ai-estimate/proposal.js';
 export function proposalRows(element,quantity,instance,settings={}){
  if(!Number.isFinite(quantity)||quantity<0||quantity>1000000)throw Error('Ugyldig mengde');
