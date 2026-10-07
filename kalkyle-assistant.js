@@ -1,9 +1,17 @@
-import {instantiate} from './kalkyle-library.js?v=20261007-avklaringer';
-import {timeFactor} from './kalkyle-engine.js?v=20261007-avklaringer';
+import {instantiate} from './kalkyle-library.js?v=20261007-arbeidstimer';
+import {timeFactor} from './kalkyle-engine.js?v=20261007-arbeidstimer';
 export {extractMeasurements,validateProposal,clarificationQuestions,appendClarificationAnswers} from './supabase/functions/rigor-ai-estimate/proposal.js';
 export function proposalRows(element,quantity,instance,settings={}){
  if(!Number.isFinite(quantity)||quantity<0||quantity>1000000)throw Error('Ugyldig mengde');
  return instantiate(element,quantity,timeFactor(element,settings),element.tasks.map(t=>t.id),instance).map(r=>({...r,requiresQuantity:quantity===0,fromAssistant:true}));
+}
+
+// A single terrace area can fill area-based terrace tasks. Never use it for
+// lengths, counts, mixed roof/wall work, or a description with multiple areas.
+export function terraceProposalArea(element,brief,measurements){
+ const text=brief.toLocaleLowerCase('nb');
+ if(element.unit!=='m²'||!element.id.startsWith('terrace.')||measurements.area===null||!/\b(terrasse|terrassebord|terrassegulv)\b/.test(text)||/\b(tak|saltak|pulttak|valmtak|mansardtak|yttervegg|kledning|gulv|himling|vegg)\b/.test(text))return null;
+ return measurements.area;
 }
 
 export function wizardBrief(settings,rows,brief=''){

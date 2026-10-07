@@ -290,3 +290,33 @@ Verifikasjon: `node tests/market-public.test.mjs`,
 `python3 tests/kalkyle-market-questions-browser.py` (lokal server på port 8090).
 Rulltestene bruker faktiske produktdata lagret fra Obs. AI-svarene i
 nettlesertesten er simulert og utløser ingen betalte kall.
+
+### Arbeidstimer og rivingsanslag
+
+Mengde × grunntid × tidsfaktor gir personarbeidstimer. Timer og arbeidspris vises
+på hver post, i elementsummen og i Forenklet. Arbeidsprisen bruker prosjektets
+timekostnad og arbeidspåslag én gang, også når materialprisgrunnlaget er ufullstendig.
+
+`kalkyle-time-estimates.js` har gjennomgåtte, **egne RIGOR-planleggingsanslag**,
+ikke offisielle normer, for terrassebord, bjelkelag, håndløper, rekkverk og utvendige
+trapper samt spesifisert riving av tekking, sløyfer, lekter og undertak. Profilene
+forutsetter normal tilkomst, ingen bevaring/gjenbruk, og ekskluderer stillas,
+borttransport, avfallsavgift og sanering. Terrassebord: 0,20 t/m², rensk: 0,05 t/m²,
+bjelkelag: 0,15 t/m². Dette er redigerbare planverdier, ikke målte produksjonsdata.
+
+Kildekontroll 07.10.2026: [Fellesforbundets tømrerakkordtariff fra 01.10.2023](https://www.fellesforbundet.no/globalassets/lonn-og-tariffsaker/akkordtariffer/akkordtariffen-for-tomrerfaget---01.10.2023.pdf),
+punkt 2.5 (trykt side 8), angir medgåtte timer for riving. Tariffens monteringsnormer
+kan derfor ikke presenteres som dokumenterte rivingsnormer. Homewyse sin
+[terrassekalkyle](https://www.homewyse.com/services/cost_to_install_wood_decking.html)
+beskriver en separat rivingspost, men publiserer ikke en kontrollerbar grunntid i
+den leste tabellen; ingen timeverdier er hentet fra den.
+
+Lagrede poster med manglende tid får disse anslagene når de åpnes, både fra AI og
+bibliotek. Manuelle tider, importerte normer, ikke-null tider og egne faktorer beholdes.
+Umappet/spesialisert arbeid krever fortsatt en oppgitt tid. Like terrassebordposter i
+flere elementer varsles, slik at samme areal ikke prises to ganger ved et uhell.
+
+AI fyller arbeidsmengde på arealbaserte terrasseposter fra ett entydig oppgitt
+terrasseareal. Flere arealer, blandet tak-/veggarbeid, meter og stykk må avklares.
+Tester: `node tests/kalkyle-work-hours.test.mjs` og
+`python3 tests/kalkyle-work-hours-browser.py` (lokal server port 8090).

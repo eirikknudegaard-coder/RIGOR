@@ -150,3 +150,8 @@
 .kalkyle-app .material-alternatives{display:flex;flex-wrap:wrap;gap:10px;border-top:1px solid #ddd5cd;padding-top:15px;margin-top:15px}
 .kalkyle-app .material-alternatives button{font-size:12px;padding:9px 12px}
 @media(max-width:650px){.kalkyle-app .calculation-guide{padding:20px;margin:24px 0 30px}.kalkyle-app .guide-cards{grid-template-columns:1fr;gap:20px}.kalkyle-app .calculation-guide>h2{font-size:23px}.kalkyle-app .material-alternatives button{flex:1}}
+
+.kalkyle-app .work-hours,.kalkyle-app .completion-work-hours{font-weight:600;color:var(--ink,#25282b)}
+.kalkyle-app .time-basis{margin:12px 0 18px;padding:12px 14px;background:#f7f3ed;border:1px solid #e4d9ce;border-radius:8px;font-size:12px;line-height:1.6}
+.kalkyle-app .time-basis summary,.kalkyle-app .completion-time summary{cursor:pointer;color:#79563c}
+.kalkyle-app .completion-time{margin:10px 0;font-size:12px}.kalkyle-app .completion-time label{display:block;margin:10px 0}.kalkyle-app .completion-time input{max-width:180px}.kalkyle-app .completion-labor-price{font-weight:600}

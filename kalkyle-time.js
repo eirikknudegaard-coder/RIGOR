@@ -1,6 +1,6 @@
 import {readCsv} from './kalkyle-prices.js';
-import {library} from './kalkyle-library.js?v=20261007-avklaringer';
-import {timeFactor} from './kalkyle-engine.js?v=20261007-avklaringer';
+import {library} from './kalkyle-library.js?v=20261007-arbeidstimer';
+import {timeFactor} from './kalkyle-engine.js?v=20261007-arbeidstimer';
 
 // Stable task identifiers also work for snapshots created before taskKey existed.
 export function templateTask(row){
@@ -12,7 +12,9 @@ export function restoreAssistantTimes(rows,settings){
  return rows.map(row=>{
   const found=templateTask(row);if(!found)return row;
   const repaired={...row,taskKey:found.key};
-  if(row.fromAssistant&&row.requiresTime&&row.hours===0&&!found.task.requiresTime){repaired.hours=found.task.hours;repaired.requiresTime=false;repaired.timeSource='RIGOR-mal (foreløpig)';}
+  if(row.requiresTime&&row.hours===0&&!row.manualTime&&!found.task.requiresTime&&(row.fromAssistant||found.task.timeEstimate)){
+   repaired.hours=found.task.hours;repaired.requiresTime=false;repaired.timeSource=found.task.timeSource||'RIGOR-mal (foreløpig)';repaired.timeEstimate=Boolean(found.task.timeEstimate);repaired.timeNote=found.task.timeNote||'';
+  }
   if(row.fromAssistant&&!row.manualFactor)repaired.factor=timeFactor(found.element,settings);
   return repaired;
  });
@@ -40,6 +42,6 @@ export function applyTimeCatalog(rows,records){
   if(row.manualTime)return row;
   const key=row.taskKey||templateTask(row)?.key;
   const record=records.find(r=>r.unit===row.unit&&(r.key?r.key===key:r.name.toLocaleLowerCase('nb')===row.name.toLocaleLowerCase('nb')));
-  return record?{...row,taskKey:key,hours:record.hours,requiresTime:false,timeSource:record.source,...(record.factor!==null&&!row.manualFactor?{factor:record.factor,timeFactorSource:record.source}: {})}:row;
+  return record?{...row,taskKey:key,hours:record.hours,requiresTime:false,timeSource:record.source,timeEstimate:false,timeNote:'',...(record.factor!==null&&!row.manualFactor?{factor:record.factor,timeFactorSource:record.source}: {})}:row;
  });
 }

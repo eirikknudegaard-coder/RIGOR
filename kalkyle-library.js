@@ -1,3 +1,4 @@
+import {planningTimes} from './kalkyle-time-estimates.js?v=20261007-arbeidstimer';
 // RIGOR's own editable templates. Times/consumption are assumptions, not industry norms.
 // task(id, title, hours/unit, price key, demonstration price, material unit, consumption)
 const task=(id,name,hours,priceKey=null,exampleMaterial=0,materialUnit='m²',materialRatio=1)=>({id,name,hours,priceKey,exampleMaterial,materialUnit,materialRatio});
@@ -64,8 +65,8 @@ const scope = {
 };
 for(const e of library){const [description,quantityNote,excludes]=scope[e.id];Object.assign(e,{description,quantityNote,excludes});}
 
-// Additional selectable scopes have no invented prices or time norms.
-// The user must supply time/unit and import/register prices before a total is shown.
+// Additional scopes start without prices or time norms. Reviewed planning
+// profiles are applied below; other tasks require an imported or supplied time.
 function addElement(id,name,category,trade,type,unit,description,quantityNote,excludes,steps){
  library.push({id,name,category,trade,type,unit,description,quantityNote,excludes,tasks:steps.map(([key,title,materialUnit=unit,ratio=1])=>({...task(key,title,0,materialUnit===null?null:id+'.'+key,0,materialUnit||unit,ratio),requiresTime:!['rent','disposal'].includes(key)}))});
 }
@@ -134,10 +135,14 @@ for(const [key,label] of [['doublegypsum','dobbel gips'],['gypsum','gips'],['mdf
 for(const [key,label] of [['ceiling','taklist'],['floor','gulvlist'],['casing','karmlist'],['lining','utforing']])removal('trim.strip.'+key,'Riving av '+label,'53 · Innvendig / Listverk','m',['Demontere '+label,'Renske festemidler'],'Samlet faktisk lengde i meter. Avklar om listverk skal bevares eller kasseres.');
 for(const [key,label,unit] of [['cabinets','kjøkkenskap og fronter','stk'],['appliances','hvitevarer','stk'],['extractor','kjøkkenventilator','stk'],['sink','kjøkkenvask','stk'],['worktop','benkeplate','m'],['plinth','kjøkkensokkel','m'],['lighttrim','lyslist','m'],['wardrobe600','garderobeskap, 600 mm','stk'],['wardrobe1200','garderobeskap, 1200 mm','stk']])removal('kitchen.strip.'+key,'Riving av '+label,'58 · Kjøkken og innredning',unit,['Løsne innfesting og demontere '+label],'Mengde i '+unit+'. Hvitevarer, vann og strøm må være frakoblet av relevant fag før demontering.');
 
+// Only explicitly reviewed planning profiles fill otherwise missing times.
+// Unmapped/specialist work still requires a supplied time or company import.
+for(let i=0;i<library.length;i++)library[i]=planningTimes(library[i]);
+
 export function instantiate(element,quantity,factor=1,selected=element.tasks.map(t=>t.id),instance=''){
  return element.tasks.filter(t=>selected.includes(t.id)).map(t=>({id:element.id+'.'+t.id+instance,elementId:element.id+instance,elementName:element.name,category:element.category,elementDescription:element.description||'',quantityNote:element.quantityNote||'',excludes:element.excludes||'',
  name:t.name,quantity,unit:element.unit,materialQuantity:quantity*t.materialRatio,materialRatio:t.materialRatio,materialUnit:t.materialUnit,material:0,exampleMaterial:t.exampleMaterial,
- taskKey:element.id+'.'+t.id,hours:t.hours,timeSource:t.requiresTime?'':element.id.startsWith('local.')?'Mitt bibliotek':'RIGOR-mal (foreløpig)',factor,priceKey:t.priceKey,requiresTime:Boolean(t.requiresTime),needsExamplePrice:Boolean(t.priceKey)&&t.exampleMaterial===0,enabled:true,requiresQuantity:Boolean(element.measure)&&quantity===0}));
+ taskKey:element.id+'.'+t.id,hours:t.hours,timeSource:t.requiresTime?'':t.timeSource||(element.id.startsWith('local.')?'Mitt bibliotek':'RIGOR-mal (foreløpig)'),timeEstimate:Boolean(t.timeEstimate),timeNote:t.timeNote||'',factor,priceKey:t.priceKey,requiresTime:Boolean(t.requiresTime),needsExamplePrice:Boolean(t.priceKey)&&t.exampleMaterial===0,enabled:true,requiresQuantity:Boolean(element.measure)&&quantity===0}));
 }
 export function searchLibrary(elements,{search='',trade='Alle',type='Alle',category='Alle'}={}){
  const needle=search.toLocaleLowerCase('nb');

@@ -2,7 +2,7 @@ const money=n=>new Intl.NumberFormat('nb-NO',{style:'currency',currency:'NOK',ma
 const number=n=>new Intl.NumberFormat('nb-NO',{maximumFractionDigits:2}).format(n);
 const el=(tag,text,cls)=>{const node=document.createElement(tag);if(text)node.textContent=text;if(cls)node.className=cls;return node;};
 
-export function renderCompletion(target,{rows,priceMode,onMarket,onPrice,onQuantity,onTime,onDetails}){
+export function renderCompletion(target,{rows,priceMode,hourly=null,onMarket,onPrice,onQuantity,onTime,onDetails}){
  target.replaceChildren();const selected=rows.filter(r=>r.enabled);
  if(!selected.length){target.append(el('p','Velg arbeid eller legg til oppgaver fra biblioteket.','muted'));return;}
  const missing=selected.filter(r=>r.priceIssue||r.requiresTime||r.requiresQuantity&&r.quantity===0);
@@ -20,9 +20,14 @@ export function renderCompletion(target,{rows,priceMode,onMarket,onPrice,onQuant
    if(row.requiresQuantity&&row.quantity===0){
     const label=el('label','Arbeidsmengde ('+row.unit+')');const input=el('input');input.type='number';input.min='.01';input.max='1000000';input.step='any';input.setAttribute('aria-label','Avklar mengde '+row.name);input.onchange=()=>{if(input.checkValidity()&&input.value)onQuantity(row,Number(input.value));};label.append(input);card.append(label);
    }
-   if(row.requiresTime){
-    const label=el('label','Grunntid (t/'+row.unit+')');const input=el('input');input.type='number';input.min='0';input.max='10000';input.step='any';input.setAttribute('aria-label','Avklar grunntid '+row.name);input.onchange=()=>{if(input.checkValidity()&&input.value)onTime(row,Number(input.value));};label.append(input);card.append(label);
+   if(!row.requiresTime&&Number.isFinite(row.quantity*row.hours*row.factor)){
+    const hours=row.quantity*row.hours*row.factor;
+    card.append(el('p',number(hours)+' beregnede timer · '+number(row.quantity)+' '+row.unit+' × '+number(row.hours)+' t/'+row.unit+' × '+number(row.factor),'completion-work-hours'));
+    if(hourly!==null&&Number.isFinite(hourly))card.append(el('p','Arbeidspris: '+money(hours*hourly)+' ekskl. MVA · '+money(hourly)+'/t inkl. arbeidspåslag','completion-labor-price'));
+    card.append(el('p',row.timeSource||'Registrert grunntid','muted'));
    }
+   const time=el('details',null,'completion-time');time.open=Boolean(row.requiresTime);time.append(el('summary',row.requiresTime?'Avklar grunntid':'Juster grunntid'));
+   const label=el('label','Grunntid (t/'+row.unit+')');const input=el('input');input.type='number';input.min='0';input.max='10000';input.step='any';input.value=row.requiresTime?'':row.hours;input.setAttribute('aria-label','Avklar grunntid '+row.name);input.onchange=()=>{if(input.checkValidity()&&input.value)onTime(row,Number(input.value));};label.append(input);time.append(label);if(row.timeNote)time.append(el('p',row.timeNote,'muted'));card.append(time);
    if(row.priceKey){
     card.append(el('p',row.priceIssue?'Materialpris mangler eller må oppdateres':money(row.material)+'/'+row.materialUnit+' ekskl. MVA · '+row.priceSource+(row.priceDate?' · '+row.priceDate:''),row.priceIssue?'price-warning':'completion-price'));
     if(priceMode==='market'){const button=el('button',row.priceIssue?'Velg markedsvare':'Bytt markedsvare','secondary');button.type='button';button.onclick=()=>onMarket(row);card.append(button);}

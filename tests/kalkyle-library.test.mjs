@@ -30,9 +30,9 @@ test('Utvidet bibliotek har unike nøkler og beskrivelser for hvert element',()=
  assert(library.length>=70);assert.equal(new Set(library.map(e=>e.id)).size,library.length);
  for(const e of library){assert(e.description?.length>20,e.id);assert(e.quantityNote?.length>20,e.id);assert(e.excludes?.length>10,e.id);assert.equal(new Set(e.tasks.map(t=>t.id)).size,e.tasks.length);}
 });
-test('Nye elementer krever oppgitt tid og gir ingen eksempelpris',()=>{
+test('Spesialistarbeid krever oppgitt tid; gjennomgått rivingsarbeid har merkede planleggingsanslag uten materialpris',()=>{
  const e=library.find(e=>e.id==='roof.finish.pvc');const rows=instantiate(e,100);assert(rows.every(r=>r.requiresTime));assert(rows.every(r=>r.needsExamplePrice));assert(applyPrices(rows,'example',[]).every(r=>r.priceIssue));
- const removal=instantiate(library.find(e=>e.id==='roof.remove.tile'),100);assert(removal.every(r=>r.priceKey===null));assert(removal.every(r=>r.requiresTime));
+ const removal=instantiate(library.find(e=>e.id==='roof.remove.tile'),100);assert(removal.every(r=>r.priceKey===null));assert(removal.every(r=>!r.requiresTime&&r.hours>0&&r.timeEstimate&&r.timeSource==='RIGOR-planleggingsanslag'));
 });
 test('Sløyfer og lekter bruker valgt avstand og svinn',()=>{
  const rows=propose({...base,battenSpacing:600,lathSpacing:350,roofWaste:10,basis:'surface'});
