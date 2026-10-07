@@ -40,6 +40,7 @@ export function terraceQuestionFields(label,brief){
  }
  if(/høyde|høyt|høy\b/.test(question)&&/terrasse|terreng|overflate|bakken/.test(question))return [number('Hvor høyt er terrassegulvet over terrenget? (m)','Terrassehøyde','m',0,50)];
  if(/areal|kvadratmeter|m²|\bm2\b/.test(question)&&!/dimensjon|fordeling|andel|lengde|bredde/.test(question))return [number('Hva er arealet på terrassen? (m²)','Terrasseareal','m²',0.01,100000)];
+ if(!deck&&/\b(terrasse|terrassen|terrassens|platting|plattingen)\b/.test(question)&&/dimensjon|mål|størrelse|hvor stor/.test(question)&&!/høyde|rekkverk|bjelke|material/.test(question))return [number('Hva er terrassens lengde? (m)','Terrasselengde','m',0.01,1000),number('Hva er terrassens bredde? (m)','Terrassebredde','m',0.01,1000)];
  if(/lengde[\s\S]*bredde|bredde[\s\S]*lengde/.test(question)&&/terrasse|mål/.test(question))return [number('Hva er terrassens lengde? (m)','Terrasselengde','m',0.01,1000),number('Hva er terrassens bredde? (m)','Terrassebredde','m',0.01,1000)];
  if(/terrassens lengde|terrasselengde/.test(question))return [number('Hva er terrassens lengde? (m)','Terrasselengde','m',0.01,1000)];
  if(/terrassens bredde|terrassebredde/.test(question))return [number('Hva er terrassens bredde? (m)','Terrassebredde','m',0.01,1000)];

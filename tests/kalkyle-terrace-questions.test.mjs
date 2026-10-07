@@ -47,6 +47,7 @@ test('terrace facts do not become roof facts and canonical controls round-trip',
  assert.deepEqual(fieldsFor(fields.map(q=>q.label)).map(q=>[q.prefix,q.type]),fields.map(q=>[q.prefix,q.type]));
  assert.equal(extractMeasurements('Terrasseareal: 50 m²\nTakareal: 100 m²\nSaltak').area,100);
  assert.equal(fieldsFor(['Hva er arealet på terrassen?'],'Bytte terrasse på 50 m²').length,0);
+ assert.deepEqual(fieldsFor(['Hva er dimensjonene på terrassen?']).map(q=>[q.prefix,q.type]),[['Terrasselengde','number'],['Terrassebredde','number']]);
 });
 test('bad deck/cladding questions are removed, genuine cladding questions still work',()=>{
  assert.deepEqual(terraceQuestionFields('Ønskes stående eller liggende terrassebord?',brief),[]);

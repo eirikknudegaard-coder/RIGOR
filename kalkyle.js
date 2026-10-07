@@ -11,7 +11,7 @@ import {parseTimeCsv,validateTimeCatalog,applyTimeCatalog,restoreAssistantTimes,
 import {fields,prepareImport,sampleImport,checkMapping,mapImport} from './kalkyle-import.js?v=20261005-kategorier';
 import {rowCodes,codesFor,exportBasis,csvText} from './kalkyle-codes.js?v=20261007-arbeidstimer';
 import {renderCompletion} from './kalkyle-completion.js?v=20261007-arbeidstimer';
-import {followupFields,cleanFollowupQuestions} from './kalkyle-questions.js?v=20261007-terrassevalg';
+import {followupFields,cleanFollowupQuestions} from './kalkyle-questions.js?v=20261007-terrassefag';
 import {reviewAssistantTasks,uniqueAssistantRows,findWorkOverlaps} from './kalkyle-task-overlap.js?v=20261007-overlapp';
 const $=id=>document.getElementById(id),money=n=>new Intl.NumberFormat('nb-NO',{style:'currency',currency:'NOK',maximumFractionDigits:2}).format(n),num=n=>new Intl.NumberFormat('nb-NO',{maximumFractionDigits:2}).format(n);
 const rateKeys=['wage','direct','indirect','billing','laborMarkup','materialMarkup'];

@@ -1,5 +1,5 @@
 import {clarificationQuestions} from './supabase/functions/rigor-ai-estimate/proposal.js?v=20261007-terrassevalg';
-import {terraceQuestionFields,cleanTerraceQuestions} from './supabase/functions/rigor-ai-estimate/terrace-questions.js?v=20261007-terrassevalg';
+import {terraceQuestionFields,cleanTerraceQuestions} from './supabase/functions/rigor-ai-estimate/terrace-questions.js?v=20261007-terrassefag';
 export {cleanTerraceQuestions as cleanFollowupQuestions};
 
 // The model supplies question text; this small catalogue determines the input
