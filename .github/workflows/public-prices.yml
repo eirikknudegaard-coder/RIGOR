@@ -6,6 +6,8 @@ on:
       - 'scripts/sync-public-prices.mjs'
       - 'scripts/price-register.mjs'
       - 'scripts/probe-material-pages.mjs'
+      - 'tests/market-public.test.mjs'
+      - 'tests/price-register.test.mjs'
       - 'market-public-core.js'
       - 'market-byggmax-core.js'
       - '.github/workflows/public-prices.yml'
