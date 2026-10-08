@@ -7,6 +7,15 @@ function memory(){
 }
 const access=(id,isAdmin=false)=>({status:'ready',user:{id},isAdmin});
 const project=(id,name)=>({id,name,updated:'2026-10-07T08:00:00Z',snapshot:{version:2,rows:[]}});
+test('Document sender and logo are private to their verified account and preserve projects',()=>{
+ const raw=memory(),a=createUserStorage(raw,access('account-a')),b=createUserStorage(raw,access('account-b'));
+ a.setItem('rigor-projects-v1',JSON.stringify([project('p','Prosjekt')]));
+ a.setItem('rigor-document-profile-v1',JSON.stringify({version:1,company:'Bygg A',logo:{data:'test-only'}}));
+ assert.equal(b.getItem('rigor-document-profile-v1'),null);
+ assert.equal(JSON.parse(a.getItem('rigor-projects-v1'))[0].id,'p');
+ b.setItem('rigor-document-profile-v1',JSON.stringify({version:1,company:'Bygg B'}));
+ assert.equal(JSON.parse(a.getItem('rigor-document-profile-v1')).company,'Bygg A');
+});
 test('No anonymous fallback; all local app values are separate for two verified account IDs',()=>{
  const raw=memory();assert.throws(()=>userStorage.getItem('rigor-projects-v1'));
  assert.throws(()=>createUserStorage(raw,{status:'login',user:{id:'A'}}));

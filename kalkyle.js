@@ -1,5 +1,6 @@
 import {getPortalClient} from './portal-session.js?v=20261007-innlogging';
-import {userStorage} from './portal-user-storage.js?v=20261007-brukerlagring';
+import {userStorage} from './portal-user-storage.js?v=20261008-pdf';
+import {setupPdfExport} from './kalkyle-pdf-dialog.js?v=20261008-pdf';
 import {loadPublicCatalog} from './market-public-client.js?v=20261007-avklaringer';
 import {selectedPrices,offersForRow,usableOffer} from './market-public-core.js?v=20261007-avklaringer';
 import {assistantStatus,requestEstimate} from './ai-estimate-client.js?v=20261007-innlogging';
@@ -346,6 +347,12 @@ $('job-brief').oninput=()=>{clearAssistantProposal();$('brief-status').textConte
 $('brief-save').onclick=()=>{try{if(activeProject){if(!saveProject())throw Error('Prosjektet kunne ikke lagres.');}else userStorage.setItem(briefDraftKey,$('job-brief').value);$('brief-status').textContent=activeProject?'Beskrivelsen er lagret med prosjektet.':'Beskrivelsen er lagret lokalt og følger med når du oppretter prosjektet.';}catch(e){$('brief-status').textContent=e.message||'Nettleseren tillater ikke lokal lagring.';}};
 $('nav-projects').onclick=()=>{if(activeProject)$('project-back').click();else window.scrollTo({top:0,behavior:'smooth'});};
 restoreBriefDraft();
+
+setupPdfExport({storage:userStorage,getData:()=>{update();return {rows:structuredClone(rows),rates:rates(),project:projects.find(p=>p.id===activeProject),brief:$('job-brief').value,priceMode,area:lastSettings.job==='roof'?roofGeometry(lastSettings).area:lastSettings.area};},saveProjectDetails:details=>{
+ const index=projects.findIndex(p=>p.id===activeProject);if(index<0)return false;
+ const previous=projects[index];projects[index]={...previous,...details};
+ if(!saveProject()){projects[index]=previous;return false;}projectHeader();return true;
+}});
 
 function clearAssistantProposal(){assistantTicket++;assistantProposal=null;assistantClarifications=[];$('assistant-clarification').hidden=true;$('assistant-preview').hidden=true;$('assistant-items').replaceChildren();$('assistant-apply').disabled=false;}
 function renderAssistantItems(proposal,brief,measurements){

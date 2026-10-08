@@ -1,7 +1,8 @@
 // Account separation for local app data. The caller supplies server-verified
 // portal access before importing the calculation app. This is not encryption
 // or cloud storage: browser administrators can still inspect localStorage.
-const keys=['rigor-projects-v1','rigor-calculation-v1','rigor-library-v1','rigor-job-brief-v1','rigor-rate-defaults-v1'];
+const legacyKeys=['rigor-projects-v1','rigor-calculation-v1','rigor-library-v1','rigor-job-brief-v1','rigor-rate-defaults-v1'];
+const keys=[...legacyKeys,'rigor-document-profile-v1'];
 const imported='legacy-imported-v1';
 export function userStorageKey(userId){
  if(typeof userId!=='string'||!userId.trim()||userId.length>256)throw Error('Verifisert bruker mangler.');
@@ -17,7 +18,7 @@ export function createUserStorage(storage,access){
   return record;
  };
  const check=k=>{if(!keys.includes(k))throw Error('Ukjent lagringsnøkkel.');};
- const pendingLegacy=()=>admin&&!read().entries[imported]&&keys.some(k=>{const raw=storage.getItem(k);return raw!==null&&raw!==''&&raw!=='[]';});
+ const pendingLegacy=()=>admin&&!read().entries[imported]&&legacyKeys.some(k=>{const raw=storage.getItem(k);return raw!==null&&raw!==''&&raw!=='[]';});
  return {
   getItem(k){check(k);return read().entries[k]??null;},
   setItem(k,value){check(k);const record=read();record.entries[k]=String(value);storage.setItem(key,JSON.stringify(record));},
@@ -28,7 +29,7 @@ export function createUserStorage(storage,access){
    const record=read();if(record.entries[imported])return false;
    const parse=raw=>{try{return JSON.parse(raw);}catch{throw Error('Eldre data kunne ikke leses. Kontodata og originalene er beholdt.');}};
    let changed=false;
-   for(const k of keys){
+   for(const k of legacyKeys){
     const raw=storage.getItem(k);if(raw===null||raw===''||raw==='[]')continue;
     if(k==='rigor-projects-v1'||k==='rigor-library-v1'){
      const older=parse(raw),current=parse(record.entries[k]||'[]');

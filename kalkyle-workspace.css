@@ -168,3 +168,12 @@
 .kalkyle-app .time-basis{margin:12px 0 18px;padding:12px 14px;background:#f7f3ed;border:1px solid #e4d9ce;border-radius:8px;font-size:12px;line-height:1.6}
 .kalkyle-app .time-basis summary,.kalkyle-app .completion-time summary{cursor:pointer;color:#79563c}
 .kalkyle-app .completion-time{margin:10px 0;font-size:12px}.kalkyle-app .completion-time label{display:block;margin:10px 0}.kalkyle-app .completion-time input{max-width:180px}.kalkyle-app .completion-labor-price{font-weight:600}
+.kalkyle-app #pdf-dialog{width:min(760px,calc(100vw - 32px));max-height:90vh;box-sizing:border-box;padding:26px;border:1px solid #ddd5cd;border-radius:14px;box-shadow:0 24px 90px #25282b26;overflow:auto}
+.kalkyle-app #pdf-dialog::backdrop{background:#25282b60;backdrop-filter:blur(3px)}
+.pdf-dialog-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:18px}.pdf-dialog-heading h2{margin:6px 0;font-size:24px}
+.pdf-logo-slot{display:flex;align-items:center;justify-content:center;width:140px;height:72px;flex-shrink:0;border:1px dashed #c9b7a6;border-radius:8px;color:#79604c;font-size:12px;background:#fff}.pdf-logo-slot img{max-width:126px;max-height:60px;object-fit:contain}
+.kalkyle-app #pdf-dialog details{border:1px solid #e1dcd5;padding:15px;border-radius:8px;margin:18px 0;background:#f9f6f1}.kalkyle-app #pdf-dialog summary{cursor:pointer;font-weight:600;color:#704b30}
+.kalkyle-app #pdf-dialog .fields{margin-top:12px}.kalkyle-app #pdf-dialog textarea{width:100%;box-sizing:border-box;resize:vertical;font:inherit;border:1px solid #ddd5cd;border-radius:7px;padding:11px;background:#fff;line-height:1.5}
+.pdf-brand-actions{display:flex;gap:10px;flex-wrap:wrap}.kalkyle-app #pdf-dialog .muted{font-size:12px;line-height:1.5}.pdf-validation{border-radius:7px;padding:12px;background:#f1e9df;color:#604a38;font-size:12px}
+.kalkyle-app #pdf-dialog .dialog-actions{position:sticky;bottom:-26px;background:#fff;padding:16px 0 6px;border-top:1px solid #e1dcd5;margin-top:20px;z-index:1}
+@media(max-width:650px){.kalkyle-app #pdf-dialog{padding:18px;max-height:94vh}.pdf-logo-slot{width:95px;height:60px}.pdf-logo-slot img{max-width:85px;max-height:50px}.pdf-dialog-heading h2{font-size:21px}.kalkyle-app #pdf-dialog .dialog-actions{bottom:-18px}}

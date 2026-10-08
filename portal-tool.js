@@ -1,6 +1,6 @@
 import {getPortalClient} from './portal-session.js?v=20261007-innlogging';
 import {checkToolAccess,toolLoginUrl} from './portal-access.js?v=20261007-brukerlagring';
-import {initializeUserStorage} from './portal-user-storage.js?v=20261007-brukerlagring';
+import {initializeUserStorage} from './portal-user-storage.js?v=20261008-pdf';
 const app=document.getElementById('protected-app'),shell=document.getElementById('portal-access-shell'),message=document.getElementById('portal-access-message'),retry=document.getElementById('portal-access-retry'),login=document.getElementById('portal-access-login');
 const page=document.documentElement.dataset.portalPage;
 let version=0,client,loadedUser=null,loading;
@@ -11,7 +11,7 @@ function lock(text='Kontrollerer innlogging og tilgang …'){
 }
 function redirect(denied=false){version++;lock('Åpner innlogging i RIGOR-portalen …');location.replace(toolLoginUrl(location.href,denied));}
 async function loadApp(){
- if(!loading)loading=page==='kalkyle'?Promise.all([import('./kalkyle.js?v=20261007-terrassefag'),import('./kalkyle-help.js?v=20261007-innlogging')]):page==='priser'?import('./priser.js?v=20261007-innlogging'):Promise.reject(Error('Ukjent verktøy'));
+ if(!loading)loading=page==='kalkyle'?Promise.all([import('./kalkyle.js?v=20261008-pdf'),import('./kalkyle-help.js?v=20261007-innlogging')]):page==='priser'?import('./priser.js?v=20261007-innlogging'):Promise.reject(Error('Ukjent verktøy'));
  return loading;
 }
 async function verify(){

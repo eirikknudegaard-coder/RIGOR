@@ -39,7 +39,7 @@ eksempelpriser må velges eksplisitt. Takgeometrien forutsetter lik takvinkel; s
 tekniske fag bruker forenklede avsetninger. Valgte poster er ikke en garanti
 for komplett omfang. Beregninger beholder desimalpresisjon frem til visning.
 
-Kalkyler lagres lokalt per verifisert Supabase-bruker-ID og kan eksporteres til CSV.
+Kalkyler lagres lokalt per verifisert Supabase-bruker-ID og kan eksporteres til CSV og PDF.
 Prosjekter, sist lagret kalkyle, eget bibliotek, beskrivelsesutkast og standardsatser
 bruker én kontoavgrenset lagringspost. Kontoene får separate prosjektlister på samme
 nettleser. Lokal lagring er ikke kryptert eller skysynkronisert; den som har tilgang
@@ -352,3 +352,27 @@ AI fyller arbeidsmengde på arealbaserte terrasseposter fra ett entydig oppgitt
 terrasseareal. Flere arealer, blandet tak-/veggarbeid, meter og stykk må avklares.
 Tester: `node tests/kalkyle-work-hours.test.mjs` og
 `python3 tests/kalkyle-work-hours-browser.py` (lokal server port 8090).
+
+### PDF-tilbud, beregning og egen logo
+
+«Tilbud / PDF» i prosjektet og «Eksporter PDF» i sammendraget åpner dokumentvalgene.
+Kundetilbudet viser valgte poster, salgskoder, mengder, enhetspriser, MVA og totalsum;
+interne kostnader og fortjeneste følger bare beregningsdokumentet. Beregningen
+inkluderer grunntider, tidsfaktorer, arbeidstimer, innkjøpskostnader, påslag,
+kodekoblinger og kilder. PDF-ene bruker de samme uavrundede beregningene som appen;
+eventuelle øredifferanser vises eksplisitt slik at de avrundede beløpene avstemmes.
+Manglende pris, mengde eller grunntid må avklares før eksport.
+Eksempelpriser kan eksporteres som merket beregning, men brukes ikke i kundetilbud.
+Full lokal lagringsplass hindrer ikke en gyldig PDF-nedlasting; lagringsfeil varsles.
+
+Bedriftsnavn, kontaktopplysninger og logo lagres lokalt for den verifiserte kontoen.
+PNG/JPG/WebP-logoer (maks. 5 MB) normaliseres til en avgrenset PNG i nettleseren.
+Logoen beholder proporsjonene og ligger øverst til høyre på hver side. Kunde,
+dokumentnummer, beskrivelse, gyldighetsdato og vilkår lagres med prosjektet.
+Dokumentdato bruker norsk tid. Ingen dokumenter eller logoer sendes til AI eller
+andre servere; jsPDF og Unicode-skrifter leveres lokalt fra `vendor/pdf` med lisenser.
+
+Tester: `node tests/kalkyle-pdf.test.mjs`, `node tests/portal-user-storage.test.mjs`
+og `python3 tests/kalkyle-pdf-browser.py` (lokal server på port 8090).
+Nettlesertesten leser faktiske nedlastede PDF-er og kontrollerer beløp, interne
+opplysninger, norske tegn, logo, sideskift, mobil og separasjon mellom kontoer.
