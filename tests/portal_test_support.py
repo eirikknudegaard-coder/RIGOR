@@ -1,7 +1,7 @@
 """Mock verified Supabase responses for local browser tests; no production bypass."""
 import json
 
-def authorize_portal(page, mode='admin', delay=0, wait=True, user_id='verified-test-user'):
+def authorize_portal(page, mode='admin', delay=0, wait=True, user_id='verified-test-user', tool_key='kalkyle'):
     module = '''
 const defaults=DEFAULTS;
 const callbacks=[];
@@ -13,8 +13,8 @@ window.testReadStorage=(key,userId=state().userId)=>JSON.parse(localStorage.getI
 const result=table=>{
  const mode=state().mode;
  if(mode==='tools-error'&&table==='portal_tools')return {data:null,error:{message:'offline'}};
- if(table==='portal_tools')return {data:mode==='admin'?null:{tool_key:'kalkyle',title:'Kalkyle',enabled:mode!=='disabled'},error:null};
- if(table==='portal_tool_access')return {data:mode==='member'?[{tool_key:'kalkyle'}]:[],error:null};
+ if(table==='portal_tools')return {data:mode==='admin'?null:{tool_key:state().toolKey,title:'Verktøy',enabled:mode!=='disabled'},error:null};
+ if(table==='portal_tool_access')return {data:mode==='member'?[{tool_key:state().toolKey}]:[],error:null};
  return {data:[],error:null};
 };
 const client={auth:{
@@ -27,12 +27,12 @@ const client={auth:{
  const filters={};return {select(){return this;},eq(k,v){filters[k]=v;return this;},order(){return this;},maybeSingle(){window.testPortalCalls.push({table,filters});return Promise.resolve(result(table));},then(resolve,reject){window.testPortalCalls.push({table,filters});const response=result(table);return Promise.resolve({...response,data:table==='portal_tools'?response.data?[response.data]:[]:response.data}).then(resolve,reject);}};
 }};
 export async function getPortalClient(){return client;}
-'''.replace('DEFAULTS', json.dumps({'mode':mode,'delay':delay,'userId':user_id}))
+'''.replace('DEFAULTS', json.dumps({'mode':mode,'delay':delay,'userId':user_id,'toolKey':tool_key}))
     page.route('**/portal-session.js*',lambda route:route.fulfill(content_type='application/javascript',body=module))
     if wait:
         original_goto, original_reload = page.goto, page.reload
         def ready(response):
-            if page.url.split('?')[0].endswith(('/kalkyle.html','/priser.html')):
+            if page.url.split('?')[0].endswith(('/kalkyle.html','/priser.html','/konstruksjon.html')):
                 page.locator('#protected-app').wait_for(state='visible')
             return response
         page.goto=lambda *args,**kwargs:ready(original_goto(*args,**kwargs))

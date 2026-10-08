@@ -1,5 +1,5 @@
 import {getPortalClient} from './portal-session.js?v=20261007-innlogging';
-import {checkToolAccess,toolLoginUrl} from './portal-access.js?v=20261007-brukerlagring';
+import {checkToolAccess,toolLoginUrl} from './portal-access.js?v=20261008-construction';
 import {initializeUserStorage} from './portal-user-storage.js?v=20261008-pdf';
 const app=document.getElementById('protected-app'),shell=document.getElementById('portal-access-shell'),message=document.getElementById('portal-access-message'),retry=document.getElementById('portal-access-retry'),login=document.getElementById('portal-access-login');
 const page=document.documentElement.dataset.portalPage;
@@ -11,7 +11,7 @@ function lock(text='Kontrollerer innlogging og tilgang …'){
 }
 function redirect(denied=false){version++;lock('Åpner innlogging i RIGOR-portalen …');location.replace(toolLoginUrl(location.href,denied));}
 async function loadApp(){
- if(!loading)loading=page==='kalkyle'?Promise.all([import('./kalkyle.js?v=20261009-reference'),import('./kalkyle-help.js?v=20261007-innlogging')]):page==='priser'?import('./priser.js?v=20261007-innlogging'):Promise.reject(Error('Ukjent verktøy'));
+ if(!loading)loading=page==='kalkyle'?Promise.all([import('./kalkyle.js?v=20261009-reference'),import('./kalkyle-help.js?v=20261007-innlogging')]):page==='priser'?import('./priser.js?v=20261007-innlogging'):page==='konstruksjon'?import('./construction/ui.js?v=20261008-construction'):Promise.reject(Error('Ukjent verktøy'));
  return loading;
 }
 async function verify(){
@@ -22,7 +22,7 @@ async function verify(){
    if(['SIGNED_IN','TOKEN_REFRESHED','USER_UPDATED'].includes(event)){version++;if(event==='SIGNED_IN')lock();setTimeout(()=>{void verify();},0);}
   });}}
   if(ticket!==version)return;
-  const access=await checkToolAccess(client);if(ticket!==version)return;
+  const access=await checkToolAccess(client,page==='konstruksjon'?'konstruksjon':'kalkyle');if(ticket!==version)return;
   if(access.status==='login'){redirect();return;}
   if(access.status==='denied'){redirect(true);return;}
   if(access.status!=='ready')throw Error('Tilgangen kunne ikke kontrolleres. Prøv igjen eller åpne portalen.');

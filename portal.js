@@ -1,5 +1,5 @@
 import {getPortalClient} from './portal-session.js?v=20261007-innlogging';
-import {checkToolAccess,safeToolReturn} from './portal-access.js?v=20261007-innlogging';
+import {checkToolAccess,safeToolReturn} from './portal-access.js?v=20261008-construction';
 const sb = await getPortalClient();
 const returnTo=safeToolReturn(new URLSearchParams(location.search).get('returnTo'),location.href);
 
@@ -50,12 +50,12 @@ async function loadTools(isAdmin) {
   const visible=(toolsError ? [] : all||[]).filter(t=>isAdmin||allowed.has(t.tool_key));
   // The public prototype is available to admins before database registration.
   // An explicit disabled record is respected; member permissions stay database-driven.
-  if (isAdmin && !visible.some(t=>t.tool_key==="kalkyle")) {
-    const {data: registered, error: lookupError}=await sb.from("portal_tools")
-      .select("tool_key,enabled").eq("tool_key","kalkyle").maybeSingle();
-    if (!lookupError && !registered) {
-      visible.push({tool_key:"kalkyle",title:"Kalkyleverksted",description:"Prototype: enkel veiviser og detaljert kalkyle for tak, etterisolering og tilbygg. Bruker eksempelsatser."});
-    }
+  if(isAdmin)for(const preview of [
+    {tool_key:'kalkyle',title:'Kalkyleverksted',description:'Forenklet veiviser og detaljert kalkyle med kontrollerbart prisgrunnlag.'},
+    {tool_key:'konstruksjon',title:'RIGOR Konstruksjon',description:'Byggteknisk assistent: lastvei og orienterende beregning av enkle bjelker.'}
+  ])if(!visible.some(t=>t.tool_key===preview.tool_key)){
+    const {data:registered,error:lookupError}=await sb.from('portal_tools').select('tool_key,enabled').eq('tool_key',preview.tool_key).maybeSingle();
+    if(!lookupError&&!registered)visible.push(preview);
   }
   if (!visible.length) {
     list.append(createElement("div","portal-tool-empty","Ingen verktøy er publisert for kontoen din ennå. Verktøy legges til her når de er klare."));
@@ -68,6 +68,8 @@ async function loadTools(isAdmin) {
       const link=createElement("a","portal-inline-link","Åpne kalkyleverksted →");
       link.href="kalkyle.html";
       card.append(link);
+    } else if(tool.tool_key==='konstruksjon'){
+      const link=createElement('a','portal-inline-link','Åpne konstruksjonsassistent →');link.href='konstruksjon.html';card.append(link);
     } else {
       card.append(createElement("p","portal-muted","Tilgjengelig ved publisering av verktøy."));
     }
@@ -128,10 +130,10 @@ async function render() {
   $("admin-badge").hidden=!admin;
   $("admin-section").hidden=!admin;
   if(returnTo){
-    const access=await checkToolAccess(sb);
+    const access=await checkToolAccess(sb,new URL(returnTo).pathname.endsWith('/konstruksjon.html')?'konstruksjon':'kalkyle');
     if(version!==stateVersion)return;
     if(access.status==='ready'){location.replace(returnTo);return;}
-    ui.notice(access.message||'Kalkyletilgangen kunne ikke bekreftes. Prøv igjen senere.');
+    ui.notice(access.message||'Verktøytilgangen kunne ikke bekreftes. Prøv igjen senere.');
     ui.show('denied-panel');return;
   }
   ui.show("dashboard-panel");

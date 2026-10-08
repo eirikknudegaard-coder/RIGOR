@@ -30,6 +30,15 @@ test('Failures and malformed authorization replies fail closed',async()=>{
  assert.equal((await checkToolAccess(fixture({admin:'true'}).client)).status,'unavailable');
  assert.equal((await checkToolAccess({auth:{getUser:async()=>{throw Error('offline');}}})).status,'unavailable');
 });
+test('Construction access uses a separate enabled registration and grant',async()=>{
+ const f=fixture({admin:false,tool:{tool_key:'konstruksjon',enabled:true},access:[{tool_key:'konstruksjon'}]});
+ assert.equal((await checkToolAccess(f.client,'konstruksjon')).status,'ready');
+ assert.deepEqual(f.calls.at(-1),{name:'portal_tool_access',filters:{user_id:'verified-user',tool_key:'konstruksjon'}});
+ assert.equal((await checkToolAccess(fixture({admin:false,tool:{tool_key:'konstruksjon',enabled:true},access:[{tool_key:'kalkyle'}]}).client,'konstruksjon')).status,'denied');
+ assert.equal((await checkToolAccess(fixture({tool:{tool_key:'konstruksjon',enabled:false}}).client,'konstruksjon')).status,'denied');
+ assert.equal((await checkToolAccess(fixture().client,'unknown')).status,'denied');
+ assert.equal(safeToolReturn('konstruksjon.html','https://rigor.no/portal.html'),'https://rigor.no/konstruksjon.html');
+});
 test('Login returns only to allowlisted local tools and strips authentication fragments',()=>{
  const base='https://rigor.no/portal.html';
  assert.equal(safeToolReturn('kalkyle.html?project=123#access_token=secret',base),'https://rigor.no/kalkyle.html?project=123');
