@@ -380,3 +380,7 @@ opplysninger, norske tegn, logo, sideskift, mobil og separasjon mellom kontoer.
 AI-flyten har egne moduser for budsjettanslag og detaljert bibliotekarbeid.
 Se [AI-moduser og endringsoversikt](docs/ai-modes.md) for erfaringstall,
 spørrestrategi, faggrunnlag, providergrense, tester og publiseringsrekkefølge.
+
+Detaljert har et separat lag for representative materialpriser.
+Se [markedsreferanser](docs/market-references.md) for matching, normalisering,
+prisprioritet, lagrede prisøyeblikk, registerdekning og tester.

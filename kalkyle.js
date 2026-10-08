@@ -17,6 +17,9 @@ import {reviewAssistantTasks,uniqueAssistantRows,findWorkOverlaps} from './kalky
 const $=id=>document.getElementById(id),money=n=>new Intl.NumberFormat('nb-NO',{style:'currency',currency:'NOK',maximumFractionDigits:2}).format(n),num=n=>new Intl.NumberFormat('nb-NO',{maximumFractionDigits:2}).format(n);
 import {annotateAiMaterial,aiSpecificationText} from './kalkyle-ai-material.js?v=20261008-ai-modes';
 import {setupAiModes} from './kalkyle-ai-ui.js?v=20261008-ai-modes';
+import {applyDetailedMaterialPrices,useReference} from './kalkyle-market-reference.js?v=20261009-reference';
+import {createReferenceSnapshot} from './market-reference.js?v=20261009-reference';
+import {setupMarketReferenceUi} from './kalkyle-market-reference-ui.js?v=20261009-reference';
 let aiModeController=null;
 const rateKeys=['wage','direct','indirect','billing','laborMarkup','materialMarkup'];
 let timeCatalog=[];const rateDefaultKey='rigor-rate-defaults-v1';
@@ -67,7 +70,7 @@ function renderRows(){
     if(k==='unit'||k==='materialUnit')td.textContent=r[k]||r.unit;
     else{
      const input=document.createElement('input');input.type='number';input.min=k==='factor'?'0.01':'0';input.max=k==='factor'?'100':'10000000';input.step='any';input.value=k==='hours'&&r.requiresTime?'':r[k];input.required=!(k==='hours'&&r.requiresTime);if(k==='hours'&&r.requiresTime)input.placeholder='Angi timer';input.dataset.field=k;input.setAttribute('aria-label',r.name+' '+({quantity:'mengde',materialQuantity:'materiellmengde',material:'materialpris',hours:'timer per enhet',factor:'tidsfaktor'}[k]));
-     input.oninput=()=>{r[k]=input.value===''?NaN:Number(input.value);if(k==='quantity'){r.materialQuantity=r.quantity*(r.materialRatio??1);tr.querySelector('[data-field=materialQuantity]').value=r.materialQuantity;}if(k==='materialQuantity')r.materialRatio=r.quantity>0?r.materialQuantity/r.quantity:1;if(k==='hours'){r.requiresTime=false;r.manualTime=true;r.timeSource='Registrert i prosjektet';r.timeEstimate=false;r.timeNote='';}if(k==='factor'){r.manualFactor=true;r.timeFactorSource='Registrert i prosjektet';}if(k==='material'){r.manualPrice=true;r.priceIssue=null;}edited=true;update();};td.append(input);
+     input.oninput=()=>{r[k]=input.value===''?NaN:Number(input.value);if(k==='quantity'){r.materialQuantity=r.quantity*(r.materialRatio??1);tr.querySelector('[data-field=materialQuantity]').value=r.materialQuantity;}if(k==='materialQuantity')r.materialRatio=r.quantity>0?r.materialQuantity/r.quantity:1;if(k==='hours'){r.requiresTime=false;r.manualTime=true;r.timeSource='Registrert i prosjektet';r.timeEstimate=false;r.timeNote='';}if(k==='factor'){r.manualFactor=true;r.timeFactorSource='Registrert i prosjektet';}if(k==='material'){r.manualPrice=true;if(calculationMode==='detailed'){r.materialPriceChoice='manual';r.manualPriceSource='Registrert i prosjektet';r.manualPriceDate=new Date().toISOString().slice(0,10);}r.priceIssue=null;}edited=true;update();};td.append(input);
      if(k==='material'){
       const unit=document.createElement('small');unit.className='unit-price-label';unit.textContent='kr/'+(r.materialUnit||r.unit)+' ekskl. MVA';td.append(unit);
       const perWorkUnit=document.createElement('small');perWorkUnit.id='row-material-unit-'+i;perWorkUnit.className='unit-price-label';td.append(perWorkUnit);
@@ -87,8 +90,9 @@ function renderRowPrice(row,i){
  const target=$('row-source-'+i),chosen=publicCatalog?.offers.find(o=>o.id===marketBindings[row.priceKey]);target.replaceChildren();
  const issues={mangler:chosen?'Valgt vare har ingen brukbar pris':'Velg vare eller legg inn pris',utdatert:'Prisen er utløpt – hent ny pris',fremtidig:'Prisdato må kontrolleres','feil enhet':'Prisen har en annen materialenhet','pris må registreres':'Legg inn innkjøpspris'};
  if(row.priceIssue)target.textContent=issues[row.priceIssue]||row.priceIssue;
- else if(chosen&&priceMode==='market'&&!row.manualPrice){const link=document.createElement('a');link.href=chosen.url;link.target='_blank';link.rel='noopener noreferrer';link.textContent=chosen.name;target.append(link,document.createTextNode(' · '+chosen.chain+(chosen.store_name?' '+chosen.store_name:'')+' · '+row.priceDate));if(row.marketPackages!==undefined){const note=document.createElement('small');note.textContent='Kjøp '+row.marketPackages+' '+chosen.original_unit+' ('+num(row.marketPurchasedQuantity)+' '+row.materialUnit+')';target.append(note);}}
+ else if(chosen&&priceMode==='market'&&!row.manualPrice&&row.priceBasis!=='imported_agreement'&&row.priceBasis!=='market_reference'){const link=document.createElement('a');link.href=chosen.url;link.target='_blank';link.rel='noopener noreferrer';link.textContent=chosen.name;target.append(link,document.createTextNode(' · '+chosen.chain+(chosen.store_name?' '+chosen.store_name:'')+' · '+row.priceDate));if(row.marketPackages!==undefined){const note=document.createElement('small');note.textContent='Kjøp '+row.marketPackages+' '+chosen.original_unit+' ('+num(row.marketPurchasedQuantity)+' '+row.materialUnit+')';target.append(note);}}
  else target.textContent=row.priceSource+(row.priceDate?' · '+row.priceDate:'');
+ referenceUi.render(target,row,{detailed:calculationMode==='detailed',offers:publicCatalog?.offers||[]});
  target.classList.toggle('price-warning',Boolean(row.priceIssue));const input=document.querySelector(`[data-row-index='${i}'] [data-field=material]`);if(document.activeElement!==input)input.value=row.priceIssue?'':row.material;input.required=!row.priceIssue;input.disabled=!row.priceKey&&!row.manualPrice;
  $('row-material-unit-'+i).textContent=row.priceKey&&!row.priceIssue&&row.quantity>0&&Number.isFinite((row.marketMaterialCost??row.materialQuantity*row.material)/row.quantity)?'Per '+row.unit+' arbeid: '+money((row.marketMaterialCost??row.materialQuantity*row.material)/row.quantity)+' før påslag':'';
  const choose=$('row-market-'+i);if(choose){choose.hidden=priceMode!=='market';choose.textContent=chosen?'Bytt markedsvare':'Velg markedsvare';}
@@ -98,8 +102,9 @@ function renderRowPrice(row,i){
 
 function update(){
  syncBoundPrices();
+ referenceUi.setDetailed(calculationMode==='detailed');
  $('task-count').textContent=rows.filter(r=>r.enabled).length+' valgte oppgaver';
- const pricedRows=applyPrices(rows,priceMode,priceMode==='import'?importedPrices:marketPrices);rows.forEach((row,i)=>Object.assign(row,pricedRows[i]));
+ const pricedRows=applyDetailedMaterialPrices(rows,{mode:priceMode,importedPrices,marketPrices,offers:publicCatalog?.offers||[],bindings:marketBindings,detailed:calculationMode==='detailed'});rows.forEach((row,i)=>Object.assign(row,pricedRows[i]));
  const missing=rows.filter(r=>r.enabled&&r.priceIssue),missingTimes=rows.filter(r=>r.enabled&&r.requiresTime),missingQuantities=rows.filter(r=>r.enabled&&r.requiresQuantity&&r.quantity===0);
  const rateValid=rateKeys.every(k=>$(k).checkValidity()),rate=rates(),hourly=rateValid?calculate([],rate,1).hourly:null;
  const overlaps=findWorkOverlaps(rows);$('overlap-notice').hidden=!overlaps.length;$('time-overlap').textContent=overlaps.length?overlaps.map(group=>group[0].name).join('; ')+' er valgt flere ganger med samme mengde. Kontroller om postene gjelder samme arbeid for å unngå dobbel arbeidstid.':'';
@@ -134,7 +139,7 @@ function update(){
  result=calculation;$('estimate-state').textContent='Komplett prisgrunnlag · ekskl. MVA';$('total').textContent=money(result.price);$('per-area').textContent=money(result.perArea)+'/m²';for(const id of ['cost','profit','vat','gross'])$(id).textContent=money(result[id]);$('status').textContent=edited?'Egne postendringer er med i anslaget.':'Forslag fra veiviseren. Kontroller omfang og satser.';
 }
 
-function view(detail){calculationMode=detail?'detailed':'simple';workspacePane(calculationMode);}
+function view(detail){calculationMode=detail?'detailed':'simple';workspacePane(calculationMode);update();}
 function workspacePane(pane){document.querySelector('.layout').dataset.pane=pane;for(const [button,panel] of [['simple','wizard'],['detailed','details'],['pricing-tab','pricing-pane'],['rates-tab','rates-pane']]){const selected=button===pane;$(panel).hidden=!selected;$(button).setAttribute('aria-pressed',String(selected));}const text={simple:'Velg arbeidet og avklar omfanget. Veiviseren foreslår poster til kontroll.',detailed:'Bygg kalkylen fra biblioteket. Juster oppgaver, mengder og materialforbruk.', 'pricing-tab':'Velg dokumenterte materialpriser og kontroller kilde, dato og enhet.', 'rates-tab':'Sett prosjektets timekostnad og påslag. Endringene påvirker denne kalkylen.'};$('workspace-view-help').textContent=text[pane];}
 $('pricing-tab').onclick=()=>workspacePane('pricing-tab');$('rates-tab').onclick=()=>workspacePane('rates-tab');
 $('simple').onclick=()=>view(false);$('detailed').onclick=()=>view(true);
@@ -157,13 +162,13 @@ $('time-file').onchange=async()=>{
  $('time-file').value='';
 };
 $('reset').onclick=()=>{if(!edited||confirm('Gjenopprette postene fra veiviseren?'))generate();};
-$('save').onclick=()=>{try{userStorage.setItem('rigor-calculation-v1',JSON.stringify({version:2,settings:lastSettings,rows,rates:rates(),edited,priceMode,importedPrices,marketPrices,marketBindings,marketStores,timeCatalog}));$('status').textContent='Kalkylen er lagret i denne nettleseren.';}catch{$('status').textContent='Nettleseren tillater ikke lokal lagring. Bruk CSV-eksport.';}};
+$('save').onclick=()=>{try{userStorage.setItem('rigor-calculation-v1',JSON.stringify({version:2,materialPricingMode:calculationMode,settings:lastSettings,rows,rates:rates(),edited,priceMode,importedPrices,marketPrices,marketBindings,marketStores,timeCatalog}));$('status').textContent='Kalkylen er lagret i denne nettleseren.';}catch{$('status').textContent='Nettleseren tillater ikke lokal lagring. Bruk CSV-eksport.';}};
 function restoreCalculation(snapshot=null){try{const raw=snapshot?JSON.stringify(snapshot):userStorage.getItem('rigor-calculation-v1');if(!raw){$('status').textContent='Ingen lokal kalkyle er lagret.';return;}const s=JSON.parse(raw);if(![1,2].includes(s.version)||!jobs[s.settings?.job]||!Array.isArray(s.rows)||s.rows.length>500||s.rows.some(r=>typeof r.name!=='string'||typeof r.enabled!=='boolean'||!['m²','m','stk','rs'].includes(r.unit)||['quantity','material','hours','factor'].some(k=>!Number.isFinite(r[k])||r[k]<0))||!rateKeys.every(k=>Number.isFinite(s.rates?.[k]))||!['surface','footprint'].includes(s.settings.basis)||!['metal','tile','membrane'].includes(s.settings.material)||!Array.isArray(s.settings.options)||!['area','angle','difficulty'].every(k=>Number.isFinite(s.settings[k])))throw Error();if(edited&&!confirm('Erstatte den åpne kalkylen med den lagrede?'))return;
  if(s.version===2){if(!['market','import','example'].includes(s.priceMode)||!Array.isArray(s.importedPrices))throw Error();if(s.importedPrices.length)validatePrices(s.importedPrices);if(s.marketPrices?.length)validatePrices(s.marketPrices);priceMode=s.priceMode;importedPrices=s.importedPrices;marketPrices=s.marketPrices||[];marketBindings=s.marketBindings&&typeof s.marketBindings==='object'&&!Array.isArray(s.marketBindings)?{...s.marketBindings}:{};marketStores=s.marketStores&&typeof s.marketStores==='object'&&!Array.isArray(s.marketStores)?{byggmax:String(s.marketStores.byggmax||'')}:{};syncBoundPrices();if(priceMode==='market'&&marketPrices.length)marketMessage='Lagret prisgrunnlag. Kilde og dato kontrolleres; hent nye priser ved behov.';}else{priceMode='example';importedPrices=[];}
- timeCatalog=validateTimeCatalog(s.timeCatalog??[]);$('time-status').textContent=timeCatalog.length?timeCatalog.length+' importerte grunntider er lagret med prosjektet.':'';$('rates-status').textContent='Kalkylens lagrede timesatser er brukt. Endringer påvirker dette prosjektet.';
+ calculationMode=s.materialPricingMode==='detailed'?'detailed':'simple';timeCatalog=validateTimeCatalog(s.timeCatalog??[]);$('time-status').textContent=timeCatalog.length?timeCatalog.length+' importerte grunntider er lagret med prosjektet.':'';$('rates-status').textContent='Kalkylens lagrede timesatser er brukt. Endringer påvirker dette prosjektet.';
  $('price-mode').value=priceMode;
  const restored={roofType:'gable',lowerAngle:60,upperShare:50,ridgeLength:0,hipLength:0,breakLength:0,edgeLength:0,drainCount:0,battenSpacing:600,lathSpacing:500,roofWaste:0,...s.settings};
- job=s.settings.job;setupJob();for(const k of ['area','angle','basis','material','difficulty',...roofKeys])if(restored[k]!==undefined)$(k).value=restored[k];for(const el of document.querySelectorAll('#options input'))el.checked=s.settings.options.includes(el.value);configureRoof();for(const k of rateKeys)$(k).value=s.rates[k];lastSettings=restored;rows=s.rows.map(r=>({...r,materialQuantity:r.materialQuantity??r.quantity,materialUnit:r.materialUnit||r.unit,materialRatio:r.materialRatio??1,priceKey:r.priceKey===undefined&&r.material>0?`${job}.${r.id}${job==='roof'&&r.id==='cover'?'.'+s.settings.material:''}`:r.priceKey,manualPrice:Boolean(r.manualPrice)}));rows=applyTimeCatalog(restoreAssistantTimes(rows,restored),timeCatalog);edited=Boolean(s.edited);renderRows();update();if(result)$('status').textContent='Lokal kalkyle åpnet med lagrede priser. Valgte produkter oppdateres fra det siste innhentede prisregisteret.';
+ job=s.settings.job;setupJob();for(const k of ['area','angle','basis','material','difficulty',...roofKeys])if(restored[k]!==undefined)$(k).value=restored[k];for(const el of document.querySelectorAll('#options input'))el.checked=s.settings.options.includes(el.value);configureRoof();for(const k of rateKeys)$(k).value=s.rates[k];lastSettings=restored;rows=s.rows.map(r=>({...r,materialQuantity:r.materialQuantity??r.quantity,materialUnit:r.materialUnit||r.unit,materialRatio:r.materialRatio??1,priceKey:r.priceKey===undefined&&r.material>0?`${job}.${r.id}${job==='roof'&&r.id==='cover'?'.'+s.settings.material:''}`:r.priceKey,manualPrice:Boolean(r.manualPrice)}));rows=applyTimeCatalog(restoreAssistantTimes(rows,restored),timeCatalog);edited=Boolean(s.edited);renderRows();update();if(result)$('status').textContent='Lokal kalkyle åpnet. Lagrede markedsreferanser beholdes; konkrete produktvalg følger prisregisteret.';
  return true;}catch{$('status').textContent='Kunne ikke åpne lokal kalkyle. Lagrede data er ugyldige eller utilgjengelige.';return false;}}
 $('restore').onclick=()=>restoreCalculation();
 $('export').onclick=()=>{syncBoundPrices();marketSelectionSignature='';update();if(!result)return;downloadCsv([['RIGOR prisanslag – prisgrunnlag: '+priceMode+', ekskl. MVA; kontroller grunntider og omfang'],['Elementkode','Arbeidskode','Innkjøpskode','Salgskode','Oppgave','Mengde','Enhet','Materiellmengde','Materialenhet','Materiell kr/enhet','Timer/enhet','Tidsfaktor','Arbeidstimer','Arbeidspris ekskl. MVA','Materialpris ekskl. MVA','Kostnad','Pris ekskl. MVA','Priskilde','Prisdato'],...result.items.filter(r=>r.enabled).map(r=>{const c=rowCodes(r);return [c.element,c.work,c.purchase,c.sale,r.name,r.quantity,r.unit,r.materialQuantity,r.materialUnit,r.material,r.hours,r.factor,r.workHours,r.laborPrice,r.materialPrice,r.cost,r.price,r.priceSource,r.priceDate];}),['Totalt','','','','','','','','','','','',result.hours,result.items.reduce((s,r)=>s+r.laborPrice,0),result.items.reduce((s,r)=>s+r.materialPrice,0),result.cost,result.price],['Taktype',lastSettings.job==='roof'?roofTypes[lastSettings.roofType||'gable'].name:''],['Forutsetninger',jobs[job].uncertainty]],'rigor-prisanslag.csv');};
@@ -172,16 +177,16 @@ let codesRowId=null;
 function openCodes(id){const row=rows.find(r=>r.id===id);if(!row)return;codesRowId=id;const c=rowCodes(row);$('codes-title').textContent='Koder: '+row.name;$('codes-internal').textContent='Element: '+c.element+' · Oppgavenøkkel: '+row.taskKey;for(const key of ['work','salary','purchase','sale'])$('code-'+key).value=c[key];$('codes-status').textContent='';$('codes-dialog').showModal();}
 $('codes-cancel').onclick=()=>$('codes-dialog').close();
 $('codes-form').onsubmit=event=>{event.preventDefault();const row=rows.find(r=>r.id===codesRowId);if(!row)return;row.codeMappings=Object.fromEntries(['work','salary','purchase','sale'].map(k=>[k,$('code-'+k).value.trim()]));edited=true;renderRows();update();saveProject();$('codes-dialog').close();};
-function applyCatalog(){rows=rows.map(r=>({...r,manualPrice:false}));edited=true;renderRows();update();}
+function applyCatalog(){if(calculationMode!=='detailed')rows=rows.map(r=>({...r,manualPrice:false}));else if(priceMode==='import')rows=rows.map(r=>({...r,materialPriceChoice:r.manualPrice||r.materialPriceChoice==='product'?r.materialPriceChoice:undefined}));edited=true;renderRows();update();}
 $('price-mode').onchange=()=>{
  const next=$('price-mode').value;
- if(rows.some(r=>r.manualPrice)&&!confirm('Bytte prisgrunnlag erstatter manuelt satte materialpriser. Fortsette?')){$('price-mode').value=priceMode;return;}
+ if(calculationMode!=='detailed'&&rows.some(r=>r.manualPrice)&&!confirm('Bytte prisgrunnlag erstatter manuelt satte materialpriser. Fortsette?')){$('price-mode').value=priceMode;return;}
  priceMode=next;applyCatalog();
 };
 $('price-file').onchange=async()=>{
  const file=$('price-file').files[0];if(!file)return;
  try{if(file.size>2_000_000)throw Error('Prislisten er for stor (maks 2 MB).');const prices=parseCsv(await file.text());
- if(rows.some(r=>r.manualPrice)&&!confirm('Import erstatter manuelt satte materialpriser. Fortsette?'))return;
+ if(calculationMode!=='detailed'&&rows.some(r=>r.manualPrice)&&!confirm('Import erstatter manuelt satte materialpriser. Fortsette?'))return;
  importedPrices=prices;priceMode='import';$('price-mode').value=priceMode;applyCatalog();
  }catch(error){$('price-status').textContent='Import avvist: '+error.message+' Gjeldende priser er beholdt.';}
  $('price-file').value='';
@@ -193,7 +198,7 @@ $('template').onclick=()=>{
 function syncBoundPrices(){if(!publicCatalog)return;const selected=selectedPrices(publicCatalog.offers,marketBindings,Date.now(),marketStores).filter(p=>rows.filter(r=>r.priceKey===p.prisnokkel).every(r=>offersForRow(r,publicCatalog.offers,Date.now(),marketStores).some(o=>o.id===marketBindings[p.prisnokkel])));marketPrices=[...marketPrices.filter(p=>!Object.hasOwn(marketBindings,p.prisnokkel)),...selected];}
 function chooseMarketProduct(row,id){
  if(id){const offer=offersForRow(row,publicCatalog?.offers||[],Date.now(),marketStores).find(o=>o.id===id);if(!offer)throw Error('Varen har ingen gyldig pris for denne oppgaven og butikken.');marketBindings[row.priceKey]=id;}else delete marketBindings[row.priceKey];
- marketPrices=marketPrices.filter(p=>p.prisnokkel!==row.priceKey);syncBoundPrices();rows.forEach(r=>{if(r.priceKey===row.priceKey)r.manualPrice=false;});marketSelectionSignature='';edited=true;update();saveProject();
+ marketPrices=marketPrices.filter(p=>p.prisnokkel!==row.priceKey);syncBoundPrices();rows.forEach(r=>{if(r.priceKey===row.priceKey){r.manualPrice=false;r.materialPriceChoice=id?'product':undefined;}});marketSelectionSignature='';edited=true;update();saveProject();
 }
 let materialRowId=null;
 function renderMaterialChoices(){
@@ -233,6 +238,12 @@ async function refreshMarketPrices(){
  finally{$('refresh-prices').disabled=false;}
 }
 $('refresh-prices').onclick=refreshMarketPrices;
+const referenceUi=setupMarketReferenceUi({getState:()=>({rows,offers:publicCatalog?.offers||[],projectId:activeProject}),
+ onProduct:id=>openMaterialDialog(id),
+ onManual:id=>{view(true);document.querySelector(`[data-row-index='${rows.findIndex(r=>r.id===id)}'] [data-field=material]`)?.focus();},
+ onImport:id=>{const row=rows.find(r=>r.id===id),price=importedPrices.find(p=>p.prisnokkel===row?.priceKey);if(!price)throw Error('Importer en prisliste med riktig prisnøkkel først.');const check=applyPrices([{...row,manualPrice:false}],'import',[price])[0];if(check.priceIssue)throw Error('Den importerte prisen må ha gyldig dato og riktig materialenhet.');Object.assign(row,{manualPrice:false,materialPriceChoice:'import'});delete marketBindings[row.priceKey];edited=true;update();saveProject();},
+ onReference:(id,requirement,reference,quantity,updating)=>{const row=rows.find(r=>r.id===id);if(!row)throw Error('Posten finnes ikke lenger.');const previous=structuredClone(row),previousBinding=marketBindings[row.priceKey];if(updating&&row.priceBasis!=='market_reference')row.priceSnapshot=createReferenceSnapshot(reference);else{Object.assign(row,useReference(row,requirement,reference,{materialQuantity:quantity}));delete marketBindings[row.priceKey];}edited=true;renderRows();update();if(!saveProject()){Object.keys(row).forEach(k=>delete row[k]);Object.assign(row,previous);if(previousBinding)marketBindings[row.priceKey]=previousBinding;renderRows();update();throw Error('Prisgrunnlaget kunne ikke lagres. Forrige pris er beholdt.');}}
+});
 loadRateDefaults();setupJob();generate();
 
 let importFile=null,importGeneration=0,importClient=null;
@@ -259,7 +270,7 @@ for(const id of ['default-source','default-date'])$(id).oninput=()=>{if(importFi
 $('mapping-confirm').onchange=()=>{$('confirm-import').disabled=!$('mapping-confirm').checked;};
 $('confirm-import').onclick=()=>{
  if(!importFile||!$('mapping-confirm').checked)return;
- try{const prices=mapImport(importFile,currentMapping(),importDefaults());if(rows.some(r=>r.manualPrice)&&!confirm('Import erstatter manuelt satte materialpriser. Fortsette?'))return;
+ try{const prices=mapImport(importFile,currentMapping(),importDefaults());if(calculationMode!=='detailed'&&rows.some(r=>r.manualPrice)&&!confirm('Import erstatter manuelt satte materialpriser. Fortsette?'))return;
  importedPrices=prices;priceMode='import';$('price-mode').value=priceMode;applyCatalog();$('ai-import-status').textContent=`${prices.length} priser importert etter din bekreftelse. Kilde og dato følger prisene.`;$('mapping-confirm').checked=false;$('confirm-import').disabled=true;
  }catch(error){$('ai-import-status').textContent='Import avvist: '+error.message+' Gjeldende priser er beholdt.';}
 };
@@ -320,7 +331,7 @@ renderLibrary();
 const newProjectDefaults=projectSnapshot();
 const projectKey='rigor-projects-v1';let projects=[],activeProject=null,pendingMode='simple',editingProject=false,briefProjectId=null;
 try{const stored=JSON.parse(userStorage.getItem(projectKey)||'[]');if(Array.isArray(stored)&&stored.length<=100)projects=stored.filter(p=>p&&typeof p.id==='string'&&typeof p.name==='string'&&p.snapshot);else throw Error();}catch{$('project-message').textContent='Prosjektlisten kunne ikke leses. Lagrede data er ikke overskrevet.';}
-function projectSnapshot(){return {version:2,settings:structuredClone(lastSettings),rows:structuredClone(rows),rates:rates(),edited,priceMode,importedPrices:structuredClone(importedPrices),marketPrices:structuredClone(marketPrices),marketBindings:structuredClone(marketBindings),marketStores:structuredClone(marketStores),timeCatalog:structuredClone(timeCatalog)};}
+function projectSnapshot(){return {version:2,materialPricingMode:calculationMode,settings:structuredClone(lastSettings),rows:structuredClone(rows),rates:rates(),edited,priceMode,importedPrices:structuredClone(importedPrices),marketPrices:structuredClone(marketPrices),marketBindings:structuredClone(marketBindings),marketStores:structuredClone(marketStores),timeCatalog:structuredClone(timeCatalog)};}
 function persistProjects(){userStorage.setItem(projectKey,JSON.stringify(projects));}
 function projectHeader(){const p=projects.find(p=>p.id===activeProject);if(!p)return;$('project-title').textContent=p.name;$('project-meta').textContent=[p.customer,p.address,p.number?'Nr. '+p.number:'',p.state].filter(Boolean).join(' · ');}
 function saveProject(){if(!activeProject)return true;const index=projects.findIndex(p=>p.id===activeProject);const previous=projects[index];projects[index]={...previous,snapshot:projectSnapshot(),brief:$('job-brief').value,mode:calculationMode,updated:new Date().toISOString(),total:result?.price??null};try{persistProjects();return true;}catch{projects[index]=previous;$('status').textContent='Prosjektet kunne ikke lagres. Nettleserens lagringsplass kan være full.';return false;}}
