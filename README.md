@@ -376,3 +376,7 @@ Tester: `node tests/kalkyle-pdf.test.mjs`, `node tests/portal-user-storage.test.
 og `python3 tests/kalkyle-pdf-browser.py` (lokal server på port 8090).
 Nettlesertesten leser faktiske nedlastede PDF-er og kontrollerer beløp, interne
 opplysninger, norske tegn, logo, sideskift, mobil og separasjon mellom kontoer.
+
+AI-flyten har egne moduser for budsjettanslag og detaljert bibliotekarbeid.
+Se [AI-moduser og endringsoversikt](docs/ai-modes.md) for erfaringstall,
+spørrestrategi, faggrunnlag, providergrense, tester og publiseringsrekkefølge.

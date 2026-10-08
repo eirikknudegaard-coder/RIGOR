@@ -20,18 +20,20 @@ with sync_playwright() as p:
     page.locator('#project-submit').click()
     page.locator('#brief-generate').click()
     assert page.locator('#assistant-clarification').is_visible()
-    assert page.locator('#assistant-clarification-fields [data-clarification]').count() == 2
+    assert page.locator('#assistant-clarification-fields [data-clarification]').count() == 1
     assert page.evaluate('!(window.sentBriefs||[]).length')
     page.locator('[data-clarification="roof-angle"]').fill('30')
-    page.locator('[data-clarification="roof-basis"]').select_option('Målt takflate')
     page.locator('#assistant-continue').click()
     page.locator('#assistant-preview').wait_for(state='visible')
     assert page.evaluate('window.sentBriefs[0].includes("Takvinkel: 30 grader")')
     assert page.locator('[data-assistant-quantity]').input_value() == '20'
     assert page.locator('tr[data-row-index]').count() == 0
-    assert page.locator('.assistant-answer-form input').get_attribute('type') == 'number'
-    page.locator('.assistant-answer-form input').fill('6')
-    page.locator('.assistant-answer-form button').click()
+    assert page.locator('#assistant-questions').is_hidden()
+    assert 'mønelengden' in page.locator('#ai-budget').inner_text()
+    assert 'Valgfrie presiseringer' in page.locator('#ai-budget').inner_text()
+    # Optional length can be supplied normally without a blocking form.
+    page.locator('#job-brief').fill(page.locator('#job-brief').input_value()+'\nMønelengde: 6 m')
+    page.locator('#brief-generate').click()
     page.wait_for_function('window.sentBriefs.length===2')
     page.locator('#assistant-preview').wait_for(state='visible')
     assert page.evaluate('window.sentBriefs[1].includes("Mønelengde: 6 m")')
@@ -39,17 +41,17 @@ with sync_playwright() as p:
     page.locator('#assistant-apply').click()
     assert page.locator('tr[data-row-index]').count() == 3
 
-    page.locator('#job-brief').fill('Skal bytte kledning på huset.')
+    page.locator('#job-brief').fill('Skal bytte kledning på huset.\nKledningsmateriale: Trekledning\nKledningsprofil: Dobbelfals 19 × 148 mm\nEtterisolering: Nei, eksisterende isolasjon beholdes')
     page.locator('#brief-generate').click()
-    assert page.locator('#assistant-clarification-fields [data-clarification]').count() == 5
+    assert page.locator('#assistant-clarification-fields [data-clarification]').count() == 1
     page.set_viewport_size({'width': 390, 'height': 844})
     assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
     page.screenshot(path='/tmp/rigor-clarifications-mobile.png', full_page=True)
-    page.locator('[data-clarification="cladding-material"]').select_option('Trekledning')
-    page.locator('[data-clarification="cladding-direction"]').select_option('Stående (vertikal)')
-    page.locator('[data-clarification="cladding-profile"]').fill('Dobbelfals 19 × 148 mm')
-    page.locator('[data-clarification="cladding-area"]').fill('40')
-    page.locator('[data-clarification="cladding-insulation"]').select_option('Nei, eksisterende isolasjon beholdes')
+    page.locator('[data-clarification="wall-area"]').fill('40')
+    page.locator('#assistant-continue').click()
+    assert page.evaluate('window.sentBriefs.length===2')
+    assert page.locator('[data-clarification="wall-direction"]').is_visible()
+    page.locator('[data-clarification="wall-direction"]').select_option('Stående (vertikal)')
     page.locator('#assistant-continue').click()
     page.wait_for_function('window.sentBriefs.length===3')
     page.locator('#assistant-preview').wait_for(state='visible')
@@ -60,7 +62,7 @@ with sync_playwright() as p:
     assert 'Kledningsprofil: Dobbelfals' in stored
     page.locator('#job-brief').fill('Jeg skal bytte tak på huset.')
     page.locator('#brief-generate').click()
-    assert page.locator('[data-clarification="roof-type"]').is_visible()
+    assert page.locator('[data-clarification="roof-area"]').is_visible()
     page.locator('#assistant-preliminary').click()
     page.wait_for_function('window.sentBriefs.length===4')
     page.locator('#assistant-preview').wait_for(state='visible')

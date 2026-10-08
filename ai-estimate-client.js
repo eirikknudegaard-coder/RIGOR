@@ -13,8 +13,9 @@ export async function assistantStatus(fetcher=fetch){
   return {ready:false,state:'unavailable'};
  }catch{return {ready:false,state:'unavailable'};}
 }
-export async function requestEstimate(brief){
+export async function requestEstimate(brief,options={}){
  if(!client)client=await getPortalClient();
  const {data}=await client.auth.getSession();if(!data.session)throw Error('Logg inn i RIGOR-portalen før du bruker AI-assistenten.');
- const r=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json',apikey:publicKey,Authorization:'Bearer '+data.session.access_token},body:JSON.stringify({brief}),signal:AbortSignal.timeout(60000)});let result;try{result=await r.json();}catch{throw Error('AI-funksjonen er ikke tilgjengelig på serveren.');}if(!r.ok)throw Error(result.error||'Kunne ikke lage AI-forslag.');return result;
+ const payload=options.mode?{brief,mode:options.mode,context:options.context||{questionsAnswered:[]}}:{brief};
+ const r=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json',apikey:publicKey,Authorization:'Bearer '+data.session.access_token},body:JSON.stringify(payload),signal:AbortSignal.timeout(60000)});let result;try{result=await r.json();}catch{throw Error('AI-funksjonen er ikke tilgjengelig på serveren.');}if(!r.ok)throw Error(result.error||'Kunne ikke lage AI-forslag.');return result;
 }

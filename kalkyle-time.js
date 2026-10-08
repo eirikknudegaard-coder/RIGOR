@@ -1,5 +1,5 @@
 import {readCsv} from './kalkyle-prices.js';
-import {library} from './kalkyle-library.js?v=20261007-arbeidstimer';
+import {library} from './kalkyle-library.js?v=20261008-ai-modes';
 import {timeFactor} from './kalkyle-engine.js?v=20261007-arbeidstimer';
 
 // Stable task identifiers also work for snapshots created before taskKey existed.

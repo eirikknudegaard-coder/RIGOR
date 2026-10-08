@@ -57,3 +57,14 @@ test('Terrassefilter stopper kledningsspørsmål og deler faglige spesifikasjone
  assert(value.questions.includes('Hvilken overflate ønsker du på terrassebordene?'));
  const system=deps.payload().messages[0].content;assert(system.includes('Spør aldri om terrassebord er stående eller liggende'));assert(system.includes('spenn og belastning'));
 });
+test('Nye moduser bruker serverens fakta og validerte referanser; ubesvarte spørsmål begrenses',async()=>{
+ for(const mode of ['simple_estimator','detailed_copilot']){
+  const deps=setup();const response=await handleEstimate(request({brief,mode,context:{questionsAnswered:[]}}),deps);assert.equal(response.status,200);const value=await response.json();assert.equal(value.mode,mode);assert.equal(value.context.facts.area,100);assert(value.questions.length<=1);assert.equal(value.items[0].quantity,100);assert.equal(deps.payload().messages[1].content.includes(mode),true);assert.equal(deps.calls(),1);
+ }
+ for(const body of [{brief,mode:'fake'},{brief,mode:'simple_estimator',context:{price:999}},{brief,mode:'simple_estimator',context:{questionsAnswered:'fake'}}]){const deps=setup();assert.equal((await handleEstimate(request(body),deps)).status,400);assert.equal(deps.calls(),0);}
+});
+test('Providergrensen kan bruke en annen adapter uten å endre kalkyle eller sikkerhetskontroller',async()=>{
+ const deps=setup();let received;deps.provider={async run(input){received=input;return {value:proposal,usage:{prompt_tokens:10,completion_tokens:20}};}};
+ const response=await handleEstimate(request({brief,mode:'detailed_copilot'}),deps);assert.equal(response.status,200);assert.equal(received.mode,'detailed_copilot');assert.equal(received.context.facts.area,100);assert.equal(deps.calls(),0);assert.deepEqual(deps.logged(),{input_tokens:10,output_tokens:20});
+ const inactive=setup({inactive:true});inactive.provider={async run(){throw Error('Must not call');}};assert.equal((await handleEstimate(request({brief,mode:'simple_estimator'}),inactive)).status,403);
+});

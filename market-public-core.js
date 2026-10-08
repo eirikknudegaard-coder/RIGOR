@@ -1,3 +1,4 @@
+import {matchesAiMaterial} from './kalkyle-ai-material.js?v=20261008-ai-modes';
 // Public retailer data, parsed with explicit rules. No AI, sample prices or guesses.
 export const publicSources=[{id:'obs',name:'Obs BYGG',origin:'https://www.obsbygg.no',vat_policy_url:'https://www.obsbygg.no/kjopsvilkar'},{id:'byggmax',name:'Byggmax',origin:'https://www.byggmax.no',vat_policy_url:'https://www.byggmax.no/kundeservice/kj%C3%B8psvilk%C3%A5r'}];
 export function sourceUrl(value,source){const url=new URL(value);if(url.origin!==source.origin||url.username||url.password||url.hash)throw Error('Adresse utenfor leverandøren');return url.href;}
@@ -59,7 +60,7 @@ export function offersForRow(row,offers,now=Date.now(),stores={}){
  // A shared material family is not enough: shingles cannot price tile or metal roofing,
  // and a vapour barrier cannot price a roof underlay.
  const type=/\.cover\.tile$|\.tile\.cover$/.test(key)?/takstein/i:/\.cover\.metal$|\.metal\.cover$/.test(key)?/takplate|metall|stål|aluminium/i:/shingle|shingel/.test(key)?/shingel/i:/membran.*tekking|takmembran|\.cover\.membrane$/.test(key+' '+name.toLowerCase())?/takpapp|takmembran|membran/i:/undertak|sutak/.test(key+' '+name.toLowerCase())?/undertak|sutak/i:/vindsperre/.test(key+' '+name.toLowerCase())?/vindsperre/i:/dampsperre/.test(key+' '+name.toLowerCase())?/dampsperre/i:null;
- return kind?offers.filter(o=>o.kind===kind&&o.unit===unit&&usableOffer(o,now)&&offerInScope(o,stores)&&(!type||type.test(o.name))&&(!thickness||new RegExp('(?:^|\\D)'+thickness+'\\s*mm(?:\\D|$)','i').test(o.name))):[];
+ return kind?offers.filter(o=>o.kind===kind&&o.unit===unit&&usableOffer(o,now)&&offerInScope(o,stores)&&(!type||type.test(o.name))&&(!thickness||new RegExp('(?:^|\\D)'+thickness+'\\s*mm(?:\\D|$)','i').test(o.name))&&matchesAiMaterial(row,o)):[];
 }
 
 export function declaredVariantUrls(html,pageUrl,source){const urls=[];for(const m of html.matchAll(/<script\b[^>]*type\s*=\s*["']application\/ld\+json(?:;[^"']*)?["'][^>]*>([\s\S]*?)<\/script>/gi)){try{const root=JSON.parse(m[1]);for(const p of [root].flat()){if(String(p['@type']).split(/[\/#]/).at(-1)!=='ProductGroup'||!p.url||new URL(sourceUrl(p.url,source)).pathname!==new URL(pageUrl).pathname)continue;for(const v of [p.hasVariant].flat()){if(!v?.url||!v.sku)continue;const url=sourceUrl(v.url,source);if(new URL(url).pathname===new URL(pageUrl).pathname)urls.push(url);}}}catch{}}return [...new Set(urls)].slice(0,100);}

@@ -1,4 +1,5 @@
 import {planningTimes} from './kalkyle-time-estimates.js?v=20261007-arbeidstimer';
+import {aiWorkPackages} from './kalkyle-ai-library.js?v=20261008-ai-modes';
 // RIGOR's own editable templates. Times/consumption are assumptions, not industry norms.
 // task(id, title, hours/unit, price key, demonstration price, material unit, consumption)
 const task=(id,name,hours,priceKey=null,exampleMaterial=0,materialUnit='m²',materialRatio=1)=>({id,name,hours,priceKey,exampleMaterial,materialUnit,materialRatio});
@@ -138,6 +139,7 @@ for(const [key,label,unit] of [['cabinets','kjøkkenskap og fronter','stk'],['ap
 // Only explicitly reviewed planning profiles fill otherwise missing times.
 // Unmapped/specialist work still requires a supplied time or company import.
 for(let i=0;i<library.length;i++)library[i]=planningTimes(library[i]);
+library.push(...aiWorkPackages);
 
 export function instantiate(element,quantity,factor=1,selected=element.tasks.map(t=>t.id),instance=''){
  return element.tasks.filter(t=>selected.includes(t.id)).map(t=>({id:element.id+'.'+t.id+instance,elementId:element.id+instance,elementName:element.name,category:element.category,elementDescription:element.description||'',quantityNote:element.quantityNote||'',excludes:element.excludes||'',

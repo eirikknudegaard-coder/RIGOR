@@ -2,19 +2,22 @@ import {getPortalClient} from './portal-session.js?v=20261007-innlogging';
 import {userStorage} from './portal-user-storage.js?v=20261008-pdf';
 import {setupPdfExport} from './kalkyle-pdf-dialog.js?v=20261008-pdf';
 import {loadPublicCatalog} from './market-public-client.js?v=20261007-avklaringer';
-import {selectedPrices,offersForRow,usableOffer} from './market-public-core.js?v=20261007-avklaringer';
+import {selectedPrices,offersForRow,usableOffer} from './market-public-core.js?v=20261008-ai-modes';
 import {assistantStatus,requestEstimate} from './ai-estimate-client.js?v=20261007-innlogging';
-import {proposalRows,terraceProposalArea,extractMeasurements,validateProposal,clarificationQuestions,appendClarificationAnswers,wizardBrief} from './kalkyle-assistant.js?v=20261007-terrassevalg';
+import {proposalRows,terraceProposalArea,extractMeasurements,validateProposal,clarificationQuestions,appendClarificationAnswers,wizardBrief} from './kalkyle-assistant.js?v=20261008-ai-modes';
 import {jobs,propose,calculate,roofGeometry,roofConsumption,timeFactor} from './kalkyle-engine.js?v=20261007-arbeidstimer';
-import {library,roofTypes,instantiate,searchLibrary} from './kalkyle-library.js?v=20261007-arbeidstimer';
+import {library,roofTypes,instantiate,searchLibrary} from './kalkyle-library.js?v=20261008-ai-modes';
 import {parseCsv,validatePrices,applyPrices} from './kalkyle-prices.js?v=20261007-avklaringer';
-import {parseTimeCsv,validateTimeCatalog,applyTimeCatalog,restoreAssistantTimes,templateTask} from './kalkyle-time.js?v=20261007-arbeidstimer';
+import {parseTimeCsv,validateTimeCatalog,applyTimeCatalog,restoreAssistantTimes,templateTask} from './kalkyle-time.js?v=20261008-ai-modes';
 import {fields,prepareImport,sampleImport,checkMapping,mapImport} from './kalkyle-import.js?v=20261005-kategorier';
 import {rowCodes,codesFor,exportBasis,csvText} from './kalkyle-codes.js?v=20261007-arbeidstimer';
 import {renderCompletion} from './kalkyle-completion.js?v=20261007-arbeidstimer';
 import {followupFields,cleanFollowupQuestions} from './kalkyle-questions.js?v=20261007-terrassefag';
 import {reviewAssistantTasks,uniqueAssistantRows,findWorkOverlaps} from './kalkyle-task-overlap.js?v=20261007-overlapp';
 const $=id=>document.getElementById(id),money=n=>new Intl.NumberFormat('nb-NO',{style:'currency',currency:'NOK',maximumFractionDigits:2}).format(n),num=n=>new Intl.NumberFormat('nb-NO',{maximumFractionDigits:2}).format(n);
+import {annotateAiMaterial,aiSpecificationText} from './kalkyle-ai-material.js?v=20261008-ai-modes';
+import {setupAiModes} from './kalkyle-ai-ui.js?v=20261008-ai-modes';
+let aiModeController=null;
 const rateKeys=['wage','direct','indirect','billing','laborMarkup','materialMarkup'];
 let timeCatalog=[];const rateDefaultKey='rigor-rate-defaults-v1';
 let job='roof',rows=[],edited=false,lastSettings=null,result=null;
@@ -354,7 +357,7 @@ setupPdfExport({storage:userStorage,getData:()=>{update();return {rows:structure
  if(!saveProject()){projects[index]=previous;return false;}projectHeader();return true;
 }});
 
-function clearAssistantProposal(){assistantTicket++;assistantProposal=null;assistantClarifications=[];$('assistant-clarification').hidden=true;$('assistant-preview').hidden=true;$('assistant-items').replaceChildren();$('assistant-apply').disabled=false;}
+function clearAssistantProposal(){aiModeController?.clear();assistantTicket++;assistantProposal=null;assistantClarifications=[];$('assistant-clarification').hidden=true;$('assistant-preview').hidden=true;$('assistant-items').replaceChildren();$('assistant-apply').disabled=false;}
 function renderAssistantItems(proposal,brief,measurements){
  const selections=proposal.items.map(item=>({...item,selected:item.scope!=='optional',selectedTaskIds:[...item.taskIds]})),cards=[];
  $('assistant-items').replaceChildren();
@@ -365,7 +368,8 @@ function renderAssistantItems(proposal,brief,measurements){
   const tasks=new Map();
   for(const id of selection.taskIds){const task=e.tasks.find(t=>t.id===id),label=document.createElement('label');label.className='check';const check=document.createElement('input');check.type='checkbox';check.dataset.assistantTask=id;const text=document.createElement('span');text.textContent=task.name;const note=document.createElement('small');text.append(note);label.append(check,text);card.append(label);tasks.set(id,{check,note});check.onchange=()=>{selection.selectedTaskIds=selection.selectedTaskIds.filter(t=>t!==id);if(check.checked)selection.selectedTaskIds.push(id);refresh();};}
   const q=document.createElement('label');q.textContent='Mengde ('+e.unit+')';const input=document.createElement('input');input.type='number';input.min='0';input.max='1000000';input.step='any';input.dataset.assistantQuantity='';input.placeholder='Må avklares';input.setAttribute('aria-label','Forslagsmengde '+e.name);
-  if(e.id.startsWith('roof.')&&e.unit==='m²'&&measurements.area!==null){if(measurements.basis==='surface')input.value=measurements.area;else if(measurements.basis==='footprint'&&measurements.angle!==null&&measurements.roofType&&measurements.roofType!=='mansard')input.value=roofGeometry({...lastSettings,...measurements}).area;}
+  if(Number.isFinite(selection.quantity))input.value=selection.quantity;
+  else if(e.id.startsWith('roof.')&&e.unit==='m²'&&measurements.area!==null){if(measurements.basis==='surface')input.value=measurements.area;else if(measurements.basis==='footprint'&&measurements.angle!==null&&measurements.roofType&&measurements.roofType!=='mansard')input.value=roofGeometry({...lastSettings,...measurements}).area;}
   else if(assistantWizardReview&&e.unit==='m²'&&job==='insulation'&&e.id.startsWith('insulation.'))input.value=lastSettings.area;
   else{const area=terraceProposalArea(e,brief,measurements);if(area!==null)input.value=area;}
   q.append(input);card.append(q);$('assistant-items').append(card);cards.push({selected,scope,tasks,input});selected.onchange=()=>{selection.selected=selected.checked;refresh();};
@@ -424,6 +428,7 @@ function renderAssistantProposal(proposal,brief){
  $('assistant-settings-label').hidden=!(measurements.roofType&&measurements.roofType!=='mansard'&&measurements.area!==null&&measurements.angle!==null&&measurements.basis&&(measurements.roofType!=='flat'||measurements.angle<=5));$('assistant-use-settings').checked=Boolean(!$('assistant-settings-label').hidden&&!rows.length);$('assistant-preview').hidden=false;
 }
 async function generateAssistant(skipClarification=false){
+ if(aiModeController)return aiModeController.run({preliminary:skipClarification});
  if(!assistantReady||assistantBusy)return;if(!activeProject){projectDialog('detailed');$('project-form-error').textContent='Opprett prosjektet først. Beskrivelsen følger med.';return;}const brief=$('job-brief').value.trim();if(brief.length<10){$('brief-status').textContent='Skriv minst ti tegn om jobben.';return;}if(!saveProject())return;
  if(!skipClarification){const questions=clarificationQuestions(brief);if(questions.length){clearAssistantProposal();assistantClarifications=questions;renderClarificationFields($('assistant-clarification-fields'),questions);$('assistant-clarification').hidden=false;$('brief-status').textContent='Avklar noen detaljer først. Du kan også velge et foreløpig forslag med uavklarte mål.';return;}}
  clearAssistantProposal();const ticket=assistantTicket,projectId=activeProject;assistantBusy=true;$('brief-generate').disabled=true;$('wizard-ai-review').disabled=true;$('brief-status').textContent='AI vurderer oppgaver i biblioteket. Kalkylen endres ikke før du godkjenner.';
@@ -454,7 +459,7 @@ $('assistant-apply').onclick=()=>{
  if(!unique.rows.length){renderAssistantItems(proposal,proposal.brief,proposal.measurements);$('brief-status').textContent='De valgte oppgavene finnes allerede i kalkylen. Ingen dobbeltposter er lagt til.';return;}
  if(rows.length+unique.rows.length>500){$('brief-status').textContent='Maks 500 oppgaver i kalkylen.';return;}
  const m=proposal.measurements;if(!$('assistant-settings-label').hidden&&$('assistant-use-settings').checked&&m.roofType){job='roof';setupJob();$('roofType').value=m.roofType;if(m.area!==null)$('area').value=m.area;if(m.angle!==null)$('angle').value=m.angle;if(m.basis)$('basis').value=m.basis;configureRoof();lastSettings=settings();}
- const additions=applyTimeCatalog(unique.rows.map(r=>roofConsumption({...r,factor:timeFactor(templateTask(r).element,lastSettings)},lastSettings)),timeCatalog);
+ const additions=applyTimeCatalog(unique.rows.map(r=>{const tagged=proposal.mode?annotateAiMaterial(r,proposal.context.facts):r;const spec=aiSpecificationText(tagged);return roofConsumption({...tagged,name:r.name+(spec?' · '+spec:''),factor:timeFactor(templateTask(r).element,lastSettings)},lastSettings);}),timeCatalog);
  rows.push(...additions);edited=true;renderRows();update();view(proposal.fromWizard?calculationMode==='detailed':true);$('library-browser').open=false;clearAssistantProposal();$('brief-status').textContent=additions.length+' oppgaver lagt til med bibliotekets grunntider og prosjektets timesatser. Velg markedsvarer og kontroller manglende opplysninger.';saveProject();
 };
 async function refreshAssistantConnection(){
@@ -465,6 +470,9 @@ async function refreshAssistantConnection(){
  $('assistant-badge').disabled=false;$('assistant-badge').title='Sjekk AI-tilkoblingen på nytt';
  $('brief-generate').title=assistantReady?'Lager et forslag som du kontrollerer før det legges til':'AI-assistenten må være tilgjengelig før forslag kan lages';
 }
+aiModeController=setupAiModes({getState:()=>({project:projects.find(p=>p.id===activeProject),mode:calculationMode,ready:assistantReady,rows,existingRows:rows,library,rates:rates(),settings:lastSettings,priceMode,prices:priceMode==='import'?importedPrices:marketPrices,timeCatalog,offers:publicCatalog?.offers||[],bindings:marketBindings}),
+ saveContext:context=>{if(!valid())return false;const index=projects.findIndex(p=>p.id===activeProject);if(index<0)return false;const previous=projects[index];projects[index]={...previous,aiContext:structuredClone(context)};if(!saveProject()){projects[index]=previous;return false;}return true;},
+ showProposal:renderAssistantProposal,renderQuestionFields:renderClarificationFields,openProject:()=>projectDialog(calculationMode),switchDetailed:()=>view(true)});
 $('assistant-badge').onclick=refreshAssistantConnection;
 refreshAssistantConnection();
 

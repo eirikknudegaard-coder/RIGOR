@@ -1,4 +1,4 @@
-import {instantiate} from './kalkyle-library.js?v=20261007-arbeidstimer';
+import {instantiate} from './kalkyle-library.js?v=20261008-ai-modes';
 import {timeFactor} from './kalkyle-engine.js?v=20261007-arbeidstimer';
 export {extractMeasurements,validateProposal,clarificationQuestions,appendClarificationAnswers} from './supabase/functions/rigor-ai-estimate/proposal.js?v=20261007-terrassevalg';
 export function proposalRows(element,quantity,instance,settings={}){
