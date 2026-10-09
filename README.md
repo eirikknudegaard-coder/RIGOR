@@ -18,6 +18,18 @@ python -m http.server 8080
 
 Åpne deretter `http://localhost:8080`.
 
+## RIGOR Konstruksjon
+
+`konstruksjon.html` er en separat byggteknisk assistent med lastvei, ett
+avklaringsspørsmål om gangen og orienterende analyse av enkle bjelker og
+utkragere. AI foreslår bekreftbare fakta; deterministisk kode regner og
+forklarer resultatene. Grunnlag, kilder og diagrammer kan åpnes ved behov.
+Ingen full Eurocodekontroll eller teknisk godkjenning gis i første versjon.
+Verktøyet krever egen `konstruksjon`-tilgang i portalen.
+
+[Modeller, avgrensninger, fagkilder og tester](docs/construction-assistant.md)
+og [backendaktivering](supabase/CONSTRUCTION.md).
+
 ## Før publisering
 
 Bytt kontaktinformasjon og organisasjonsnummer i `index.html` når dette er klart.
