@@ -73,11 +73,35 @@ langsgående bjelke … enkle cc60 … hvor plasseres de» behandles som
 høyde og bæring ved huset stilles først. c/c 60 er 600 mm for bjelkelaget;
 det er ikke en stolpeavstand. Ingen doble bjelker gis et massivt dobbelt tverrsnitt.
 
-Terrasseplanen trenger dokumenterte maksimale spenn for bjelkelag og drager.
-Den deler rektangelet i enkle felt, gir dragerlinjer/støttekoordinater og Gk/Qk-
-reaksjoner fra flatebelastning. Summen av reaksjonene bevarer areallasten.
-Innfesting, hver planke i dobbel drager, stolper og fundament må kontrolleres
-separat. Planstatus er alltid `layout_only`, aldri dimensjonert terrasse.
+Terrasseskjemaet beregner nå største bjelkespenn fra faktisk tverrsnitt, materialklasse,
+klimaklasse, oppbygning og karakteristiske laster. Egenvekten følger volum og
+oppgitt borddensitet; bjelke-/dragertetthet følger materialgrunnlaget. Det tas
+hensyn til fordelt og konsentrert nyttelast som separate tilfeller, eventuell
+oppgitt snølast, ULS-bøyning/skjær/opplegg og SLS med skjærdeformasjon/kryp.
+
+Bjelkespennet søkes numerisk mot medlemskontrollene. Planen får først like
+felt i dybderetningen, deretter største beståtte like stolpeavstand på terrassens
+oppgitte lengde. Dette er ikke et universelt maksimalt dragerspenn: lastbredde,
+faktiske bjelkereaksjoner og oppleggstrykk bestemmer hvert felt. De diskrete
+bjelkereaksjonene beholder felles lasttype/kombinasjonsfaktor. Oppleggstrykk på
+stolpehodet summerer reaksjonene fra begge tilstøtende felt.
+
+Hver planke i en dobbel drager kontrolleres separat. Ubekreftet lastdeling
+betyr konservativt full last på hver planke, ikke et massivt dobbelt tverrsnitt.
+Fysisk kontaktflate og kc,90 = 1 brukes, uten gunstige effektive flateøkninger.
+Det kan derfor være oppleggstrykk som krever større kontaktflate, dokumentert
+lastdeling eller andre dimensjoner fremfor flere stolper.
+
+En redigerbar 2D-plan har dragerlinjer og felles stolperekker, flytting med mus
+eller koordinatfelt, tillegg/bortvalg og SVG-/JSON-eksport. Endring skjuler og
+invaliderer resultatet; lastene må regnes på nytt. Skissen er rektangulær uten
+utkraging; polygoner, globale rammer og egen søyledimensjonering inngår ikke.
+
+EN kategori A balkong gir et synlig, foreløpig eksempel på qk = 4 og Qk = 3.
+Dette er øvre EN-tabellverdier, ikke automatisk validert norsk NA. Ukjent snølast
+forblir en avklaring og gir aldri komplett medlemsstatus. Stolper, forbindelser,
+fundament, rekkverk og global stabilitet er særskilte kontroller. Tidligere
+`planTerrace` bevares som et rent geometri-API for dokumenterte spenn.
 
 AI-fakta valideres hver for seg. Et ugyldig eller udokumentert felt utelates og
 blir et spørsmål; øvrige dokumenterte fakta beholdes som brukerforslag. Ugyldig

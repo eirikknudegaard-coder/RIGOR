@@ -1,12 +1,12 @@
 import {analyzeMember} from './member-engine.js';
-import {planTerrace} from './terrace-plan.js';
+import {initTerraceUi} from './terrace-ui.js';
 import {renderDiagrams,renderTerracePlan} from './diagram-renderer.js';
 const fmt=(n,d=2)=>new Intl.NumberFormat('nb-NO',{maximumFractionDigits:d}).format(n);
 const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
 export function initManual(root){
  if(!root)return;
  let result=null,rowId=0;
- const form=el('form',undefined,'rib-form'),error=el('p',undefined,'rib-error'),report=el('section',undefined,'rib-report');error.setAttribute('role','alert');report.setAttribute('aria-live','polite');
+ const form=el('form',undefined,'rib-form'),error=el('p',undefined,'rib-error'),report=el('section',undefined,'rib-report member-report');error.setAttribute('role','alert');report.setAttribute('aria-live','polite');
  const controls={},rows=[],groups={};
  function group(title,help){const fieldset=el('fieldset'),legend=el('legend',title);fieldset.append(legend,el('p',help,'muted'));const grid=el('div',undefined,'rib-fields');fieldset.append(grid);form.append(fieldset);return grid;}
  function field(parent,id,title,{options=null,value='',help='',required=true}={}){
@@ -59,26 +59,23 @@ export function initManual(root){
  for(const [id,title,value]of [['gammaG','γG – ugunstig permanent last',1.35],['gammaQ','γQ – variabel last',1.5],['xi','ξ – reduksjon i 6.10b',.85],['gammaM','γM / γM0 – materiale',1.3],['gammaM1','γM1 – stålknekking',1],['gammaC','γC – betong',1.5],['gammaS','γS – armering',1.15],['alphaCC','αcc – betong',.85],['kcr','kcr – effektiv trebredde for skjær',.67]])field(basis,id,title,{value});
  field(basis,'standardSource','Standardutgave og dokumentert NA-grunnlag',{required:false,help:'Angi NS-EN-utgaver, norske NA-utgaver og kilde for faktorene.'});controls.standardSource.inputMode='text';
  tick(basis,'confirmed','Jeg har kontrollert standardutgavene og prosjektets NA-verdier','Ubekreftede verdier gir bare en foreløpig beregning. En avkrysning er brukerens bekreftelse, ikke ekstern sertifisering.');
- const terrace=group('Terrasse: geometri og lastvei','Legg inn maksimale spenn fra kontrollerte medlemsberegninger. c/c for bjelkelaget bestemmer ikke alene antall stolper.');groups.terrace=terrace.parentElement;
- for(const [id,title]of [['terraceLengthM','Lengde langs huset (m)'],['terraceDepthM','Dybde ut fra huset (m)'],['terraceHeightM','Høyde over terreng (m)'],['joistSpanM','Kontrollert største bjelkespenn (m)'],['beamSpanM','Kontrollert største dragerspenn (m)'],['spacingMm','Bjelkelag c/c (mm)'],['deadKnM2','Karakteristisk permanent flatebelastning (kN/m²)'],['liveKnM2','Karakteristisk variabel flatebelastning (kN/m²)']])field(terrace,id,title);
- field(terrace,'wallSupport','Bæring ved huset',{options:[['','Velg'],['documented','Dokumentert innfesting / bæring ved huset'],['free_standing','Frittstående – egne stolper på begge sider']]});
- field(terrace,'spanSource','Kilde for kontrollerte spenn og laster',{help:'Beregningsreferanse / dokumentasjon. Dobbel drager krever kontroll av lastdeling og forbindelser.'});controls.spanSource.inputMode='text';
- const submit=el('button','Beregn medlem','rib-submit');submit.type='submit';form.append(error,submit);root.append(form,report);
+ const terracePanel=el('section',undefined,'terrace-panel');
+ const submit=el('button','Beregn medlem','rib-submit');submit.type='submit';form.append(error,submit);root.append(form,terracePanel,report);
+ const terraceUi=initTerraceUi(terracePanel);
  function visible(id,show){const c=controls[id];c.parentElement.hidden=!show;c.disabled=!show;}
  function sync(){
   const member=controls.member.value,family=controls.family.value,beam=member==='beam',column=member==='column',deck=member==='terrace';
-  for(const key of ['dims','mat','loads','basis'])groups[key].hidden=deck;groups.terrace.hidden=!deck;controls.family.disabled=deck;controls.family.parentElement.hidden=deck;
+  for(const key of ['dims','mat','loads','basis'])groups[key].hidden=deck;terracePanel.hidden=!deck;submit.hidden=deck;controls.family.disabled=deck;controls.family.parentElement.hidden=deck;
   for(const key of ['system','limitRatio'])visible(key,beam);visible('bearingMm',beam&&family==='timber');
   for(const key of ['effectiveYM','effectiveZM','thetaDenominator','globalSway'])visible(key,column);
   for(const key of ['grade','serviceClass','kcr'])visible(key,family==='timber');
   for(const key of ['fyMPa','strengthSource'])visible(key,family==='steel');visible('bucklingCurve',family==='steel'&&column);visible('gammaM1',family==='steel');
   for(const key of ['fckMPa','fykMPa','reinforcementMm2','gammaC','gammaS','alphaCC'])visible(key,family==='concrete');visible('coverToSteelMm',family==='concrete'&&beam);
-  for(const [key,c]of Object.entries(controls))if(key.startsWith('terrace')||['joistSpanM','beamSpanM','spacingMm','deadKnM2','liveKnM2','wallSupport','spanSource'].includes(key))c.disabled=!deck;
   for(const group of [groups.dims,groups.mat,groups.loads,groups.basis])for(const c of group.querySelectorAll('input,select'))if(deck)c.disabled=true;
   if(!deck){for(const key of ['widthMm','heightMm','lengthM','restrained','supportsVerified','addSelfWeight','expression','gammaG','gammaQ','xi','gammaM','standardSource','confirmed'])controls[key].disabled=false;}
   for(const r of rows){const variable=r.fields.kind.value==='Q';for(const key of ['qKnM','pKn','xM']){r.fields[key].parentElement.hidden=!beam;r.fields[key].disabled=!beam||deck;}for(const key of ['nKn','myKnM','mzKnM','hKn']){r.fields[key].parentElement.hidden=!column;r.fields[key].disabled=!column||deck;}for(const key of ['psi0','psi1','psi2','duration']){r.fields[key].parentElement.hidden=!variable;r.fields[key].disabled=!variable||deck;}r.fields.source.disabled=deck;r.fields.name.disabled=deck;r.fields.kind.disabled=deck;}
   scope.textContent=family==='concrete'?'Betong: enkel strekkarmert bjelke får ULS-bøyning og skjærreferanse. Riss, bøyledetaljer, kryp og armert søyle med andreordensvirkning er ikke ferdig kontrollert; resultatet blir ufullstendig.':family==='steel'?'Stål: massivt rektangel. Elastisk bjelkekontroll og ren trykk-/bøyeknekking. Stålprofiler og søyler med moment krever flere kontroller.':'Tre: rektangulært C24/GL30c, bøyning, skjær, knekking, toakset trykk/bøyning, oppleggstrykk og nedbøyning med kryp. Vipping krever dokumentert fastholding.';
-  submit.textContent=deck?'Lag plan fra kontrollerte spenn':'Beregn medlem';
+  submit.textContent='Beregn medlem';
  }
  function numeric(c,blankZero=false){const s=c.value.trim();if(!s&&blankZero)return 0;if(!/^\d+(?:[.,]\d+)?$/.test(s))throw Error('Oppgi et positivt tall i «'+(c.parentElement.querySelector('span')?.textContent||c.name)+'».');return Number(s.replace(',','.'));}
  const num=id=>numeric(controls[id]);
@@ -124,7 +121,7 @@ export function initManual(root){
  function invalidate(){result=null;report.replaceChildren();report.hidden=true;error.textContent='';}
  controls.member.onchange=()=>{sync();invalidate();};controls.family.onchange=()=>{if(controls.family.value==='steel')controls.gammaM.value='1';else if(controls.family.value==='timber')controls.gammaM.value=controls.grade.value==='C24'?'1.3':'1.25';controls.confirmed.checked=false;sync();invalidate();};controls.grade.onchange=()=>{controls.gammaM.value=controls.grade.value==='C24'?'1.3':'1.25';controls.confirmed.checked=false;invalidate();};
  form.addEventListener('input',event=>{if(event.target!==controls.confirmed)controls.confirmed.checked=false;invalidate();});form.addEventListener('change',event=>{if(event.target!==controls.confirmed)controls.confirmed.checked=false;invalidate();});
- form.onsubmit=event=>{event.preventDefault();invalidate();try{result=controls.member.value==='terrace'?planTerrace({lengthM:num('terraceLengthM'),depthM:num('terraceDepthM'),heightM:num('terraceHeightM'),joistSpanM:num('joistSpanM'),beamSpanM:num('beamSpanM'),spacingMm:num('spacingMm'),deadKnM2:num('deadKnM2'),liveKnM2:num('liveKnM2'),wallSupport:controls.wallSupport.value,spanSource:controls.spanSource.value.trim()}):analyzeMember(input());render(result);report.scrollIntoView({block:'nearest',behavior:'smooth'});}catch(e){error.textContent=e.message;}};
+ form.onsubmit=event=>{event.preventDefault();invalidate();if(controls.member.value==='terrace')return;try{result=analyzeMember(input());render(result);report.scrollIntoView({block:'nearest',behavior:'smooth'});}catch(e){error.textContent=e.message;}};
  addRow('G');addRow('Q');sync();report.hidden=true;
- return {open(member='beam',context=null){controls.member.value=member;sync();if(context){const facts=context.facts||{},complex=['profile','multiple_members'].includes(facts.sectionConstruction?.value);for(const [key,id]of [['spanM','lengthM'],['widthMm','widthMm'],['heightMm','heightMm'],['terraceLengthM','terraceLengthM'],['terraceDepthM','terraceDepthM'],['terraceHeightM','terraceHeightM'],['spacingMm','spacingMm'],['terraceWallSupport','wallSupport']])if(facts[key]&&!(complex&&['widthMm','heightMm'].includes(key)))controls[id].value=String(facts[key].value);}controls.confirmed.checked=false;invalidate();}};
+ return {open(member='beam',context=null){controls.member.value=member;sync();if(member==='terrace')terraceUi.open(context);if(context){const facts=context.facts||{},complex=['profile','multiple_members'].includes(facts.sectionConstruction?.value);for(const [key,id]of [['spanM','lengthM'],['widthMm','widthMm'],['heightMm','heightMm']])if(facts[key]&&!(complex&&['widthMm','heightMm'].includes(key)))controls[id].value=String(facts[key].value);}controls.confirmed.checked=false;invalidate();}};
 }

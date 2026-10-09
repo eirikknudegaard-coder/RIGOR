@@ -1,0 +1,34 @@
+{
+  "sources": [
+    {
+      "url": "https://www.phd.eng.br/wp-content/uploads/2015/12/en.1991.1.1.2002.pdf",
+      "checkedAt": "2026-10-09T15:07:53.772231+00:00",
+      "sha256": "e03230bff2f3579a6e1d6a18c40b530711b11839a32a99c45b3c29f35bc41db3",
+      "page": 24,
+      "evidence": "EN 1991-1-1:2002 table 6.2: category A balconies qk 2.5–4.0 kN/m² and Qk 2.0–3.0 kN. National annex may set values. Concentrated local verification is a separate case."
+    },
+    {
+      "url": "https://www.moelven.com/globalassets/moelven-limtre/brosjyrer/terrassebrosjyre-moelven-limtre-november-2021.pdf",
+      "checkedAt": "2026-10-09T15:07:53.802931+00:00",
+      "sha256": "af0a7e04d766e6ec2b54313982dd931e724745946f41594768318d06eb88d3ad",
+      "page": 2,
+      "evidence": "Terrace glulam table: L/300, reliability class 1, service class 2, imposed load 4.0 kN/m²; third support assumes continuity. These conditions are not copied as a generic outdoor C24 profile."
+    },
+    {
+      "url": "https://www.bergeneholm.no/inspirasjon/byggeguider/bygge-terrasse-bjelkelagstabellen/",
+      "checkedAt": "2026-10-09T15:07:53.805805+00:00",
+      "sha256": "0350c780439e70bb9c83e9bdb984506fdbbfb8032ae6ce5c08061e5f1eebc025",
+      "page": null,
+      "evidence": "Manufacturer terrace table assumes design snow load 4.5 kN/m², not characteristic snow load. C24 48x198 at c/c600: indicative 3.1 m. Board thickness 21/28/34 mm requires c/c400/600/800 mm respectively."
+    },
+    {
+      "url": "https://standard.no/fagomrader/bygg-anlegg-og-eiendom/eurokoder1/",
+      "checkedAt": "2026-10-09T15:07:53.806853+00:00",
+      "sha256": "b75735bbdc5c9901a4cee18506ed6c1136e7a43c5e7721c049395b0168c3894f",
+      "page": null,
+      "evidence": "First generation Eurocodes remain applicable during transition; national annexes with nationally determined parameters must be used."
+    }
+  ],
+  "nationalAnnexVerified": false,
+  "notes": "The EN table was visually read from original PDF. No UK or Swedish NA values are presented as Norwegian values."
+}

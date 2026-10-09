@@ -3,7 +3,7 @@
 const positive=(v,name)=>{if(!Number.isFinite(v)||v<=0)throw Error('Ugyldig '+name);return v;};
 export function solveBeam({system,spanM,qNPerM=0,points=[],stiffness=null}){
  const L=positive(spanM,'spenn');if(L>30||!['simple','cantilever'].includes(system))throw Error('Dette statiske systemet støttes ikke.');
- if(!Number.isFinite(qNPerM)||qNPerM<0||qNPerM>500000||!Array.isArray(points)||points.length>20)throw Error('Ugyldig last.');
+ if(!Number.isFinite(qNPerM)||qNPerM<0||qNPerM>500000||!Array.isArray(points)||points.length>250)throw Error('Ugyldig last.');
  for(const p of points)if(!p||Object.keys(p).some(k=>!['xM','forceN'].includes(k))||!Number.isFinite(p.forceN)||p.forceN<0||p.forceN>5000000||!Number.isFinite(p.xM)||p.xM<0||p.xM>L)throw Error('Punktlasten må ligge på bjelken.');
  const EI=stiffness?positive(stiffness.ePa,'E-modul')*positive(stiffness.iM4,'arealmoment'):null;
  const q=qNPerM,P=points.reduce((s,p)=>s+p.forceN,0),total=q*L+P;
