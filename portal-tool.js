@@ -11,7 +11,7 @@ function lock(text='Kontrollerer innlogging og tilgang …'){
 }
 function redirect(denied=false){version++;lock('Åpner innlogging i RIGOR-portalen …');location.replace(toolLoginUrl(location.href,denied));}
 async function loadApp(){
- if(!loading)loading=page==='kalkyle'?Promise.all([import('./kalkyle.js?v=20261009-reference'),import('./kalkyle-help.js?v=20261007-innlogging')]):page==='priser'?import('./priser.js?v=20261007-innlogging'):page==='konstruksjon'?import('./construction/ui.js?v=20261008-construction'):Promise.reject(Error('Ukjent verktøy'));
+ if(!loading)loading=page==='kalkyle'?Promise.all([import('./kalkyle.js?v=20261009-reference'),import('./kalkyle-help.js?v=20261007-innlogging')]):page==='priser'?import('./priser.js?v=20261007-innlogging'):page==='konstruksjon'?import('./construction/ui.js?v=20261009-rib'):Promise.reject(Error('Ukjent verktøy'));
  return loading;
 }
 async function verify(){

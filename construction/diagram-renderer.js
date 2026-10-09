@@ -34,3 +34,13 @@ export function renderDiagrams(container,beam){
  if(beam.maxDeflection)diagrams.push(plot(beam,'deflectionM',1000,'Nedbøyning – positiv verdi nedover','mm'));
  container.replaceChildren(...diagrams);
 }
+export function renderTerracePlan(container,plan){
+ const L=plan.input.lengthM,D=plan.input.depthM,scale=Math.min(620/L,290/D),left=90,top=80,x=m=>left+m*scale,y=m=>top+m*scale;
+ const svg=root('Terrasse sett ovenfra: dragerlinjer og beregnede støttekoordinater, kapasitet ikke kontrollert',800,440);
+ svg.append(el('rect',{x:left,y:top,width:L*scale,height:D*scale,fill:'#fbf7f0',stroke:'#c7b9a9'}));
+ const shown=Math.min(plan.joistCount,70);for(let j=0;j<shown;j++)line(svg,x(j*L/(shown-1)),top,x(j*L/(shown-1)),y(D),{stroke:'#d6d0c8','stroke-width':1});
+ for(const row of plan.rows){line(svg,left,y(row.yM),x(L),y(row.yM),{stroke:row.type==='wall'?'#26292b':'#876044','stroke-width':row.type==='wall'?7:4});text(svg,x(L)+10,y(row.yM)+4,fmt(row.yM)+' m',{'text-anchor':'start','font-size':11});}
+ for(const support of plan.supports){const dot=el('circle',{cx:x(support.xM),cy:y(support.yM),r:5,fill:'#876044',stroke:'white','stroke-width':1});dot.append(el('title',{},'Støtte: x '+fmt(support.xM)+' m, y '+fmt(support.yM)+' m; Gk '+fmt(support.gkKn)+' kN, Qk '+fmt(support.qkKn)+' kN'));svg.append(dot);}
+ text(svg,left+L*scale/2,40,'Ved huset · lengde '+fmt(L)+' m');text(svg,left+L*scale/2,y(D)+28,'Dybde fra huset '+fmt(D)+' m');text(svg,400,415,'Brune prikker = støttepunkter. Dragerlinjer er feltvise, uten utkraging.');
+ container.replaceChildren(svg);
+}

@@ -10,6 +10,12 @@ const fill=(values,c=emptyContext('Kontrollert testbeskrivelse'))=>Object.entrie
 const close=(a,b)=>assert(Math.abs(a-b)<1e-9);
 const beam={goal:'check_beam',system:'simple',spanM:4,loadChoice:'line',lineLoadKnM:2,loadBasis:'documented',loadSource:'Testtegning K-01'};
 const roof={goal:'remove_wall',openingM:3.2,direction:'across',roofBearsOnWall:'yes',floorAbove:'no',loadChoice:'roof',roofSupport:'ridge_beam',roofSides:'one',rafterSpanM:4.4,spanBasis:'horizontal',roofDeadKnM2:.8,roofSnowKnM2:2,deadBasis:'horizontal',loadBasis:'preliminary',loadSource:'Brukerens eksempel, ikke stedsspesifikk last'};
+test('Terrace arrangement is a separate planning task and asks dimensions rather than forcing a single beam',()=>{
+ let c=interpretDescription('Hvor mange søyler trenger jeg på min terrasse? Jeg legger dobbel langsgående bjelke, og enkle cc60 bjelker på tvers. Hvor bør de plasseres?');
+ assert.equal(fact(c,'goal'),'plan_terrace');assert.equal(fact(c,'spacingMm'),600);assert.equal(fact(c,'widthMm'),undefined);assert.equal(nextQuestion(c).id,'terraceLengthM');assert.equal(analyzeStructure(c).beam,null);assert.match(buildLoadPath(c).findings[0].text,/c\/c/);
+ c=fill({terraceLengthM:8,terraceDepthM:4,terraceHeightM:1,terraceWallSupport:'free_standing'},c);assert.equal(nextQuestion(c),null);assert.equal(buildStructuralModel(c).ready,false);
+ const col=interpretDescription('Jeg vil kontrollere en søyle i tre.');assert.equal(fact(col,'goal'),'check_column');assert.equal(nextQuestion(col),null);assert.equal(analyzeStructure(col).beam,null);
+});
 test('Informal wall example retains nominal size and asks one relevant question without converting it',()=>{
  let c=interpretDescription('Trenger jeg en drager her? Bindingsverk c/c 600, 2x8 og saltak med 25 graders vinkel. Jeg vil fjerne ca. 3 meter av veggen.');
  assert.equal(fact(c,'goal'),'remove_wall');assert.equal(fact(c,'nominalSection'),'2x8');assert.equal(fact(c,'widthMm'),undefined);assert.equal(fact(c,'heightMm'),undefined);assert.equal(fact(c,'openingM'),3);assert.equal(fact(c,'roofAngleDeg'),25);assert.equal(fact(c,'spacingMm'),600);assert.equal(nextQuestion(c).id,'memberRole');
