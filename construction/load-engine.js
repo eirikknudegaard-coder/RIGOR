@@ -3,6 +3,10 @@ import {rectangle} from './sections.js';
 import {materialFor} from './materials.js';
 export function buildStructuralModel(input){
  const c=validateContext(input),get=id=>fact(c,id),required=[],derived=[],assumptions=[],limitations=[];
+ if(['plan_terrace','check_column'].includes(get('goal'))){
+  const ids=get('goal')==='plan_terrace'?['terraceLengthM','terraceDepthM','terraceHeightM','terraceWallSupport']:[];
+  return {ready:false,required:ids.filter(id=>get(id)===undefined||get(id)==='unknown'),derived,assumptions,limitations:[get('goal')==='plan_terrace'?'Terrassen krever en plan for bjelkelag, dragere, stolper og fundament. Den erstattes ikke av én enkelt bjelke.':'Bruk søyleskjemaet for normalkraft, knekkelengder og materialkontroll.'],section:null};
+ }
  const need=id=>{if(get(id)===undefined||get(id)==='unknown'||c.conflicts[id])required.push(id);};
  const goal=get('goal');need('goal');
  const system=get('system')||(goal==='remove_wall'?'simple':null);

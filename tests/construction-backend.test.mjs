@@ -37,8 +37,16 @@ test('Strict bounded input and quota errors stop before provider billing',async(
 test('Only quoted proposals are returned; material values and calculation outputs are excluded from AI schema',async()=>{
  const d=fixture(),r=await handleConstruction(req(),d);assert.equal(r.status,200);const data=await r.json();assert.equal(data.requiresConfirmation,true);assert.equal(data.facts[0].status,'PROPOSED');assert.equal(d.payload().model,'gpt-4.1-mini');assert(d.payload().response_format.json_schema.strict);assert.equal(d.payload().max_completion_tokens,2200);assert.deepEqual(d.logged(),{input_tokens:100,output_tokens:20});
  const schema=JSON.stringify(d.payload().response_format);assert(!schema.includes('momentNm'));assert(!schema.includes('ePa'));assert(!schema.includes('approved'));
- for(const bad of [{facts:[{...output.facts[0],value:10}]},{facts:output.facts,approved:true},{facts:[{field:'heightMm',value:198,evidence:'2x8'}]}]){const dep=fixture({output:bad});assert.equal((await handleConstruction(req(),dep)).status,502);}
+ assert.equal((await handleConstruction(req(),fixture({output:{facts:output.facts,approved:true}}))).status,502);
+ for(const bad of [{facts:[{...output.facts[0],value:10}]},{facts:[{field:'heightMm',value:198,evidence:'2x8'}]}]){const dep=fixture({output:bad}),response=await handleConstruction(req(),dep);assert.equal(response.status,200);const parsed=await response.json();assert.deepEqual(parsed.facts,[]);assert.equal(parsed.partial,true);}
  for(const options of [{providerError:true},{badUsage:true},{logError:true},{truncated:true}])assert.notEqual((await handleConstruction(req(),fixture(options))).status,200);
+});
+test('The terrace question keeps evidenced intent and c/c when an invented drager dimension is rejected',async()=>{
+ const text='Hvor mange søyler trenger jeg på min terrasse? Jeg legger dobbel langsgående bjelke og enkle cc60 bjelker på tvers. Hvor bør de plasseres?';
+ const proposed={facts:[{field:'goal',value:'plan_terrace',evidence:'Hvor mange søyler trenger jeg på min terrasse'},{field:'spacingMm',value:600,evidence:'cc60'},{field:'widthMm',value:96,evidence:'dobbel langsgående bjelke'}]};
+ const d=fixture({output:proposed}),r=await handleConstruction(req({action:'interpret',brief:text,schemaVersion:2}),d),data=await r.json();
+ assert.equal(r.status,200);assert.equal(data.facts.length,2);assert.equal(data.facts[0].value,'plan_terrace');assert.equal(data.facts[1].value,600);assert.deepEqual(data.rejectedFields,['widthMm']);assert.equal(data.partial,true);assert.equal(data.requiresConfirmation,true);assert.equal(d.calls(),1);
+ const legacy=await handleConstruction(req({action:'interpret',brief:text}),fixture({output:proposed}));assert.equal(legacy.status,200);assert.deepEqual((await legacy.json()).facts.map(f=>f.field),['spacingMm']);
 });
 test('Explanation is rebuilt from the deterministic model and supports an independent provider adapter',async()=>{
  let c=emptyContext('En drager for orienterende lastanalyse');for(const [k,v]of Object.entries({goal:'check_beam',system:'simple',spanM:4,loadChoice:'line',lineLoadKnM:2,loadBasis:'documented',loadSource:'K-01'}))c=setFact(c,k,v);

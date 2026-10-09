@@ -5,6 +5,15 @@ brukes på serveren. Ingen ny API-nøkkel i nettleseren eller nye secrets kreves
 Funksjonen leser Supabase sine vanlige URL-/anon-/service-role-variabler.
 Valgfri modellvariabel: `RIGOR_CONSTRUCTION_MODEL` (standard `gpt-4.1-mini`).
 
+Utvidelsen 9. oktober krever ny deploy av samme funksjon (delvis validering av
+AI-fakta, terrasse-/søyle-intent og nye kontekstfelt), men ingen ny migrasjon,
+secret eller verktøytildeling. Den manuelle medlemsmotoren er en ren klientmodul
+og lastes ikke opp som backendavhengighet. Publiser funksjonen før klienten.
+
+Importkartet i `konstruksjon.html` gir alle nettlesermodulene samme eksplisitte
+versjon. Dette hindrer at en ny skjemaklient bruker et gammelt, cachet
+konstruksjonskontrakt fra forrige publisering.
+
 ## Publiseringsrekkefølge
 
 1. Kontroller de nye domenetestene og nettleserflyten.

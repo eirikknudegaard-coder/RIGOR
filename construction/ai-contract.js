@@ -21,6 +21,22 @@ export function validateInterpretation(input,brief){
   return {...f,label:labels[f.field],status:'PROPOSED'};
  });return {facts};
 }
+// Keep independently evidenced facts when a different item is unsupported.
+// An invalid root / oversized response still fails. No bad value is coerced.
+export function reviewInterpretation(input,brief){
+ if(!input||Object.keys(input).some(k=>k!=='facts')||!Array.isArray(input.facts)||input.facts.length>20)throw Error('Ugyldig AI-tolkning.');
+ const facts=[],rejected=[],seen=new Set();
+ for(const proposal of input.facts){
+  try{
+   const valid=validateInterpretation({facts:[proposal]},brief).facts[0];
+   if(seen.has(valid.field))throw Error('Duplikat');
+   if(valid.field==='goal'&&valid.value==='plan_terrace'&&!/terrass/i.test(valid.evidence))throw Error('Feil tema');
+   if(valid.field==='goal'&&valid.value==='check_column'&&!/søyl|stolp/i.test(valid.evidence))throw Error('Feil tema');
+   seen.add(valid.field);facts.push(valid);
+  }catch{rejected.push(interpretationFields.includes(proposal?.field)?proposal.field:'unsupported');}
+ }
+ return {facts,rejectedFields:[...new Set(rejected)],partial:rejected.length>0};
+}
 export function focusSchema(ids){
  if(!ids.length)throw Error('Ingen beregnede funn å forklare.');
  return {type:'object',additionalProperties:false,required:['focusId'],properties:{focusId:{type:'string',enum:ids}}};

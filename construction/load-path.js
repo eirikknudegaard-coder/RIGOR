@@ -1,5 +1,9 @@
 import {fact} from './context.js';
 export function buildLoadPath(context){
+ if(fact(context,'goal')==='plan_terrace'){
+  const nodes=['Terrassebord','Tverrgående bjelkelag','Langsgående dragere','Stolper / bæring ved huset','Fundament'];
+  return {nodes,edges:nodes.slice(1).map((_,i)=>({from:i,to:i+1,status:'REQUIRED'})),suspected:true,confirmedByUser:false,findings:[{id:'terrace_layout',text:'Du spør om antall og plassering av dragere og stolper. Vi trenger lengde, dybde og høyde før en plan kan lages. c/c-avstanden gjelder normalt tverrbjelkene og bestemmer ikke alene antall stolper.'},{id:'terrace_members',text:'Hvert bjelkespenn, hver drager og hver stolpe må kontrolleres med riktige laster og avstivning. Doble bjelker får ikke automatisk samvirkning. Skjemaet lager en geometriplan fra dokumenterte spenn.'}]};
+ }
  const wall=fact(context,'goal')==='remove_wall',bearing=fact(context,'roofBearsOnWall'),direction=fact(context,'direction');
  const roof=wall||fact(context,'memberRole')==='rafters';
  const suspected=wall&&(direction==='across'||bearing==='yes');

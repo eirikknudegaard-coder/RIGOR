@@ -7,11 +7,20 @@ import {analyzeStructure,explainResult} from './analysis.js';
 import {validateInterpretation,validateFocus} from './ai-contract.js';
 import {constructionAiStatus,requestConstruction} from './ai-client.js';
 import {renderLoadPath,renderBeam,renderDiagrams} from './diagram-renderer.js';
+import {initManual} from './manual-ui.js';
 const $=id=>document.getElementById(id);
 const node=(tag,text,cls='')=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e;};
 const fmt=n=>new Intl.NumberFormat('nb-NO',{maximumFractionDigits:2}).format(n);
 const describe=v=>typeof v==='boolean'?v?'Ja':'Nei':typeof v==='number'?fmt(v):valueLabels[v]||v;
-const state={context:null,result:null,question:null,proposals:[],aiReady:false,busy:false,revision:0};
+const state={context:null,result:null,question:null,proposals:[],aiReady:false,busy:false,revision:0,mode:'ai'};
+const manual=initManual($('construction-manual-root'));
+function mode(selected,member='beam'){
+ state.mode=selected;
+ const isManual=selected==='manual';$('construction-manual').hidden=!isManual;$('construction-composer').hidden=isManual;$('construction-workspace').hidden=isManual||!state.context;
+ $('construction-mode-ai').setAttribute('aria-pressed',String(!isManual));$('construction-mode-manual').setAttribute('aria-pressed',String(isManual));
+ if(isManual)manual.open(member,state.context);
+}
+$('construction-mode-ai').onclick=()=>mode('ai');$('construction-mode-manual').onclick=()=>mode('manual');
 const examples={wall:'Trenger jeg en drager her? Bindingsverk c/c 600, 2x8 og saltak med 25 graders vinkel. Jeg vil fjerne ca. 3 meter av veggen.',beam:'Jeg vil undersøke en fritt opplagt drager med spenn på 3,2 meter. Jevnt fordelt last på 4 kN/m. Drager 115x315 mm, limtre GL30c.',cantilever:'Jeg vil kontrollere en bjelke. Den er fast innspent i venstre ende og har spenn på 1,5 meter. Punktlast på 2 kN, 1,5 meter fra innspent ende.'};
 function message(text){$('construction-message').textContent=text;}
 function resetResult(){state.result=null;state.proposals=[];state.revision++;}
@@ -64,10 +73,14 @@ function renderBasis(model){
 }
 function render(){
  if(!state.context)return;const model=buildStructuralModel(state.context),path=buildLoadPath(state.context);
- $('construction-workspace').hidden=false;$('construction-ai-review').hidden=!state.proposals.length;
+ $('construction-workspace').hidden=state.mode==='manual';$('construction-ai-review').hidden=!state.proposals.length;
  $('construction-calculate').disabled=!model.ready||state.busy||state.proposals.length>0;
  $('construction-calculate').textContent=state.result?.beam?'Beregn på nytt':'Beregn';
  const calculated=Boolean(state.result?.beam);$('construction-results').hidden=!calculated;
+ const plan=fact(state.context,'goal')==='plan_terrace',column=fact(state.context,'goal')==='check_column';
+ $('construction-open-manual').hidden=!plan&&!column;
+ $('construction-open-manual').textContent=plan?'Planlegg dragere og stolper i skjemaet →':'Kontroller søylen i skjemaet →';
+ $('construction-open-manual').onclick=()=>mode('manual',plan?'terrace':'column');
  $('construction-level').textContent=calculated?'ORIENTERENDE BEREGNING':'FORELØPIG VURDERING';
  $('construction-assessment-heading').textContent=calculated?'Dette viser beregningen.':'Lastveien først.';
  const explanation=$('construction-explanation');explanation.replaceChildren();
@@ -95,9 +108,9 @@ $('construction-start').onsubmit=async event=>{
  state.context=interpretDescription(brief);resetResult();state.busy=state.aiReady;advance();const ticket=state.revision;
  if(!state.aiReady){message('AI er ikke tilgjengelig akkurat nå. Du kan bruke den faglige spørreflyten og beregningsmotoren.');return;}
  message('AI tolker beskrivelsen. Alle foreslåtte opplysninger må kontrolleres.');$('construction-submit').disabled=true;
- try{const response=await requestConstruction({action:'interpret',brief});if(ticket!==state.revision)return;
+ try{const response=await requestConstruction({action:'interpret',brief,schemaVersion:2});if(ticket!==state.revision)return;
   const validated=validateInterpretation({facts:response.facts?.map(({field,value,evidence})=>({field,value,evidence}))},brief);
-  state.proposals=validated.facts.filter(f=>fact(state.context,f.field)!==f.value);renderProposals();message(state.proposals.length?'Kontroller tolkningen under før vi bruker opplysningene.':'De entydige opplysningene er registrert. Vi spør bare om det som trengs videre.');
+  state.proposals=validated.facts.filter(f=>fact(state.context,f.field)!==f.value);renderProposals();message((response.partial?'Noen detaljer kunne ikke bekreftes og blir avklart med spørsmål. ':'')+(state.proposals.length?'Kontroller tolkningen under før vi bruker opplysningene.':'De entydige opplysningene er registrert. Vi spør bare om det som trengs videre.'));
  }catch(error){if(ticket===state.revision)message(error.message+' Du kan fortsette med spørreflyten.');}
  finally{if(ticket===state.revision){state.busy=false;$('construction-submit').disabled=false;advance();}}
 };

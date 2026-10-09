@@ -14,6 +14,9 @@ export function interpretDescription(brief){
  const detect=(re,id,value)=>{for(const m of s.matchAll(re))put(id,value,m[0]);};
  for(const m of s.matchAll(/(?:fjerne|fjern|rive|riv|ta bort|åpne)[^\n]{0,70}vegg|(?:åpning|fjerning)[^\n]{0,45}vegg/g))if(!/\bikke\b/.test(s.slice(Math.max(0,m.index-12),m.index+m[0].length)))put('goal','remove_wall',m[0]);
  detect(/(?:holder|kontrollere|undersøke|sjekke)[^.\n]{0,45}(?:bjelk|drager)/g,'goal','check_beam');
+ if(/terrasse/.test(s)&&/hvor|antall|hvor mange|plass|trenger|dragere|stolp|søyler|støtter/.test(s))put('goal','plan_terrace','Terrasse med spørsmål om bæring og plassering');
+ else detect(/(?:beregne|kontrollere|undersøke|sjekke)[^.\n]{0,45}(?:søyl|stolp)/g,'goal','check_column');
+ for(const [id,phrase]of [['terraceLengthM','terrassens lengde'],['terraceDepthM','terrassens dybde'],['terraceHeightM','høyde over terreng']])for(const m of s.matchAll(new RegExp('(?:'+phrase+')(?: er| på)?\\s*'+numeric+'\\s*(?:meter|m)\\b','g')))put(id,n(m[1]),m[0]);
  detect(/saltak/g,'roofType','gable');detect(/pulttak/g,'roofType','mono');detect(/valmtak/g,'roofType','hip');detect(/flatt tak/g,'roofType','flat');
  detect(/(?:taksperre|sperrene|sperrer)/g,'memberRole','rafters');
  // Mentioning both rafters and joists does not assign a nominal size to either.

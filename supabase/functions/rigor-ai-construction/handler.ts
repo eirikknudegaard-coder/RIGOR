@@ -1,4 +1,4 @@
-import {interpretationSchema,validateInterpretation,focusSchema,validateFocus} from '../../../construction/ai-contract.js';
+import {interpretationSchema,reviewInterpretation,focusSchema,validateFocus} from '../../../construction/ai-contract.js';
 import {validateContext} from '../../../construction/context.js';
 import {analyzeStructure,explainResult} from '../../../construction/analysis.js';
 import {openAIConstructionProvider,type ConstructionProvider} from './provider.ts';
@@ -27,8 +27,8 @@ export async function handleConstruction(request:Request,deps:Dependencies){
   const reader=request.body?.getReader();if(!reader)return reply(400,{error:'Beskriv konstruksjonen først.'});let size=0,raw='';const decoder=new TextDecoder();while(true){const part=await reader.read();if(part.done)break;size+=part.value.length;if(size>40000){await reader.cancel();return reply(413,{error:'Beskrivelsen er for stor.'});}raw+=decoder.decode(part.value,{stream:true});}raw+=decoder.decode();
   let input,analysis,schema;try{
    input=JSON.parse(raw);
-   if(!input||!['interpret','explain'].includes(input.action)||Object.keys(input).some(k=>!(input.action==='interpret'?['action','brief']:['action','context']).includes(k)))throw Error();
-   if(input.action==='interpret'){if(typeof input.brief!=='string'||input.brief.trim().length<10||input.brief.length>8000)throw Error();schema=interpretationSchema();}
+   if(!input||!['interpret','explain'].includes(input.action)||Object.keys(input).some(k=>!(input.action==='interpret'?['action','brief','schemaVersion']:['action','context']).includes(k)))throw Error();
+   if(input.action==='interpret'){if(input.schemaVersion!==undefined&&input.schemaVersion!==2)throw Error();if(typeof input.brief!=='string'||input.brief.trim().length<10||input.brief.length>8000)throw Error();schema=interpretationSchema();}
    else {analysis=analyzeStructure(validateContext(input.context));schema=focusSchema(analysis.findings.map(f=>f.id));}
   }catch{return reply(400,{error:'Beskrivelse eller konstruksjonsmodell er ugyldig. Ingen opplysninger er endret.'});}
   const serviceHeaders={apikey:service,Authorization:'Bearer '+service,'Content-Type':'application/json'};
@@ -42,7 +42,12 @@ export async function handleConstruction(request:Request,deps:Dependencies){
   if(result.finishReason==='length')return reply(502,{error:'AI-tolkningen ble for lang. Bruk en kortere beskrivelse.',code:'output_too_long'});
   try{
    const value=typeof result.value==='string'?JSON.parse(result.value):result.value;
-   if(input.action==='interpret')return reply(200,{...validateInterpretation(value,input.brief),requiresConfirmation:true});
+   if(input.action==='interpret'){
+    const reviewed=reviewInterpretation(value,input.brief);
+    // A previously cached client only knows the original beam/wall contract.
+    if(input.schemaVersion!==2)reviewed.facts=reviewed.facts.filter(f=>!f.field.startsWith('terrace')&&!(f.field==='goal'&&['plan_terrace','check_column'].includes(String(f.value)))&&!(f.field==='memberRole'&&f.value==='column'));
+    return reply(200,{...reviewed,requiresConfirmation:true});
+   }
    const focus=validateFocus(value,analysis.findings.map(f=>f.id));return reply(200,{explanation:explainResult(analysis,focus)});
   }catch{return reply(502,{error:'AI-svaret kunne ikke kontrolleres mot opplysningene eller beregningsmotoren. Ingen verdier er endret.',code:'interpretation_invalid'});}
  }catch{return reply(503,{error:'AI-tolkningen er utilgjengelig. Beregningsmotoren og de registrerte svarene er beholdt.'});}

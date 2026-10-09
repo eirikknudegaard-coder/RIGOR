@@ -1,6 +1,7 @@
 import {fact,fields} from './context.js';
 const choices={
- goal:[['remove_wall','Jeg vil fjerne en vegg'],['check_beam','Jeg vil undersøke en bjelke eller drager']],
+ goal:[['remove_wall','Jeg vil fjerne en vegg'],['check_beam','Jeg vil undersøke en bjelke eller drager'],['check_column','Jeg vil undersøke en søyle eller stolpe'],['plan_terrace','Jeg vil plassere dragere og stolper i en terrasse']],
+ terraceWallSupport:[['documented','Dokumentert bæring mot huset'],['free_standing','Frittstående – egne dragere og stolper på begge sider']],
  memberRole:[['rafters','Taksperrene'],['joists','Bjelkelaget'],['beam','Drageren jeg vil undersøke']],
  direction:[['across','På tvers av veggen'],['parallel','Langs veggen']],
  roofBearsOnWall:[['yes','Ja, de har opplegg på veggen'],['no','Nei, de bæres et annet sted']],
@@ -18,6 +19,10 @@ const choices={
  selfWeightInLoad:[[true,'Ja, den er med i de oppgitte lastene'],[false,'Nei, legg til dragerens egenvekt']]
 };
 const wording={
+ terraceLengthM:['Hvor lang er terrassen langs huset?','Oppgi lengden i meter. Antall stolper kan ikke finnes fra c/c-avstand alene.'],
+ terraceDepthM:['Hvor langt går terrassen ut fra huset?','Oppgi dybden i meter. Dette er normalt retningen de tverrgående bjelkene spenner.'],
+ terraceHeightM:['Hvor høyt er terrassegulvet over terrenget?','Oppgi meter. Høyde og avstivning påvirker stolper, rekkverk og fundament.'],
+ terraceWallSupport:['Skal terrassen bæres av huset eller være frittstående?','Innfesting mot huset må være dokumentert. Et kledningsbord er ikke et dokumentert opplegg.'],
  goal:['Hva vil du undersøke først?','Vi starter med hva konstruksjonen skal gjøre.'],
  memberRole:['Når du sier 2x8 eller bjelker, hvilken del av konstruksjonen mener du?','Samme dimensjon kan brukes i ulike deler. Den skal ikke flyttes automatisk til en ny drager.'],
  direction:['Går taksperrene på tvers av veggen du ønsker å fjerne?','Retningen kan gi en indikasjon, men bekrefter ikke bæring alene.'],
@@ -56,6 +61,8 @@ export function questionFor(id){
 export function requiredFields(c){
  const get=id=>fact(c,id),ids=[];
  if(!get('goal')||get('goal')==='unknown')return ['goal'];
+ if(get('goal')==='plan_terrace')return ['terraceLengthM','terraceDepthM','terraceHeightM','terraceWallSupport'];
+ if(get('goal')==='check_column')return [];
  if(c.conflicts.memberRole||get('nominalSection')&&!get('memberRole'))ids.push('memberRole');
  if(get('goal')==='remove_wall'){
   ids.push('direction','roofBearsOnWall','floorAbove','openingM');

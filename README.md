@@ -25,7 +25,10 @@ avklaringsspørsmål om gangen og orienterende analyse av enkle bjelker og
 utkragere. AI foreslår bekreftbare fakta; deterministisk kode regner og
 forklarer resultatene. Grunnlag, kilder og diagrammer kan åpnes ved behov.
 Ingen full Eurocodekontroll eller teknisk godkjenning gis i første versjon.
-Verktøyet krever egen `konstruksjon`-tilgang i portalen.
+Verktøyet krever egen `konstruksjon`-tilgang i portalen. Den manuelle inngangen
+gir medlemskontroller for rektangulære bjelker/søyler og geometriplan for
+terrasse. [Standardgrunnlag og faktisk kontrollomfang](docs/rib-member-design.md)
+skiller utførte kontroller fra det som gjenstår før et fullverdig RIB-verktøy.
 
 [Modeller, avgrensninger, fagkilder og tester](docs/construction-assistant.md)
 og [backendaktivering](supabase/CONSTRUCTION.md).

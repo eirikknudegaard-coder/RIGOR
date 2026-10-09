@@ -1,5 +1,10 @@
 # RIGOR Konstruksjon – første versjon
 
+**Oppdatert 9. oktober:** [Manuell medlemskontroll og terrasseplan](rib-member-design.md)
+beskriver den nye inngangen for bjelker/søyler uten AI, standardgrunnlag,
+utførte materialkontroller og faktiske gjenstående funksjoner. Resten av dette
+dokumentet beskriver den opprinnelige orienterende samtale-/bjelkemotoren.
+
 Eget verktøy på `konstruksjon.html`, adskilt fra kalkyle, markedspriser og PDF.
 Det starter med en beskrivelse av bygget og ett oppfølgingsspørsmål om gangen.
 Brukeren velger ingen analysemetode. Oppleggene beskrives med vanlig språk.
