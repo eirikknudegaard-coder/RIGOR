@@ -1,4 +1,4 @@
-import {documentProfileKey,documentDate,validateDocumentProfile,preparePdfDocument} from './kalkyle-pdf-model.js?v=20261008-pdf';
+import {documentProfileKey,documentDate,validateDocumentProfile,preparePdfDocument} from './kalkyle-pdf-model.js?v=20261009-materialliste';
 const $=id=>document.getElementById(id);
 const profileFields=['company','organization','address','contact','email','phone'];
 export async function normalizeLogo(file){
@@ -34,7 +34,7 @@ export function setupPdfExport({storage,getData,saveProjectDetails}){
   try{const model=preparePdfDocument({...getData(),profile:draftProfile(),options:options()});$('pdf-download').disabled=false;$('pdf-validation').textContent='Komplett grunnlag · '+model.items.length+' poster · '+new Intl.NumberFormat('nb-NO',{style:'currency',currency:'NOK'}).format(model.totals.gross/100)+' inkl. MVA';}
   catch(error){$('pdf-download').disabled=true;$('pdf-validation').textContent=error.message;}
   $('pdf-valid-until-label').hidden=$('pdf-type').value!=='offer';
-  $('pdf-mode-help').textContent=$('pdf-type').value==='offer'?'Kundetilbudet viser valgte poster, enhetspriser og totalsum. Interne kostnader og fortjeneste vises bare i beregningen.':'Beregningen viser arbeidstimer, grunntider, materialkostnader, kilder, koder og påslag.';
+  $('pdf-mode-help').textContent=$('pdf-type').value==='offer'?'Kundetilbudet viser arbeidsoppgaver, materialliste, enhetspriser og totalsum. Interne kostnader og fortjeneste vises bare i beregningen.':'Beregningen viser arbeidstimer, materialliste med produkter og kjøpsmengder, grunntider, materialkostnader, kilder, koder og påslag.';
  }
  function open(){
   if(!getData().project?.id)return;
@@ -68,7 +68,7 @@ export function setupPdfExport({storage,getData,saveProjectDetails}){
    const chosenOptions=options(),model=preparePdfDocument({...getData(),profile:draftProfile(),options:chosenOptions});
    busy=true;for(const input of $('pdf-form').querySelectorAll('input,select,textarea,button'))input.disabled=true;
    $('pdf-status').textContent='Lager PDF …';
-   const {generatePdf}=await import('./kalkyle-pdf.js?v=20261008-pdf');const pdf=await generatePdf(model);
+   const {generatePdf}=await import('./kalkyle-pdf.js?v=20261009-materialliste');const pdf=await generatePdf(model);
    if(ticket!==logoTicket||!$('pdf-dialog').open)return;
    let saved=true;profile=model.profile;
    try{storage.setItem(documentProfileKey,JSON.stringify(profile));}catch{saved=false;}

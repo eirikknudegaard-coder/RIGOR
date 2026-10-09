@@ -1,5 +1,6 @@
 import {calculate} from './kalkyle-engine.js?v=20261007-arbeidstimer';
-import {rowCodes} from './kalkyle-codes.js?v=20261007-arbeidstimer';
+import {rowCodes} from './kalkyle-codes.js?v=20261009-materialliste';
+import {materialList} from './kalkyle-materials.js?v=20261009-materialliste';
 
 export const documentProfileKey='rigor-document-profile-v1';
 const clean=(value,max=300)=>String(value??'').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g,'').trim().slice(0,max);
@@ -17,7 +18,7 @@ export function validateDocumentProfile(value={}){
  return profile;
 }
 const ore=value=>Math.round(value*100);
-export function preparePdfDocument({rows,rates,project,profile,options={},brief='',area=1,priceMode='market'}){
+export function preparePdfDocument({rows,rates,project,profile,options={},brief='',area=1,priceMode='market',offers=[],bindings={}}){
  if(!project?.id)throw Error('Åpne eller opprett et prosjekt før du eksporterer PDF.');
  const selected=rows?.filter(r=>r.enabled)||[];
  if(!selected.length)throw Error('Kalkylen er tom. Legg til oppgavene som skal inngå.');
@@ -39,5 +40,6 @@ export function preparePdfDocument({rows,rates,project,profile,options={},brief=
  totals.vatRounding=totals.gross-totals.price-totals.vat;
  const title=type==='offer'?'Tilbud':'Beregning';
  const safeName=clean(project.name,80).replace(/[^\p{L}\p{N}._-]+/gu,'-').replace(/^-+|-+$/g,'')||'prosjekt';
- return {type,title,priceMode,filename:(type==='offer'?'tilbud-':'beregning-')+safeName+'.pdf',project:{name:clean(project.name),customer,address,number},profile:sender,date,validUntil,scope:clean(options.scope??brief,8000),terms:clean(options.terms,6000),items,groups,rates:{...rates},totals};
+ const materials=materialList(selected,{offers,bindings,priceMode}).map(material=>Object.fromEntries(Object.entries(material).map(([key,value])=>[key,typeof value==='string'?clean(value):value])));
+ return {type,title,priceMode,filename:(type==='offer'?'tilbud-':'beregning-')+safeName+'.pdf',project:{name:clean(project.name),customer,address,number},profile:sender,date,validUntil,scope:clean(options.scope??brief,8000),terms:clean(options.terms,6000),items,groups,materials,rates:{...rates},totals};
 }

@@ -82,6 +82,23 @@ export async function generatePdf(model){
    }
   }
  }
+ if(model.materials?.length){
+  heading('Materialliste');
+  paragraph('Materialene inngår i postprisene ovenfor og kommer ikke i tillegg til totalsummen. Behov er beregnet forbruk; kjøpsmengde tar med dokumentert pakningsavrunding. Frakt er ikke inkludert.',{size:8,color:muted});
+  function materialHeader(){pdf.setFillColor(244,240,234);pdf.rect(left,y-4,width,9,'F');text('Materiale / produkt',left,y,{size:8,bold:true});text('Behov',146,y,{size:8,bold:true,align:'right'});text('Kjøpsmengde',right,y,{size:8,bold:true,align:'right'});y+=9;}
+  ensure(18);materialHeader();
+  for(const material of model.materials){
+   const product=lines(material.name,108,8.5),details=['Til: '+material.task];
+   if(material.needsProduct)details.push('Materialtype – konkret produkt er ikke valgt');
+   if(model.type==='calculation'&&material.supplierSku)details.push('Varenummer: '+material.supplierSku+(material.supplier?' · '+material.supplier:''));
+   const description=lines(details.join('\n'),108,7),purchase=lines(number(material.purchaseQuantity)+' '+material.unit+(material.packages!==null?'\n'+number(material.packages)+' '+material.packageUnit:''),43,8);
+   const height=Math.max(product.length*4.5+description.length*3.5,purchase.length*4)+7;
+   ensure(height,materialHeader);const start=y;
+   product.forEach((line,i)=>text(line,left,start+i*4.5,{size:8.5,bold:true}));description.forEach((line,i)=>text(line,left,start+product.length*4.5+i*3.5,{size:7,color:muted}));
+   text(number(material.quantity)+' '+material.unit,146,start,{size:8,align:'right'});purchase.forEach((line,i)=>text(line,right,start+i*4,{size:8,align:'right'}));
+   y+=height;pdf.setDrawColor(230,225,218);pdf.setLineWidth(.2);pdf.line(left,y-3,right,y-3);
+  }
+ }
  ensure(model.type==='offer'?38:76);heading('Sammendrag');
  if(model.type==='calculation'){
   keyValue('Beregnet arbeidstid',number(model.totals.hours)+' timer');

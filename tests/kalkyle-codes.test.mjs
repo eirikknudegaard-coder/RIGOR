@@ -21,7 +21,7 @@ test('Alle bibliotekoppgaver har permanente, unike koder som følger kopier og o
 });
 test('Arbeidsplanen skiller planlagte timer fra lønn og blokkerer manglende normer',()=>{
  const rows=priced(),csv=exportBasis({rows,rates},'work');
- assert.equal(csv.length,4);assert.equal(csv[1][10],8.25);assert.match(csv[1].at(-1),/faktisk timeregistrering/);
+ assert.equal(csv.length,4);assert.equal(csv[1][10],8.25);assert.match(csv[1][csv[0].indexOf('Status')],/faktisk timeregistrering/);
  assert.throws(()=>exportBasis({rows:[{...rows[0],requiresTime:true}],rates},'work'),/grunntid/);
  const withoutPrice=rows.map(r=>({...r,priceIssue:'mangler'}));assert.equal(exportBasis({rows:withoutPrice,rates},'work').length,4);
  assert.throws(()=>exportBasis({rows:withoutPrice,rates},'purchase'),/materialpriser/);
