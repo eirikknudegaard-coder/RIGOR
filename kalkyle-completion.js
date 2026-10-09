@@ -1,8 +1,9 @@
+import {materialForRow} from './kalkyle-materials.js?v=20261009-materialliste';
 const money=n=>Number.isFinite(n)?new Intl.NumberFormat('nb-NO',{style:'currency',currency:'NOK',maximumFractionDigits:2}).format(n):'—';
 const number=n=>Number.isFinite(n)?new Intl.NumberFormat('nb-NO',{maximumFractionDigits:2}).format(n):'—';
 const el=(tag,text,cls)=>{const node=document.createElement(tag);if(text)node.textContent=text;if(cls)node.className=cls;return node;};
 
-export function renderCompletion(target,{rows,priceMode,hourly=null,onMarket,onPrice,onQuantity,onTime,onDetails}){
+export function renderCompletion(target,{rows,priceMode,offers=[],bindings={},hourly=null,onMarket,onPrice,onQuantity,onTime,onDetails}){
  target.replaceChildren();const selected=rows.filter(r=>r.enabled);
  if(!selected.length){target.append(el('p','Velg arbeid eller legg til oppgaver fra biblioteket.','muted'));return;}
  const missing=selected.filter(r=>r.priceIssue||r.requiresTime||r.requiresQuantity&&r.quantity===0);
@@ -16,6 +17,8 @@ export function renderCompletion(target,{rows,priceMode,hourly=null,onMarket,onP
   for(const row of group){
    const card=el('article',null,'completion-task');card.dataset.completionId=row.id;
    card.append(el('h4',row.name));
+   const material=materialForRow(row,{priceMode,offers,bindings});
+   if(material)card.append(el('p','Materiale: '+material.name,'completion-material-name'));
    card.append(el('p',number(row.quantity)+' '+row.unit+' arbeid'+(row.priceKey?' · '+number(row.materialQuantity)+' '+row.materialUnit+' materiell':''),'muted'));
    if(row.requiresQuantity&&row.quantity===0){
     const label=el('label','Arbeidsmengde ('+row.unit+')');const input=el('input');input.type='number';input.min='.01';input.max='1000000';input.step='any';input.setAttribute('aria-label','Avklar mengde '+row.name);input.onchange=()=>{if(input.checkValidity()&&input.value)onQuantity(row,Number(input.value));};label.append(input);card.append(label);
@@ -33,9 +36,9 @@ export function renderCompletion(target,{rows,priceMode,hourly=null,onMarket,onP
     if(priceMode==='market'){const button=el('button',row.priceIssue?'Velg markedsvare':'Bytt markedsvare','secondary');button.type='button';button.onclick=()=>onMarket(row);card.append(button);}
     const manual=el('details',null,'completion-manual');manual.append(el('summary','Registrer leverandørpris'));
     const form=el('form');const fields=el('div',null,'completion-price-fields');
-    const definitions=[['price','Pris kr/'+row.materialUnit+' ekskl. MVA','number',row.manualPrice?row.material:''],['source','Leverandør / kilde','text',row.manualPriceSource||''],['date','Prisdato','date',row.manualPriceDate||new Date().toISOString().slice(0,10)]];
-    for(const [key,text,type,value] of definitions){const label=el('label',text),input=el('input');input.name=key;input.type=type;input.required=true;input.value=value;input.setAttribute('aria-label',text+' til '+row.name);if(type==='number'){input.min='0';input.max='10000000';input.step='any';}if(type==='text')input.maxLength=300;if(type==='date')input.max=new Date().toISOString().slice(0,10);label.append(input);fields.append(label);}
-    const submit=el('button','Bruk innkjøpspris','secondary');submit.type='submit';form.append(fields,submit);form.onsubmit=event=>{event.preventDefault();if(!form.reportValidity())return;const data=new FormData(form);onPrice(row,{price:Number(data.get('price')),source:String(data.get('source')).trim(),date:String(data.get('date'))});};manual.append(form);card.append(manual);
+    const definitions=[['product','Produkt / materialbeskrivelse (valgfritt)','text',row.manualProduct||''],['price','Pris kr/'+row.materialUnit+' ekskl. MVA','number',row.manualPrice?row.material:''],['source','Leverandør / kilde','text',row.manualPriceSource||''],['date','Prisdato','date',row.manualPriceDate||new Date().toISOString().slice(0,10)]];
+    for(const [key,text,type,value] of definitions){const label=el('label',text),input=el('input');input.name=key;input.type=type;input.required=key!=='product';input.value=value;input.setAttribute('aria-label',text+' til '+row.name);if(type==='number'){input.min='0';input.max='10000000';input.step='any';}if(type==='text')input.maxLength=300;if(type==='date')input.max=new Date().toISOString().slice(0,10);label.append(input);fields.append(label);}
+    const submit=el('button','Bruk innkjøpspris','secondary');submit.type='submit';form.append(fields,submit);form.onsubmit=event=>{event.preventDefault();if(!form.reportValidity())return;const data=new FormData(form);onPrice(row,{product:String(data.get('product')).trim(),price:Number(data.get('price')),source:String(data.get('source')).trim(),date:String(data.get('date'))});};manual.append(form);card.append(manual);
    }else card.append(el('p','Arbeidsoppgave uten materialkostnad.','muted'));
    section.append(card);
   }

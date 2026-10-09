@@ -1,5 +1,6 @@
 import {codeRegister} from './kalkyle-code-register.js?v=20261007-avklaringer';
 import {calculate} from './kalkyle-engine.js?v=20261007-arbeidstimer';
+import {materialForRow} from './kalkyle-materials.js?v=20261009-materialliste';
 
 // Identifiers belong to the template, so adding copies, sorting and AI selection
 // cannot renumber them. Company mappings are optional and belong to the project.
@@ -26,15 +27,16 @@ export function exportBasis({rows,rates,project={},offers=[],bindings={},priceMo
  if(kind==='purchase'&&selected.some(r=>r.priceKey&&r.priceIssue))throw Error('Avklar materialpriser før innkjøpsgrunnlaget eksporteres.');
  if(kind==='sale'&&selected.some(r=>r.priceIssue||r.requiresTime))throw Error('Salgsgrunnlaget krever komplett pris- og tidsgrunnlag.');
  const calc=calculate(selected,rates,1),prefix=r=>[project.number||'',project.name||'',rowCodes(r).element];
+ const material=r=>materialForRow(r,{offers,bindings,priceMode});
  if(kind==='work')return [
-  ['Prosjektnummer','Prosjekt','Elementkode','Arbeidskode','Lønnsart (må kobles)','Oppgave','Planlagt mengde','Arbeidsenhet','Grunntid t/enhet','Tidsfaktor','Planlagte timer','Grunntidskilde','Status'],
-  ...calc.items.filter(r=>r.workHours>0).map(r=>[...prefix(r),rowCodes(r).work,rowCodes(r).salary,r.name,r.quantity,r.unit,r.hours,r.factor,r.workHours,r.timeSource||'Registrert','Planlagt arbeid – faktisk timeregistrering kreves for lønn'])
+  ['Prosjektnummer','Prosjekt','Elementkode','Arbeidskode','Lønnsart (må kobles)','Oppgave','Planlagt mengde','Arbeidsenhet','Grunntid t/enhet','Tidsfaktor','Planlagte timer','Grunntidskilde','Status','Materiale / produkt','Materialbehov','Materialenhet'],
+  ...calc.items.filter(r=>r.workHours>0).map(r=>{const m=material(r);return [...prefix(r),rowCodes(r).work,rowCodes(r).salary,r.name,r.quantity,r.unit,r.hours,r.factor,r.workHours,r.timeSource||'Registrert','Planlagt arbeid – faktisk timeregistrering kreves for lønn',m?.name||'',m?.quantity??'',m?.unit||''];})
  ];
  if(kind==='purchase')return [
   ['Prosjektnummer','Prosjekt','Elementkode','Innkjøpskode','Oppgave','Produkt','Leverandørens varenummer','Leverandør','Butikk','Behovsmengde','Materialenhet','Kjøpsmengde','Pakninger','Pakningsenhet','Innkjøpspris kr/enhet ekskl. MVA','Innkjøpskostnad ekskl. MVA','Priskilde','Prisdato','Status'],
   ...calc.items.filter(r=>r.priceKey||r.manualPrice).map(r=>{
-   const offer=priceMode==='market'&&!r.manualPrice&&!r.priceIssue?offers.find(o=>o.id===bindings[r.priceKey]):null;
-   return [...prefix(r),rowCodes(r).purchase,r.name,offer?.name||r.manualProduct||'',offer?.source_id||r.supplierSku||'',offer?.chain||'',offer?.store_name||'',r.materialQuantity,r.materialUnit,r.marketPurchasedQuantity??r.materialQuantity,r.marketPackages??'',offer?.original_unit||'',r.material,r.marketMaterialCost??r.materialQuantity*r.material,r.priceSource,r.priceDate,'Planlagt innkjøp – frakt ikke inkludert'];
+   const m=material(r),offer=m?.productId?offers.find(o=>o.id===m.productId):null;
+   return [...prefix(r),rowCodes(r).purchase,r.name,m?.name||'',m?.supplierSku||'',m?.supplier||'',offer?.store_name||'',r.materialQuantity,r.materialUnit,m?.purchaseQuantity??r.materialQuantity,m?.packages??'',m&&m.packages!==null?m.packageUnit:'',r.material,r.marketMaterialCost??r.materialQuantity*r.material,r.priceSource,r.priceDate,'Planlagt innkjøp – frakt ikke inkludert'];
   })
  ];
  if(kind==='sale')return [
@@ -42,7 +44,7 @@ export function exportBasis({rows,rates,project={},offers=[],bindings={},priceMo
   ...calc.items.flatMap(r=>{
    const base=[...prefix(r),rowCodes(r).sale];const lines=[];
    if(r.workHours>0)lines.push([...base,'Arbeid',r.name,r.workHours,'t',calc.hourly*(1+rates.laborMarkup/100),r.laborPrice,25,r.timeSource||'Registrert','']);
-   if(r.priceKey||r.manualPrice){const q=r.marketPurchasedQuantity??r.materialQuantity;lines.push([...base,'Materiale / avsetning',r.name,q,r.materialUnit,q?r.materialPrice/q:0,r.materialPrice,25,r.priceSource,r.priceDate]);}
+   if(r.priceKey||r.manualPrice){const m=material(r),q=r.marketPurchasedQuantity??r.materialQuantity;lines.push([...base,'Materiale / avsetning',m?.name||r.name,q,r.materialUnit,q?r.materialPrice/q:0,r.materialPrice,25,r.priceSource,r.priceDate]);}
    return lines;
   })
  ];

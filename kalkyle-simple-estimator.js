@@ -1,3 +1,4 @@
+import {materialList} from './kalkyle-materials.js?v=20261009-materialliste';
 import {calculate,roofGeometry,timeFactor} from './kalkyle-engine.js?v=20261007-arbeidstimer';
 import {instantiate} from './kalkyle-library.js?v=20261008-ai-modes';
 import {applyPrices} from './kalkyle-prices.js?v=20261009-qa';
@@ -26,7 +27,7 @@ const costRow=(quantity,material,hours=0,factor=1)=>({enabled:true,quantity,mate
 export function buildSimpleEstimate({proposal,context,library,rates,settings,priceMode,prices=[],timeCatalog=[],existingRows=[],offers=[],bindings={}}){
  existingRows=existingRows.filter(row=>!row.wizardGenerated||row.userEdited);
  if(!rates||!['wage','direct','indirect','billing','laborMarkup','materialMarkup'].every(k=>Number.isFinite(rates[k])&&rates[k]>=0)||rates.billing<=0||rates.billing>100)throw Error('Kontroller prosjektets timepris og påslag.');
- const sources=[],uncertainties=[],items=[];let low=0,high=0,hoursLow=0,hoursHigh=0,materialLow=0,materialHigh=0,otherLow=0,otherHigh=0;
+ const sources=[],uncertainties=[],items=[],materials=[];let low=0,high=0,hoursLow=0,hoursHigh=0,materialLow=0,materialHigh=0,otherLow=0,otherHigh=0;
  const budgetSettings=conversionSettings(settings,context);
  const occupied=new Set();
  const records=(context.priceBasis?.experienceRates||[]).map(rate=>validateExperienceRate(rate,library));
@@ -58,6 +59,7 @@ export function buildSimpleEstimate({proposal,context,library,rates,settings,pri
    if(detail.some(r=>['quantity','materialQuantity','material','hours','factor'].some(k=>!Number.isFinite(r[k])||r[k]<0)))throw Error('Kontroller manuelle mengder, priser og grunntider før budsjettet beregnes.');
    detail=applyDetailedMaterialPrices(detail.map(r=>roofConsumption(annotateAiMaterial(r,context.facts,offers),budgetSettings)),{mode:priceMode==='example'?'market':priceMode,importedPrices:priceMode==='import'?prices:[],marketPrices:priceMode==='market'?prices:[],offers,bindings,detailed:true});
    if(priceMode==='market')detail=detail.map(r=>{const offer=offers.find(o=>o.id===bindings[r.priceKey]);return !r.manualPrice&&r.aiSpecification&&offer&&!matchesAiMaterial(r,offer)?{...r,material:0,marketMaterialCost:undefined,priceIssue:'Valgt vare passer ikke oppgitt spesifikasjon'}:r;});
+   materials.push(...materialList(detail,{offers,bindings,priceMode}).map(material=>({...material,quantity:quantity===null?null:material.quantity,purchaseQuantity:quantity===null?null:material.purchaseQuantity})));
    const hr=record('hours');
    if(hr){workLow=quantity*hr.min;workHigh=quantity*hr.max;sources.push(hr);}
    else{
@@ -85,5 +87,5 @@ export function buildSimpleEstimate({proposal,context,library,rates,settings,pri
  }
  const total=value=>calculate([costRow(1,value)],noMarkup(rates),1);
  const a=total(low),b=total(high),complete=items.length>0&&items.every(i=>i.complete);
- return {status:complete?'budget':'partial',items,hours:{min:hoursLow,max:hoursHigh},material:{min:materialLow,max:materialHigh},other:{min:otherLow,max:otherHigh},price:{min:a.price,max:b.price},gross:{min:a.gross,max:b.gross},sources,assumptions:context.assumptions,uncertainties:[...context.uncertainties,...uncertainties],confidence:sources.some(s=>s.confidence==='low')||!complete?'low':'medium'};
+ return {status:complete?'budget':'partial',items,materials,hours:{min:hoursLow,max:hoursHigh},material:{min:materialLow,max:materialHigh},other:{min:otherLow,max:otherHigh},price:{min:a.price,max:b.price},gross:{min:a.gross,max:b.gross},sources,assumptions:context.assumptions,uncertainties:[...context.uncertainties,...uncertainties],confidence:sources.some(s=>s.confidence==='low')||!complete?'low':'medium'};
 }

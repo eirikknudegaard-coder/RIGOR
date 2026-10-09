@@ -62,7 +62,7 @@ with sync_playwright() as p:
         with page.expect_download() as download: page.locator('#export-'+kind).click()
         exported[kind]=list(csv.reader(io.StringIO(open(download.value.path(),encoding='utf-8-sig').read()),delimiter=';'))
     assert exported['work'][1][3]=='TAK-ARBEID';assert exported['work'][1][4]==''
-    assert 'faktisk timeregistrering' in exported['work'][1][-1]
+    assert 'faktisk timeregistrering' in exported['work'][1][exported['work'][0].index('Status')]
     assert exported['purchase'][1][3]=='UNDERTAK';assert exported['purchase'][1][6]==''
     assert exported['purchase'][2][6]=='SKU-sloyfer'
     assert abs(sum(float(r[9]) for r in exported['sale'][1:])-amount(page.locator('#total').inner_text()))<.01

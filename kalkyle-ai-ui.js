@@ -2,7 +2,7 @@ import {createEstimateContext,questionPlan,AI_MODES} from './kalkyle-ai-modes.js
 import {answerContext,detailedContext,estimateInput} from './kalkyle-estimate-context.js?v=20261009-qa-release';
 import {estimateAI} from './kalkyle-estimate-ai.js?v=20261009-qa-release';
 import {validateModeResult} from './kalkyle-detailed-copilot.js?v=20261009-qa-release';
-import {buildSimpleEstimate,validateExperienceRate,EXPERIENCE_SOURCES} from './kalkyle-simple-estimator.js?v=20261009-qa';
+import {buildSimpleEstimate,validateExperienceRate,EXPERIENCE_SOURCES} from './kalkyle-simple-estimator.js?v=20261009-materialliste';
 const $=id=>document.getElementById(id);
 const money=n=>new Intl.NumberFormat('nb-NO',{style:'currency',currency:'NOK',maximumFractionDigits:0}).format(n);
 const number=n=>new Intl.NumberFormat('nb-NO',{maximumFractionDigits:2}).format(n);
@@ -32,6 +32,7 @@ export function setupAiModes({getState,saveContext,showProposal,renderQuestionFi
   panel.append(el('p','Anslaget gjelder arbeidsomfanget nedenfor. Kalkylepostene beholdes til du velger å legge til oppgaver. Sikkerhet: '+(budget.confidence==='low'?'lav; kontroller manglende grunnlag og foreløpige tider.':'middels; kontroller kilder og forutsetninger.'),'muted'));
   const dl=el('dl');for(const [name,value] of [['Kjente arbeidstimer',range(budget.hours,number)+' t'],['Kjent materialkost før påslag',range(budget.material)],['Andre dokumenterte avsetninger før påslag',range(budget.other)]]){const row=el('div');row.append(el('dt',name),el('dd',value));dl.append(row);}panel.append(dl);
   list(panel,'Arbeidsomfang – AI-forslag',budget.items.map(item=>item.name+' · '+(item.quantity===null?'mengde mangler':number(item.quantity)+' '+item.unit)+' · '+range({min:item.priceMin,max:item.priceMax})+' ekskl. MVA'+(!item.complete?' (ufullstendig)':'')));
+  list(panel,'Foreløpig materialliste',budget.materials.map(material=>material.name+' · '+(material.quantity===null?'mengde må avklares':number(material.quantity)+' '+material.unit)+(material.needsProduct?' · konkret produkt må velges':'')));
   list(panel,'Merknader til arbeidsomfanget',budget.items.flatMap(item=>item.notes.map(note=>item.name+': '+note)));
   list(panel,'Oppgitt av bruker',factTexts(context));list(panel,'Synlige budsjettforutsetninger',budget.assumptions);list(panel,'Må avklares / usikkerheter',budget.uncertainties);
   list(panel,'Valgfrie presiseringer – stopper ikke anslaget',(context.suggestions||[]).map(s=>s.text));

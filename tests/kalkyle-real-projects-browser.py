@@ -7,7 +7,7 @@ from portal_test_support import authorize_portal
 from playwright.sync_api import sync_playwright
 from pathlib import Path
 from datetime import datetime, timedelta
-import json, re, os, fitz
+import json, re, os, fitz, csv as csv_lib, io
 
 root=Path(__file__).parent
 catalog=json.loads((root/'fixtures/evidence/benchmark-catalog.json').read_text())
@@ -71,6 +71,14 @@ def read_pdf(page,project,view,kind):
             material_unit={'m2':'m²'}.get(row['materialUnit'],row['materialUnit'])
             assert 'Arbeid: '+work+' ×' in normalized,work
             assert 'Materiell: '+quantity(row['materialQuantity'])+' '+material_unit+' ×' in normalized,row['name']
+    material_section=compact(text.split('Materialliste',1)[1].split('Sammendrag',1)[0])
+    for row in included:
+        if row.get('priceKey') in project['choices']:
+            assert compact(row['selectedProduct']['name']) in material_section,row['selectedProduct']['name']
+            assert quantity(row['materialQuantity'])+' '+row['materialUnit'] in material_section,row['name']
+            assert quantity(row.get('marketPurchasedQuantity',row['materialQuantity']))+' '+row['materialUnit'] in material_section,row['name']
+    if kind=='offer':
+        for value in ['Innkjøpskostnad','Innkjøpspris','Varenummer:','obs ·']:assert value not in material_section,value
     for forbidden in ['NaN','Infinity','undefined']:assert forbidden not in text
     for value in [project['name'],'Kunde Ødegård',money(amount(page.locator('#total').inner_text())),money(amount(page.locator('#vat').inner_text())),money(amount(page.locator('#gross').inner_text()))]:assert value in text,value
     if kind=='offer':
@@ -116,9 +124,11 @@ with sync_playwright() as p:
             page.locator('#ai-experience-editor summary').click();page.locator('#ai-rate-element').select_option(element);page.locator('#ai-rate-type').select_option(kind)
             page.locator('#ai-rate-min').fill(str(value));page.locator('#ai-rate-max').fill(str(value));page.locator('#ai-rate-source').fill(source);page.locator('#ai-rate-date').fill(catalog['updated_at'][:10]);page.locator('#ai-rate-confidence').select_option('medium');page.get_by_role('button',name='Lagre erfaringstall',exact=True).click();assert_clean(page)
         assert page.locator('#ai-budget h3').inner_text()=='Foreløpig budsjettanslag'
+        assert 'Foreløpig materialliste' in page.locator('#ai-budget').inner_text()
         simple_record=saved(page);simple_text=page.locator('#ai-budget').inner_text()
         simple_price=amount(page.locator('#ai-budget > p').nth(1).inner_text().split(' ekskl.')[0])
         page.locator('#ai-make-detailed').click();page.locator('#assistant-preview').wait_for(state='visible')
+        assert page.locator('#assistant-items .assistant-material-name').count()>0
         assert len(calls)==1,'Conversion must preserve scope rather than request a different project'
         page.locator('#assistant-apply').click();page.locator('#save').click();assert_clean(page)
         rows=saved(page)['snapshot']['rows'];expected_tasks=sum(len(t)for e,t in project['scope']);assert len(rows)==expected_tasks,(len(rows),expected_tasks)
@@ -127,6 +137,10 @@ with sync_playwright() as p:
         for key,value in project.get('manual',{}).items():row_for(page,key).locator('[data-field=material]').fill(str(value));page.locator('#save').click()
         for key,product in project['choices'].items():choose(page,key,product,375 if key=='roof.cover.tile'else None)
         page.locator('#save').click();after=saved(page)
+        assert page.locator('#material-list-section').is_visible()
+        for key,product in project['choices'].items():
+            chosen=catalog['offers'][next(i for i,o in enumerate(catalog['offers'])if o['id']==product)]
+            assert chosen['name'] in page.locator('#material-list').inner_text()
         assert amount(page.locator('#calc-area').inner_text())==project['area']
         assert after['snapshot']['settings']['area']==project['area']
         assert after['snapshot']['settings']['difficulty']==1
@@ -141,6 +155,11 @@ with sync_playwright() as p:
         with page.expect_download() as csv_download:page.locator('#export').click()
         csv_path=output/(project['id']+'-'+view+'.csv');csv_download.value.save_as(csv_path)
         csv_text=csv_path.read_text(encoding='utf-8-sig');assert not re.search(r'NaN|Infinity|undefined|null kr',csv_text)
+        exported=list(csv_lib.reader(io.StringIO(csv_text),delimiter=';'))
+        name_column=exported[1].index('Materiale / produkt')
+        for key,product in project['choices'].items():
+            chosen=next(o for o in catalog['offers'] if o['id']==product)
+            assert any(len(line)>name_column and line[name_column]==chosen['name'] for line in exported),chosen['name']
         report['csv']={'path':str(csv_path),'finite':True}
         for kind in ['offer','calculation']:report['pdf'].append(read_pdf(page,project,view,kind))
         # Unconfirmed highlighting and closing cannot replace a saved SKU.

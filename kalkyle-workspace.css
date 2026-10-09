@@ -177,3 +177,10 @@
 .pdf-brand-actions{display:flex;gap:10px;flex-wrap:wrap}.kalkyle-app #pdf-dialog .muted{font-size:12px;line-height:1.5}.pdf-validation{border-radius:7px;padding:12px;background:#f1e9df;color:#604a38;font-size:12px}
 .kalkyle-app #pdf-dialog .dialog-actions{position:sticky;bottom:-26px;background:#fff;padding:16px 0 6px;border-top:1px solid #e1dcd5;margin-top:20px;z-index:1}
 @media(max-width:650px){.kalkyle-app #pdf-dialog{padding:18px;max-height:94vh}.pdf-logo-slot{width:95px;height:60px}.pdf-logo-slot img{max-width:85px;max-height:50px}.pdf-dialog-heading h2{font-size:21px}.kalkyle-app #pdf-dialog .dialog-actions{bottom:-18px}}
+.kalkyle-app .material-list-section{margin-top:28px;padding-top:22px;border-top:1px solid #e7dfd6}
+.kalkyle-app #material-list table{min-width:660px;width:100%}
+.kalkyle-app #material-list th{white-space:normal}
+.kalkyle-app #material-list td{vertical-align:top}
+.kalkyle-app #material-list small{display:block;margin-top:5px;color:#626568;font-size:11px;overflow-wrap:anywhere}
+.kalkyle-app .completion-material-name{font-weight:600;color:#805d41}
+.kalkyle-app .row-material-name{display:block;margin-top:8px;color:#805d41;font-size:11px;overflow-wrap:anywhere}

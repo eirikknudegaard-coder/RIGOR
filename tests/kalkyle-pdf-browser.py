@@ -63,14 +63,14 @@ with sync_playwright() as p:
     page.locator('#pdf-valid-until').fill(valid_until.isoformat())
     offer_doc=download(page,'/tmp/rigor-tilbud-preview.pdf');check_pages(offer_doc)
     text='\n'.join(p.get_text() for p in offer_doc)
-    for value in ['Tilbud','Bygg Ås AS','Kunde Ødegård','Ærligveien 1',valid_until.strftime('%d.%m.%Y'),'Salgskode','Beslag prises separat','Legge undertak','Montere sløyfer','Montere lekter']:assert value in text,value
+    for value in ['Tilbud','Bygg Ås AS','Kunde Ødegård','Ærligveien 1',valid_until.strftime('%d.%m.%Y'),'Salgskode','Beslag prises separat','Legge undertak','Montere sløyfer','Montere lekter','Materialliste','Test Undertak 10 m²','23x48 Lekt','36x48 Lekt']:assert value in text,value
     for value in ['Kalkulert fortjeneste','Grunnlønn','Timekostnad','Kostnad før påslag','Arbeidskode:']:assert value not in text,value
     expected=lambda value:format(value,',.2f').replace(',',' ').replace('.',',')+' kr'
     assert expected(expected_ex) in text and expected(expected_gross) in text
     offer_doc[0].get_pixmap(dpi=110).save('/tmp/rigor-tilbud-preview.png')
     page.locator('#pdf-type').select_option('calculation');calc_doc=download(page,'/tmp/rigor-beregning-preview.pdf');check_pages(calc_doc)
     text='\n'.join(p.get_text() for p in calc_doc)
-    for value in ['Beregning','Grunnlønn','Timekostnad','Beregnet arbeidstid','Materialpåslag','Priskilde','Grunntid','Kalkulert fortjeneste']:assert value in text,value
+    for value in ['Beregning','Grunnlønn','Timekostnad','Beregnet arbeidstid','Materialpåslag','Priskilde','Grunntid','Kalkulert fortjeneste','Materialliste','Test Undertak 10 m²','Varenummer: undertak']:assert value in text,value
     assert expected(expected_ex) in text and expected(expected_gross) in text
     calc_doc[0].get_pixmap(dpi=110).save('/tmp/rigor-beregning-preview.png')
     assert page.evaluate('JSON.parse(window.testReadStorage("rigor-projects-v1"))[0].snapshot.rows')==before
