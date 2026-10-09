@@ -1,7 +1,7 @@
-import {createEstimateContext,questionPlan,AI_MODES} from './kalkyle-ai-modes.js?v=20261009-qa';
-import {answerContext,detailedContext,estimateInput} from './kalkyle-estimate-context.js?v=20261008-ai-modes';
-import {estimateAI} from './kalkyle-estimate-ai.js?v=20261008-ai-modes';
-import {validateModeResult} from './kalkyle-detailed-copilot.js?v=20261008-ai-modes';
+import {createEstimateContext,questionPlan,AI_MODES} from './kalkyle-ai-modes.js?v=20261009-qa-release';
+import {answerContext,detailedContext,estimateInput} from './kalkyle-estimate-context.js?v=20261009-qa-release';
+import {estimateAI} from './kalkyle-estimate-ai.js?v=20261009-qa-release';
+import {validateModeResult} from './kalkyle-detailed-copilot.js?v=20261009-qa-release';
 import {buildSimpleEstimate,validateExperienceRate,EXPERIENCE_SOURCES} from './kalkyle-simple-estimator.js?v=20261009-qa';
 const $=id=>document.getElementById(id);
 const money=n=>new Intl.NumberFormat('nb-NO',{style:'currency',currency:'NOK',maximumFractionDigits:0}).format(n);

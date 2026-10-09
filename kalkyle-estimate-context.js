@@ -1,4 +1,4 @@
-import {createEstimateContext,requireMode} from './kalkyle-ai-modes.js?v=20261008-ai-modes';
+import {createEstimateContext,requireMode} from './kalkyle-ai-modes.js?v=20261009-qa-release';
 import {appendClarificationAnswers} from './kalkyle-assistant.js?v=20261007-terrassevalg';
 // Text and a future speech-to-text adapter use the same plain input contract.
 export function estimateInput({text,source='text'}){if(!['text','speech_to_text'].includes(source))throw Error('Ukjent inputkilde.');if(typeof text!=='string')throw Error('Beskriv jobben med tekst.');return {brief:text.trim(),source};}
