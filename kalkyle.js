@@ -16,7 +16,7 @@ import {followupFields,cleanFollowupQuestions} from './kalkyle-questions.js?v=20
 import {reviewAssistantTasks,uniqueAssistantRows,findWorkOverlaps} from './kalkyle-task-overlap.js?v=20261007-overlapp';
 const $=id=>document.getElementById(id),money=n=>Number.isFinite(n)?new Intl.NumberFormat('nb-NO',{style:'currency',currency:'NOK',maximumFractionDigits:2}).format(n):'—',num=n=>Number.isFinite(n)?new Intl.NumberFormat('nb-NO',{maximumFractionDigits:2}).format(n):'—';
 import {annotateAiMaterial,aiSpecificationText} from './kalkyle-ai-material.js?v=20261009-qa';
-import {setupAiModes} from './kalkyle-ai-ui.js?v=20261009-qa';
+import {setupAiModes} from './kalkyle-ai-ui.js?v=20261009-qa-release';
 import {applyDetailedMaterialPrices,useReference} from './kalkyle-market-reference.js?v=20261009-reference';
 import {createReferenceSnapshot} from './market-reference.js?v=20261009-reference';
 import {setupMarketReferenceUi} from './kalkyle-market-reference-ui.js?v=20261009-qa';
