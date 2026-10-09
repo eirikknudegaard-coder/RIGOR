@@ -58,7 +58,8 @@ export async function generatePdf(model){
     const title=lines(item.name,75,8.5),code=lines('Salgskode: '+item.codes.sale,75,6.5),h=title.length*4.5+code.length*3.5+5;
     ensure(h,tableHeader);const rowY=y;
     title.forEach((line,i)=>text(line,left,rowY+i*4.5,{size:8.5}));code.forEach((line,i)=>text(line,left,rowY+title.length*4.5+i*3.5,{size:6.5,color:muted}));
-    text(number(item.quantity),105,rowY,{size:8,align:'right'});text(item.unit,109,rowY,{size:8});text(item.quantity>0?money(Math.round(item.price/item.quantity*100)):'-',158,rowY,{size:8,align:'right'});text(money(item.priceOre),right,rowY,{size:8,bold:true,align:'right'});
+    const quantity=item.materialOnly?(item.marketPurchasedQuantity??item.materialQuantity):item.quantity,unit=item.materialOnly?item.materialUnit:item.unit;
+    text(number(quantity),105,rowY,{size:8,align:'right'});text(unit,109,rowY,{size:8});text(quantity>0?money(Math.round(item.price/quantity*100)):'-',158,rowY,{size:8,align:'right'});text(money(item.priceOre),right,rowY,{size:8,bold:true,align:'right'});
     y+=h;pdf.setDrawColor(230,225,218);pdf.setLineWidth(.2);pdf.line(left,y-3,right,y-3);
    }
   }
@@ -73,7 +74,8 @@ export async function generatePdf(model){
    for(const item of group.items){
     ensure(35);paragraph(item.name,{size:10});
     paragraph('Arbeidskode: '+item.codes.work+' · Innkjøpskode: '+item.codes.purchase+' · Salgskode: '+item.codes.sale+(item.codes.salary?' · Lønnsart: '+item.codes.salary:''),{size:7,color:muted,spacing:3.5});
-    paragraph('Arbeid: '+number(item.quantity)+' '+item.unit+' × '+number(item.hours)+' t/'+item.unit+' × faktor '+number(item.factor)+' = '+number(item.workHours)+' timer. Arbeidspris: '+money(item.laborOre),{size:8});
+    if(item.materialOnly)paragraph('Materialpost. Montering inngår i «'+item.accessoryParentName+'». Ingen ekstra arbeidstid.',{size:8});
+    else paragraph('Arbeid: '+number(item.quantity)+' '+item.unit+' × '+number(item.hours)+' t/'+item.unit+' × faktor '+number(item.factor)+' = '+number(item.workHours)+' timer. Arbeidspris: '+money(item.laborOre),{size:8});
     paragraph('Materiell: '+number(item.materialQuantity)+' '+(item.materialUnit||item.unit)+' × '+money(Math.round(item.material*100))+'/'+(item.materialUnit||item.unit)+'. Innkjøpskostnad: '+money(Math.round((item.marketMaterialCost??item.materialQuantity*item.material)*100))+'. Materialpris med påslag: '+money(item.materialOre),{size:8});
     if(item.marketPackages!==undefined)paragraph('Innkjøp: '+number(item.marketPackages)+' pakninger / '+number(item.marketPurchasedQuantity)+' '+item.materialUnit+'. Pakningsavrunding inngår i materialkostnaden.',{size:8,color:muted});
     paragraph('Priskilde: '+(item.priceSource||'Ingen materialkostnad')+(item.priceDate?' · '+item.priceDate:''),{size:7,color:muted,spacing:3.5});

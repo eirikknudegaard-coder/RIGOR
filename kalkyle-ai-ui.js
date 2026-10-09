@@ -2,7 +2,7 @@ import {createEstimateContext,questionPlan,AI_MODES} from './kalkyle-ai-modes.js
 import {answerContext,detailedContext,estimateInput} from './kalkyle-estimate-context.js?v=20261009-qa-release';
 import {estimateAI} from './kalkyle-estimate-ai.js?v=20261009-qa-release';
 import {validateModeResult} from './kalkyle-detailed-copilot.js?v=20261009-qa-release';
-import {buildSimpleEstimate,validateExperienceRate,EXPERIENCE_SOURCES} from './kalkyle-simple-estimator.js?v=20261009-materialliste';
+import {buildSimpleEstimate,validateExperienceRate,EXPERIENCE_SOURCES} from './kalkyle-simple-estimator.js?v=20261009-festemidler';
 const $=id=>document.getElementById(id);
 const money=n=>new Intl.NumberFormat('nb-NO',{style:'currency',currency:'NOK',maximumFractionDigits:0}).format(n);
 const number=n=>new Intl.NumberFormat('nb-NO',{maximumFractionDigits:2}).format(n);

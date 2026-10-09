@@ -1,4 +1,4 @@
-import {documentProfileKey,documentDate,validateDocumentProfile,preparePdfDocument} from './kalkyle-pdf-model.js?v=20261009-materialliste';
+import {documentProfileKey,documentDate,validateDocumentProfile,preparePdfDocument} from './kalkyle-pdf-model.js?v=20261009-festemidler';
 const $=id=>document.getElementById(id);
 const profileFields=['company','organization','address','contact','email','phone'];
 export async function normalizeLogo(file){
@@ -68,7 +68,7 @@ export function setupPdfExport({storage,getData,saveProjectDetails}){
    const chosenOptions=options(),model=preparePdfDocument({...getData(),profile:draftProfile(),options:chosenOptions});
    busy=true;for(const input of $('pdf-form').querySelectorAll('input,select,textarea,button'))input.disabled=true;
    $('pdf-status').textContent='Lager PDF …';
-   const {generatePdf}=await import('./kalkyle-pdf.js?v=20261009-materialliste');const pdf=await generatePdf(model);
+   const {generatePdf}=await import('./kalkyle-pdf.js?v=20261009-festemidler');const pdf=await generatePdf(model);
    if(ticket!==logoTicket||!$('pdf-dialog').open)return;
    let saved=true;profile=model.profile;
    try{storage.setItem(documentProfileKey,JSON.stringify(profile));}catch{saved=false;}

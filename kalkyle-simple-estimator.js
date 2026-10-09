@@ -1,11 +1,12 @@
-import {materialList} from './kalkyle-materials.js?v=20261009-materialliste';
+import {materialList} from './kalkyle-materials.js?v=20261009-festemidler';
 import {calculate,roofGeometry,timeFactor} from './kalkyle-engine.js?v=20261007-arbeidstimer';
 import {instantiate} from './kalkyle-library.js?v=20261008-ai-modes';
+import {synchronizeAccessories,materialQuantityMissing} from './kalkyle-accessories.js?v=20261009-festemidler';
 import {applyPrices} from './kalkyle-prices.js?v=20261009-qa';
 import {applyTimeCatalog} from './kalkyle-time.js?v=20261008-ai-modes';
 import {uniqueAssistantRows} from './kalkyle-task-overlap.js?v=20261007-overlapp';
 import {annotateAiMaterial,matchesAiMaterial} from './kalkyle-ai-material.js?v=20261009-qa';
-import {applyDetailedMaterialPrices} from './kalkyle-market-reference.js?v=20261009-qa';
+import {applyDetailedMaterialPrices} from './kalkyle-market-reference.js?v=20261009-festemidler';
 import {roofConsumption} from './kalkyle-engine.js?v=20261007-arbeidstimer';
 import {conversionSettings} from './kalkyle-mode-transition.js?v=20261009-qa';
 export const EXPERIENCE_TYPES=['complete','material','hours','allowance'];
@@ -51,13 +52,18 @@ export function buildSimpleEstimate({proposal,context,library,rates,settings,pri
   if(!complete)missing.push('Mengde mangler');
   else if(record('complete')){
    const r=record('complete');totalLow=calculate([costRow(quantity,r.min)],noMarkup(rates),1).price;totalHigh=calculate([costRow(quantity,r.max)],noMarkup(rates),1).price;
+   const planning=synchronizeAccessories(unique.rows.map(row=>roofConsumption(annotateAiMaterial(row,context.facts,offers),budgetSettings))).map(row=>({...row,priceBasis:'experience',priceIssue:'Inngår i samlet erfaringspris – produkt og mengder må kontrolleres'}));
+   materials.push(...materialList(planning,{offers,bindings:{},priceMode:'import'}));
    sources.push(r);missing.push('Fordeling mellom arbeid og materiell er ikke dokumentert i komplett erfaringspris');
+   if(planning.some(row=>row.materialOnly))missing.push('Erfaringsprisen må dekke nødvendige festemidler og tilbehør. Produktvalg og innkjøpsmengder avklares i detaljkalkylen.');
    if(record('hours')){const hr=record('hours');workLow=quantity*hr.min;workHigh=quantity*hr.max;sources.push(hr);}
   }else{
    const old=existingRows.filter(r=>unique.rows.some(candidate=>candidate.taskKey===r.taskKey));
    let detail=applyTimeCatalog(unique.rows,timeCatalog).map(row=>{const saved=old.find(r=>r.taskKey===row.taskKey);return saved?{...saved}:row;});
+   detail=synchronizeAccessories([...detail,...existingRows.filter(r=>r.accessoryParentId&&detail.some(p=>p.id===r.accessoryParentId)).map(r=>({...r}))]);
    if(detail.some(r=>['quantity','materialQuantity','material','hours','factor'].some(k=>!Number.isFinite(r[k])||r[k]<0)))throw Error('Kontroller manuelle mengder, priser og grunntider før budsjettet beregnes.');
-   detail=applyDetailedMaterialPrices(detail.map(r=>roofConsumption(annotateAiMaterial(r,context.facts,offers),budgetSettings)),{mode:priceMode==='example'?'market':priceMode,importedPrices:priceMode==='import'?prices:[],marketPrices:priceMode==='market'?prices:[],offers,bindings,detailed:true});
+   detail=applyDetailedMaterialPrices(detail.map(r=>roofConsumption(r.materialOnly?r:annotateAiMaterial(r,context.facts,offers),budgetSettings)),{mode:priceMode==='example'?'market':priceMode,importedPrices:priceMode==='import'?prices:[],marketPrices:priceMode==='market'?prices:[],offers,bindings,detailed:true});
+   if(detail.some(r=>r.enabled&&materialQuantityMissing(r))){complete=false;missing.push('Mengder for festemidler / tilbehør må avklares');}
    if(priceMode==='market')detail=detail.map(r=>{const offer=offers.find(o=>o.id===bindings[r.priceKey]);return !r.manualPrice&&r.aiSpecification&&offer&&!matchesAiMaterial(r,offer)?{...r,material:0,marketMaterialCost:undefined,priceIssue:'Valgt vare passer ikke oppgitt spesifikasjon'}:r;});
    materials.push(...materialList(detail,{offers,bindings,priceMode}).map(material=>({...material,quantity:quantity===null?null:material.quantity,purchaseQuantity:quantity===null?null:material.purchaseQuantity})));
    const hr=record('hours');
@@ -70,10 +76,10 @@ export function buildSimpleEstimate({proposal,context,library,rates,settings,pri
    const mr=record('material');
    if(mr){matLow=quantity*mr.min;matHigh=quantity*mr.max;sources.push(mr);}
    else{
-    const priced=detail.filter(r=>!r.priceIssue);
+    const priced=detail.filter(r=>r.enabled&&!r.priceIssue);
     matLow=matHigh=priced.reduce((sum,r)=>sum+(r.marketMaterialCost??r.materialQuantity*r.material),0);
     sources.push(...priced.filter(r=>r.priceKey).map(r=>({type:'material',source:r.priceSource,date:r.priceDate,confidence:'medium'})));
-    if(priced.length!==detail.length){complete=false;missing.push('Materialgrunnlag mangler');}
+    if(priced.length!==detail.filter(r=>r.enabled).length){complete=false;missing.push('Materialgrunnlag mangler');}
    }
    const allowance=record('allowance');
    const subtotal=(work,material,extra)=>calculate([costRow(1,material+extra,work)],rates,1).price;

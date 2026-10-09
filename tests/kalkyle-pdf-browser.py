@@ -53,8 +53,12 @@ with sync_playwright() as p:
     page.locator('#pdf-profile-save').click();assert 'lagret' in page.locator('#pdf-status').inner_text()
     assert page.locator('#pdf-download').is_disabled();page.locator('#pdf-cancel').click()
     tasks=page.locator('#simple-completion .completion-task')
-    for index,product in enumerate(['undertak','sloyfer','lekter']):
-        tasks.nth(index).get_by_role('button',name='Velg markedsvare',exact=True).click();page.locator('#material-product').select_option(product);page.locator('#material-submit').click()
+    for name,product in [('Legge undertak','undertak'),('Montere sløyfer','sloyfer'),('Montere lekter','lekter')]:
+        tasks.filter(has=page.get_by_role('heading',name=name,exact=True)).get_by_role('button',name='Velg markedsvare',exact=True).click();page.locator('#material-product').select_option(product);page.locator('#material-submit').click()
+    # This PDF layout/logo test covers the original three main materials.
+    # The separate accessory browser test prices and exports actual screw packs.
+    exclude=page.get_by_role('button',name='Tilbehøret inngår ikke / finnes fra før',exact=True)
+    while exclude.count():exclude.first.click()
     expected_ex=amount(page.locator('#total').inner_text());expected_gross=amount(page.locator('#gross').inner_text())
     before=page.evaluate('JSON.parse(window.testReadStorage("rigor-projects-v1"))[0].snapshot.rows')
     page.locator('#export-pdf').click();assert page.locator('#pdf-download').is_enabled()
@@ -94,7 +98,7 @@ with sync_playwright() as p:
     assert page.locator('#pdf-dialog').evaluate('(e)=>e.scrollWidth<=e.clientWidth+1')
     page.screenshot(path='/tmp/rigor-pdf-dialog-mobile.png',full_page=True);page.set_viewport_size({'width':1440,'height':1000});page.locator('#pdf-cancel').click();page.locator('#project-back').click()
     # Real multipage export: long names, final rows, disabled rows and all footers.
-    page.evaluate('''()=>{const key=window.testAccountKey(),record=JSON.parse(localStorage.getItem(key)),projects=JSON.parse(record.entries['rigor-projects-v1']),base=projects[0].snapshot.rows.find(r=>r.enabled);projects[0].snapshot.rows=Array.from({length:45},(_,i)=>({...base,id:'long-'+i,taskKey:'test.task.'+i,elementId:'group-'+Math.floor(i/5),elementName:'Langt bygningselement for kontroll av sideskift og flere oppgaver '+Math.floor(i/5),name:'Post '+(i+1)+' - ÆØÅ med en lang beskrivelse for automatisk linjebryting i et ferdig kundetilbud',manualTime:true}));projects[0].snapshot.rows.push({...base,id:'excluded',enabled:false,name:'Skal ikke eksporteres'});record.entries['rigor-projects-v1']=JSON.stringify(projects);localStorage.setItem(key,JSON.stringify(record));}''')
+    page.evaluate('''()=>{const key=window.testAccountKey(),record=JSON.parse(localStorage.getItem(key)),projects=JSON.parse(record.entries['rigor-projects-v1']),base=projects[0].snapshot.rows.find(r=>r.enabled);projects[0].snapshot.rows=Array.from({length:45},(_,i)=>({...base,id:'long-'+i,taskKey:'test.task.'+i,priceKey:'test.material',manualPrice:true,manualPriceSource:'PDF layout test',elementId:'group-'+Math.floor(i/5),elementName:'Langt bygningselement for kontroll av sideskift og flere oppgaver '+Math.floor(i/5),name:'Post '+(i+1)+' - ÆØÅ med en lang beskrivelse for automatisk linjebryting i et ferdig kundetilbud',manualTime:true}));projects[0].snapshot.rows.push({...base,id:'excluded',enabled:false,name:'Skal ikke eksporteres'});record.entries['rigor-projects-v1']=JSON.stringify(projects);localStorage.setItem(key,JSON.stringify(record));}''')
     page.reload();page.get_by_role('button',name='Åpne prosjekt',exact=True).click();page.locator('#project-pdf').click();page.locator('#pdf-type').select_option('offer')
     multi=download(page,'/tmp/rigor-tilbud-multipage.pdf');assert len(multi)>=3;check_pages(multi)
     text='\n'.join(p.get_text() for p in multi);assert 'Post 45' in text and 'Skal ikke eksporteres' not in text

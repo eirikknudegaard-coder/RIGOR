@@ -1,6 +1,7 @@
 import {calculate} from './kalkyle-engine.js?v=20261007-arbeidstimer';
-import {rowCodes} from './kalkyle-codes.js?v=20261009-materialliste';
-import {materialList} from './kalkyle-materials.js?v=20261009-materialliste';
+import {rowCodes} from './kalkyle-codes.js?v=20261009-festemidler';
+import {materialList} from './kalkyle-materials.js?v=20261009-festemidler';
+import {materialQuantityMissing} from './kalkyle-accessories.js?v=20261009-festemidler';
 
 export const documentProfileKey='rigor-document-profile-v1';
 const clean=(value,max=300)=>String(value??'').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g,'').trim().slice(0,max);
@@ -22,7 +23,7 @@ export function preparePdfDocument({rows,rates,project,profile,options={},brief=
  if(!project?.id)throw Error('Åpne eller opprett et prosjekt før du eksporterer PDF.');
  const selected=rows?.filter(r=>r.enabled)||[];
  if(!selected.length)throw Error('Kalkylen er tom. Legg til oppgavene som skal inngå.');
- if(selected.length>500||selected.some(r=>['quantity','material','materialQuantity','hours','factor'].some(k=>!Number.isFinite(r[k])||r[k]<0)||r.priceIssue||r.requiresTime||r.requiresQuantity&&r.quantity===0))throw Error('Avklar manglende priser, mengder og grunntider før PDF-eksport.');
+ if(selected.length>500||selected.some(r=>['quantity','material','materialQuantity','hours','factor'].some(k=>!Number.isFinite(r[k])||r[k]<0)||r.priceIssue||r.requiresTime||r.requiresQuantity&&r.quantity===0||materialQuantityMissing(r)))throw Error('Avklar manglende priser, mengder og grunntider før PDF-eksport.');
  if(!rates||['wage','direct','indirect','billing','laborMarkup','materialMarkup'].some(k=>!Number.isFinite(rates[k])||rates[k]<0)||rates.billing<=0||rates.billing>100)throw Error('Kontroller timepris og påslag før PDF-eksport.');
  const sender=validateDocumentProfile(profile),type=options.type==='calculation'?'calculation':'offer';
  if(type==='offer'&&priceMode==='example'&&selected.some(r=>r.priceKey&&!r.manualPrice))throw Error('Velg markedspriser eller registrer leverandørpriser før du lager et kundetilbud. Eksempelpriser kan eksporteres som beregning.');

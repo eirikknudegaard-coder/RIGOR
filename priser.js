@@ -1,5 +1,5 @@
-import {loadPublicCatalog} from './market-public-client.js?v=20261007-avklaringer';
-import {usableOffer,materialKind} from './market-public-core.js?v=20261009-qa';
+import {loadPublicCatalog} from './market-public-client.js?v=20261009-festemidler';
+import {usableOffer,materialKind} from './market-public-core.js?v=20261009-festemidler';
 import {productTypes} from './market-product-types.js';
 import {priceApi} from './market-price-client.js?v=20261007-innlogging';
 import {purchaseCost} from './market-price-core.js';

@@ -1,0 +1,247 @@
+{
+  "source": "Obs BYGG",
+  "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/festemateriell/skruer/terrasseskruer/2088538?v=ObsBygg-7025180675483",
+  "checkedAt": "2026-10-09T10:48:50.686Z",
+  "httpStatus": 200,
+  "rawSha256": "d5cd87ac1dc6bb1d84ae3c4db8873be5af50247f5d174192fcbcb9cbfb9c996b",
+  "raw": {
+    "jsonLd": [
+      {
+        "name": "Terrasseskrue C4",
+        "description": "Med bitsspor: Torx. Til bruk i trykkimpregnerte terrassebord, stakitt/gjerde med mer.",
+        "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/festemateriell/skruer/terrasseskruer/2088538",
+        "brand": {
+          "name": "KELLEN",
+          "@type": "Brand"
+        },
+        "aggregateRating": {
+          "ratingValue": "5",
+          "ratingCount": "1",
+          "@type": "AggregateRating"
+        },
+        "variesBy": [],
+        "hasVariant": [
+          {
+            "name": "Terrasseskrue C4",
+            "image": "/globalassets/productimages/965488_7025180675483_1.jpg?ref=E95EBF5141",
+            "sku": "ObsBygg-7025180675483",
+            "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/festemateriell/skruer/terrasseskruer/2088538?v=ObsBygg-7025180675483",
+            "size": "4.2 X 55 1000 STK",
+            "offers": {
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/festemateriell/skruer/terrasseskruer/2088538?v=ObsBygg-7025180675483",
+              "price": "299.00",
+              "priceCurrency": "NOK",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "@type": "Offer"
+            },
+            "@type": "Product"
+          }
+        ],
+        "@context": "https://schema.org",
+        "@type": "ProductGroup"
+      },
+      {
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer",
+              "name": "Trelast og byggevarer"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/festemateriell",
+              "name": "Festemateriell"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/festemateriell/skruer",
+              "name": "Skruer"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/festemateriell/skruer/terrasseskruer",
+              "name": "Terrasseskruer"
+            }
+          }
+        ],
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList"
+      }
+    ],
+    "excerpts": [
+      " Terrasseskrue C4 | Obsbygg.no Lavprisløfte 120 dager åpent kjøp Obs BYGG Montering Klikk &amp; hent - fra 2 timer Kjøpeutbytte som Coop-medlem Meny Coop med",
+      "lem 0 Terrasseskrue C4 Art nr: 7025180675483 ☆ ☆ ☆ ☆ ☆ 1 omtaler Med bitsspor: Torx. Til bruk i trykkimpregnerte terrassebord, stakitt/gjerde med mer. - les mer V",
+      "algt størrelse : 4.2 X 55 1000 STK 4.2 X 55 1000 STK 299 00 Kjøp Tilgjengelig : På lager (+100) Klikk og hent Butikklager: Velg butikk På lager i 3 butikker Dine leveringsalternativer Finn",
+      "r Produktomtaler Spesifikasjoner Produktdetaljer Med bitsspor: Torx. Til bruk i trykkimpregnerte terrassebord, stakitt/gjerde med mer. Selvforsenkende og selvborende terrasseskrue C4. Til bruk i trykkimpregnerte terrassebord,",
+      "stakitt/gjerde m.m mot tre. Produsert av herdet kvalitetsstål. Korrosjonsklasse C4. • Bitsspor: Torx. • Fiberkutt spiss tar raskt tak i materialet og forbygger sprekker. • Freseriller under hodet forsenker skruen gir et pe",
+      "nt resultat 1000 stk à 4,2x55 mm Forsenket hode med freseriller Fiberkutt spiss Korrosjonsklasse C4 Produktomtaler Spesifikasjoner Generelt Artikkelnummer 7025180675483 ",
+      "Leverandørens artikkelnummer 9822096 Størrelse 4.2 X 55 1000 STK Forpakningsmål Bruttovekt 3.16 kg Høyde 12.8 cm Lengde 19.2 cm Bredde 18.2 cm Hjelp og support Kundeservice Butikker Kontakt oss Retur-",
+      "og angrerett Reklamasjon Ofte stilte spørsmål Pakkesporing Leveringstid Betalingsalternativer Leveringsalternativer Obs BYGG Montering Monteringstjenester Monteringsprosessen FAQ om montering Bestill gratis befaring Om Obs B"
+    ],
+    "currentPage": {
+      "displayName": "Terrasseskrue C4",
+      "canonicalUrl": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/festemateriell/skruer/terrasseskruer/2088538",
+      "variationCode": "ObsBygg-7025180675483",
+      "price": {
+        "current": {
+          "inclVat": 299.0,
+          "exclVat": 239.2,
+          "vatPercent": 25.0
+        },
+        "original": {
+          "inclVat": 299.0,
+          "exclVat": 239.2,
+          "vatPercent": 25.0
+        },
+        "currentActivePriceGroup": "standard",
+        "member": {
+          "inclVat": 0.0,
+          "exclVat": 0.0,
+          "vatPercent": 0.0
+        },
+        "previous": null,
+        "hasPriceDifferences": false,
+        "showFromPrice": false,
+        "unitName": "stk",
+        "invertPrices": false,
+        "comparisonPrices": {
+          "unitName": null,
+          "current": null,
+          "original": null,
+          "member": null,
+          "previous": null,
+          "isEnabled": false
+        },
+        "savedAmount": null,
+        "isMemberPrice": false,
+        "isCampaignPrice": false,
+        "isDiscountedPrice": false,
+        "hasMemberPrice": false
+      },
+      "productControlText": "Selvforsenkende og selvborende terrasseskrue C4. \n\nTil bruk i trykkimpregnerte terrassebord, stakitt/gjerde m.m mot tre. \n\nProdusert av herdet kvalitetsstål. Korrosjonsklasse C4. \n\n• Bitsspor: Torx.\n•  Fiberkutt spiss tar raskt tak i materialet og forbygger sprekker. \n• Freseriller under hodet forsenker skruen gir et pent resultat",
+      "productDescription": "Med bitsspor: Torx. Til bruk i trykkimpregnerte terrassebord, stakitt/gjerde med mer.",
+      "productUsps": [
+        "1000 stk à 4,2x55 mm",
+        "Forsenket hode med freseriller",
+        "Fiberkutt spiss",
+        "Korrosjonsklasse C4"
+      ],
+      "jsonLd": [
+        {
+          "name": "Terrasseskrue C4",
+          "description": "Med bitsspor: Torx. Til bruk i trykkimpregnerte terrassebord, stakitt/gjerde med mer.",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/festemateriell/skruer/terrasseskruer/2088538",
+          "brand": {
+            "name": "KELLEN",
+            "@type": "Brand"
+          },
+          "aggregateRating": {
+            "ratingValue": "5",
+            "ratingCount": "1",
+            "@type": "AggregateRating"
+          },
+          "variesBy": [],
+          "hasVariant": [
+            {
+              "name": "Terrasseskrue C4",
+              "image": "/globalassets/productimages/965488_7025180675483_1.jpg?ref=E95EBF5141",
+              "sku": "ObsBygg-7025180675483",
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/festemateriell/skruer/terrasseskruer/2088538?v=ObsBygg-7025180675483",
+              "size": "4.2 X 55 1000 STK",
+              "offers": {
+                "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/festemateriell/skruer/terrasseskruer/2088538?v=ObsBygg-7025180675483",
+                "price": "299.00",
+                "priceCurrency": "NOK",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "@type": "Offer"
+              },
+              "@type": "Product"
+            }
+          ],
+          "@context": "https://schema.org",
+          "@type": "ProductGroup"
+        },
+        {
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer",
+                "name": "Trelast og byggevarer"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/festemateriell",
+                "name": "Festemateriell"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/festemateriell/skruer",
+                "name": "Skruer"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/festemateriell/skruer/terrasseskruer",
+                "name": "Terrasseskruer"
+              }
+            }
+          ],
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList"
+        }
+      ]
+    }
+  },
+  "observation": {
+    "id": "obs:ObsBygg-7025180675483",
+    "chain": "obs",
+    "name": "Terrasseskrue C4 · 4.2 X 55 1000 STK",
+    "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/festemateriell/skruer/terrasseskruer/2088538?v=ObsBygg-7025180675483",
+    "source_page": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/festemateriell/skruer/terrasseskruer/2088538?v=ObsBygg-7025180675483",
+    "source_id": "ObsBygg-7025180675483",
+    "gtin": null,
+    "kind": "fasteners",
+    "unit": "stk",
+    "vat": "inkl",
+    "price_kind": "public",
+    "quantity_basis": "package",
+    "vat_evidence": {
+      "url": "https://www.obsbygg.no/kjopsvilkar",
+      "vat": "inkl",
+      "statement": "Prisene er inklusiv mva.",
+      "checked_at": "2026-10-09T10:48:48.367Z"
+    },
+    "original_unit": "pakke",
+    "package_quantity": 1000,
+    "original_ore": 29900,
+    "package_price_ex_vat_ore": 23920,
+    "normalized_ore": 24,
+    "checked_at": "2026-10-09T10:48:50.686Z",
+    "valid_until": null,
+    "availability": "https://schema.org/InStock",
+    "evidence": "Obs CURRENT_PAGE: valgt SKU, identisk NOK-beløp og eksplisitt price.unitName; 1000 stk per pakning fra eksakt SKU-navn"
+  }
+}

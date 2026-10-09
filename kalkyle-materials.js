@@ -1,4 +1,5 @@
-import {requirementForRow} from './market-reference.js?v=20261009-reference';
+import {requirementForRow} from './market-reference.js?v=20261009-festemidler';
+import {materialQuantityMissing} from './kalkyle-accessories.js?v=20261009-festemidler';
 
 const text=value=>typeof value==='string'?value.trim():'';
 const finite=value=>typeof value==='number'&&Number.isFinite(value)&&value>=0;
@@ -7,6 +8,7 @@ const materials={wood_fibre:'trefiber',glass_wool:'glassull',stone_wool:'steinul
 const treatments={pressure_treated:'trykkimpregnert',primed:'grunnet',painted:'malt',untreated:'ubehandlet',thermal:'varmebehandlet',royal:'royalimpregnert'};
 const names={'roof.underlay.undertak':'Undertak','roof.underlay.sloyfer':'Sløyfer','roof.underlay.lekter':'Lekter','roof.cover.tile':'Takstein','roof.cover.metal':'Metalltekking','roof.cover.membrane':'Takmembran','insulation.vindsperre':'Vindsperre','foundation.slab.base':'Bærelagsmasser','foundation.slab.insulation':'Grunnisolasjon','foundation.slab.reinforcement':'Armering','foundation.slab.concrete':'Betong'};
 export function materialName(row){
+ if(row.materialOnly)return text(row.name)||'Festemidler / tilbehør';
  const requirement=requirementForRow(row),spec=requirement?.specification||{};
  const name=names[row.priceKey]||labels[requirement?.productType]||text(row.name).replace(/^(?:montere|legge|sette inn|installere|bygge|feste)\s+/i,'').replace(/\s*\([^)]*\)/g,'').trim()||'Materiale';
  const dimension=spec.thicknessMm?(spec.widthMm?spec.thicknessMm+'x'+spec.widthMm:spec.thicknessMm)+' mm':'';
@@ -26,13 +28,13 @@ export function materialForRow(row,{offers=[],bindings={},priceMode='market'}={}
  const saved=id&&row.selectedProduct?.id===id?row.selectedProduct:null;
  const chosen=offer?selectedProductSnapshot(offer):saved;
  const name=productChoice&&chosen?text(chosen.name):row.manualPrice?text(row.manualProduct)||materialName(row):materialName(row);
- const quantity=finite(row.materialQuantity)?row.materialQuantity:null;
- const purchaseQuantity=productChoice&&finite(row.marketPurchasedQuantity)?row.marketPurchasedQuantity:quantity;
+ const quantity=!materialQuantityMissing(row)&&finite(row.materialQuantity)?row.materialQuantity:null;
+ const purchaseQuantity=quantity===null?null:productChoice&&finite(row.marketPurchasedQuantity)?row.marketPurchasedQuantity:quantity;
  return {rowId:row.id,name,task:text(row.name),unit:text(row.materialUnit||row.unit),quantity,purchaseQuantity,
   packages:productChoice&&finite(row.marketPackages)?row.marketPackages:null,packageUnit:text(chosen?.packageUnit)||'pakke',
   productId:id||'',supplier:productChoice?text(chosen?.supplier):row.manualPrice?text(row.manualPriceSource):'',
   supplierSku:productChoice?text(chosen?.supplierSku):row.manualPrice?text(row.supplierSku):'',
-  needsProduct:!chosen&&!(row.manualPrice&&text(row.manualProduct)),priceIssue:text(row.priceIssue),
+  needsProduct:!chosen&&!(row.manualPrice&&text(row.manualProduct)),priceIssue:text(row.priceIssue),quantityIssue:materialQuantityMissing(row),materialNote:text(row.materialNote),
   price:!row.priceIssue&&finite(row.material)?row.material:null,
   cost:!row.priceIssue&&quantity!==null&&finite(row.material)?productChoice&&finite(row.marketMaterialCost)?row.marketMaterialCost:quantity*row.material:null,
   priceSource:text(row.priceSource),priceDate:text(row.priceDate)};

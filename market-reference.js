@@ -93,6 +93,7 @@ export function requirementKey(requirement) {
  return r.productType+':'+r.unit+':'+JSON.stringify(Object.fromEntries(Object.entries(r.specification).sort(([a],[b])=>a.localeCompare(b))));
 }
 export function requirementForRow(row) {
+ if(row.materialOnly)return null;
  if (row.materialRequirement) {try{return validateRequirement(row.materialRequirement);}catch{return null;}}
  const name=text(row.name), key=row.priceKey||'', ai=row.aiSpecification||{};
  let productType=null;
