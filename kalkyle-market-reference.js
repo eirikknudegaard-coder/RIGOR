@@ -1,5 +1,5 @@
 import {applyPrices,priceStatus} from './kalkyle-prices.js?v=20261009-qa';
-import {buildMarketReference,requirementForRow,referenceUnit,requirementKey,createReferenceSnapshot,validReferenceSnapshot} from './market-reference.js?v=20261009-reference';
+import {buildMarketReference,requirementForRow,referenceUnit,requirementKey,createReferenceSnapshot,validReferenceSnapshot} from './market-reference.js?v=20261009-festemidler';
 
 // Uses the existing price application and calculation engine; only price choice
 // and source metadata are added. Simple calculations retain their existing path.

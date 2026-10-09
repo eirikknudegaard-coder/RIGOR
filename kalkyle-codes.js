@@ -1,13 +1,15 @@
 import {codeRegister} from './kalkyle-code-register.js?v=20261007-avklaringer';
 import {calculate} from './kalkyle-engine.js?v=20261007-arbeidstimer';
-import {materialForRow} from './kalkyle-materials.js?v=20261009-materialliste';
+import {materialForRow} from './kalkyle-materials.js?v=20261009-festemidler';
+import {accessoryDefinitions,materialQuantityMissing} from './kalkyle-accessories.js?v=20261009-festemidler';
 
 // Identifiers belong to the template, so adding copies, sorting and AI selection
 // cannot renumber them. Company mappings are optional and belong to the project.
 export function codesFor(elementId,taskId){
  const entry=codeRegister[elementId];
  const element=entry?.element||'RG-E-L-'+encodeURIComponent(elementId);
- const suffix=entry?.tasks[taskId]||'X-'+encodeURIComponent(taskId);
+ const accessory=taskId.split('-material-');
+ const suffix=entry?.tasks[taskId]||(entry?.tasks[accessory[0]]&&accessoryDefinitions[accessory[1]]?entry.tasks[accessory[0]]+'-'+accessoryDefinitions[accessory[1]].code:'X-'+encodeURIComponent(taskId));
  const key=element.replace('RG-E-','')+'-'+suffix;
  return {element,work:'RG-A-'+key,purchase:'RG-M-'+key,sale:'RG-S-'+key,salary:''};
 }
@@ -22,7 +24,7 @@ export function exportBasis({rows,rates,project={},offers=[],bindings={},priceMo
  const selected=rows.filter(r=>r.enabled);
  if(!selected.length)throw Error('Velg oppgaver først.');
  if(!['wage','direct','indirect','billing','laborMarkup','materialMarkup'].every(k=>Number.isFinite(rates[k])&&rates[k]>=0)||rates.billing<=0||rates.billing>100)throw Error('Kontroller timesatser og påslag.');
- if(selected.some(r=>['quantity','materialQuantity','material','hours','factor'].some(k=>!Number.isFinite(r[k])||r[k]<0)||r.requiresQuantity&&r.quantity===0))throw Error('Avklar gyldige mengder først.');
+ if(selected.some(r=>['quantity','materialQuantity','material','hours','factor'].some(k=>!Number.isFinite(r[k])||r[k]<0)||r.requiresQuantity&&r.quantity===0||kind!=='work'&&materialQuantityMissing(r)))throw Error('Avklar gyldige mengder først.');
  if(kind==='work'&&selected.some(r=>r.requiresTime))throw Error('Avklar grunntid før arbeidsplanen eksporteres.');
  if(kind==='purchase'&&selected.some(r=>r.priceKey&&r.priceIssue))throw Error('Avklar materialpriser før innkjøpsgrunnlaget eksporteres.');
  if(kind==='sale'&&selected.some(r=>r.priceIssue||r.requiresTime))throw Error('Salgsgrunnlaget krever komplett pris- og tidsgrunnlag.');

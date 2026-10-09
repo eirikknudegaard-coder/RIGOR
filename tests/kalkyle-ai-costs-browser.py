@@ -23,7 +23,8 @@ with sync_playwright() as p:
     page.locator('#rates-tab').click();page.locator('#wage').fill('500');page.locator('#save-rate-defaults').click()
     assert page.locator('#wage-help').is_visible();assert '1 265,63' in page.locator('#hourly').inner_text().replace('\xa0',' ')
     page.locator('#brief-generate').click();page.locator('#assistant-preview').wait_for(state='visible');page.locator('#assistant-apply').click()
-    row=page.locator('tr[data-row-index]')
+    row=page.locator('tr[data-row-index]:not(.material-only)')
+    assert page.locator('tr.material-only').count()==4
     assert row.count()==3
     assert [r.locator('[data-field=hours]').input_value() for r in row.all()]==['0.25','0.12','0.13']
     assert all(r.locator('[data-field=factor]').input_value()=='1.25' for r in row.all())

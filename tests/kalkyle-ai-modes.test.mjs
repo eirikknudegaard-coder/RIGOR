@@ -41,7 +41,7 @@ test('Known experience ranges generate budget using the unchanged engine and pro
  context.priceBasis.experienceRates=[experience('terrace.new.deck','material',100,120),experience('terrace.new.deck','hours',.5,.7)];const proposal=proposalForMode(raw,library,context,'simple_estimator');
  const budget=buildSimpleEstimate({proposal,context,library,rates,settings,priceMode:'market'});
  const low=calculate([{enabled:true,quantity:35,materialQuantity:35,material:100,hours:.5,factor:1}],rates,35);const high=calculate([{enabled:true,quantity:35,materialQuantity:35,material:120,hours:.7,factor:1}],rates,35);
- assert.equal(budget.status,'budget');assert.equal(budget.price.min,low.price);assert.equal(budget.price.max,high.price);assert.equal(budget.gross.max,high.gross);
+ assert.equal(budget.status,'partial');assert(budget.materials.some(m=>m.name==='Terrasseskruer'&&m.quantity===null));assert(budget.uncertainties.some(u=>u.includes('festemidler')));assert.equal(budget.price.min,low.price);assert.equal(budget.price.max,high.price);assert.equal(budget.gross.max,high.gross);
  const unknown=buildSimpleEstimate({proposal,context:{...context,priceBasis:{experienceRates:[]}},library,rates,settings,priceMode:'example'});assert.equal(unknown.status,'partial');assert.equal(unknown.price.min,0);assert(unknown.uncertainties.some(u=>u.includes('grunnlag')||u.includes('Grunntid')));
 });
 test('Experience prices have provenance, exact work coverage and units; complete sales prices never get markup twice',()=>{

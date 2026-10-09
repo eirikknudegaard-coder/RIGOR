@@ -1,36 +1,45 @@
-import {materialForRow} from './kalkyle-materials.js?v=20261009-materialliste';
+import {materialForRow} from './kalkyle-materials.js?v=20261009-festemidler';
+import {accessoryRecipes,materialQuantityMissing} from './kalkyle-accessories.js?v=20261009-festemidler';
 const money=n=>Number.isFinite(n)?new Intl.NumberFormat('nb-NO',{style:'currency',currency:'NOK',maximumFractionDigits:2}).format(n):'—';
 const number=n=>Number.isFinite(n)?new Intl.NumberFormat('nb-NO',{maximumFractionDigits:2}).format(n):'—';
 const el=(tag,text,cls)=>{const node=document.createElement(tag);if(text)node.textContent=text;if(cls)node.className=cls;return node;};
 
-export function renderCompletion(target,{rows,priceMode,offers=[],bindings={},hourly=null,onMarket,onPrice,onQuantity,onTime,onDetails}){
+export function renderCompletion(target,{rows,priceMode,offers=[],bindings={},hourly=null,onMarket,onPrice,onQuantity,onMaterialQuantity,onAccessoryRecipe,onExclude,onTime,onDetails}){
  target.replaceChildren();const selected=rows.filter(r=>r.enabled);
  if(!selected.length){target.append(el('p','Velg arbeid eller legg til oppgaver fra biblioteket.','muted'));return;}
- const missing=selected.filter(r=>r.priceIssue||r.requiresTime||r.requiresQuantity&&r.quantity===0);
+ const missing=selected.filter(r=>r.priceIssue||r.requiresTime||r.requiresQuantity&&r.quantity===0||materialQuantityMissing(r));
  const head=el('div',null,'completion-heading');head.append(el('h3','2. Materialer og prisgrunnlag'),el('span',missing.length?missing.length+' poster må avklares':'Prisgrunnlaget er klart','workspace-label'));target.append(head);
  target.append(el('p','Velg riktig vare og dimensjon, eller registrer leverandørens pris. Arbeid og materialer bruker prosjektets satser og påslag. Rigg og avfall trenger et eget kostnadsgrunnlag.','muted'));
  const groups=new Map();for(const row of selected){const key=row.elementId||row.id;if(!groups.has(key))groups.set(key,[]);groups.get(key).push(row);}
  for(const group of groups.values()){
-  const section=el('details',null,'completion-group');section.open=group.some(r=>r.priceIssue||r.requiresTime||r.requiresQuantity&&r.quantity===0);
-  const problems=group.filter(r=>r.priceIssue||r.requiresTime||r.requiresQuantity&&r.quantity===0).length;
+  const section=el('details',null,'completion-group');section.open=group.some(r=>r.priceIssue||r.requiresTime||r.requiresQuantity&&r.quantity===0||materialQuantityMissing(r));
+  const problems=group.filter(r=>r.priceIssue||r.requiresTime||r.requiresQuantity&&r.quantity===0||materialQuantityMissing(r)).length;
   section.append(el('summary',(group[0].elementName||group[0].name)+' · '+(problems?problems+' avklaringer':'klart')));
   for(const row of group){
    const card=el('article',null,'completion-task');card.dataset.completionId=row.id;
    card.append(el('h4',row.name));
+   if(row.materialOnly){
+    card.append(el('p',row.materialNote,'muted'));
+    card.append(el('p','Materialpost. Montering inngår i «'+row.accessoryParentName+'».','muted'));
+    const recipes=Object.entries(accessoryRecipes).filter(([,r])=>r.type===row.accessoryType);
+    if(recipes.length){const label=el('label','Mengdegrunnlag'),select=el('select');select.setAttribute('aria-label','Mengdegrunnlag '+row.name);const blank=el('option','Angi mengde selv, eller velg et grunnlag');blank.value='';select.append(blank);for(const [id,r]of recipes){const option=el('option',r.label);option.value=id;select.append(option);}select.value=row.accessoryRecipe||'';select.disabled=!(row.quantity>0);select.onchange=()=>{if(select.value)onAccessoryRecipe(row,select.value);};label.append(select);card.append(label);if(row.accessoryRecipe){const recipe=accessoryRecipes[row.accessoryRecipe];const link=el('a','Mengdegrunnlag: Bergene Holm');link.href=recipe.source;link.target='_blank';link.rel='noopener noreferrer';card.append(link,el('p',recipe.note,'muted'));}}
+    const label=el('label','Tilbehørsmengde ('+row.materialUnit+')'),input=el('input');input.type='number';input.min='.01';input.max='10000000';input.step='any';input.value=materialQuantityMissing(row)?'':row.materialQuantity;input.placeholder='Angi faktisk behov';input.disabled=!(row.quantity>0);input.setAttribute('aria-label','Avklar tilbehørsmengde '+row.name);input.onchange=()=>{if(input.checkValidity()&&input.value)onMaterialQuantity(row,Number(input.value));};label.append(input);card.append(label);
+    const exclude=el('button','Tilbehøret inngår ikke / finnes fra før','secondary');exclude.type='button';exclude.onclick=()=>onExclude(row);card.append(exclude);
+   }
    const material=materialForRow(row,{priceMode,offers,bindings});
    if(material)card.append(el('p','Materiale: '+material.name,'completion-material-name'));
-   card.append(el('p',number(row.quantity)+' '+row.unit+' arbeid'+(row.priceKey?' · '+number(row.materialQuantity)+' '+row.materialUnit+' materiell':''),'muted'));
+   card.append(el('p',number(row.quantity)+' '+row.unit+' arbeid'+(row.priceKey?' · '+number(material?.quantity??(row.materialOnly?null:row.materialQuantity))+' '+row.materialUnit+' materiell':''),'muted'));
    if(row.requiresQuantity&&row.quantity===0){
     const label=el('label','Arbeidsmengde ('+row.unit+')');const input=el('input');input.type='number';input.min='.01';input.max='1000000';input.step='any';input.setAttribute('aria-label','Avklar mengde '+row.name);input.onchange=()=>{if(input.checkValidity()&&input.value)onQuantity(row,Number(input.value));};label.append(input);card.append(label);
    }
-   if(!row.requiresTime&&Number.isFinite(row.quantity*row.hours*row.factor)){
+   if(!row.materialOnly&&!row.requiresTime&&Number.isFinite(row.quantity*row.hours*row.factor)){
     const hours=row.quantity*row.hours*row.factor;
     card.append(el('p',number(hours)+' beregnede timer · '+number(row.quantity)+' '+row.unit+' × '+number(row.hours)+' t/'+row.unit+' × '+number(row.factor),'completion-work-hours'));
     if(hourly!==null&&Number.isFinite(hourly))card.append(el('p','Arbeidspris: '+money(hours*hourly)+' ekskl. MVA · '+money(hourly)+'/t inkl. arbeidspåslag','completion-labor-price'));
     card.append(el('p',row.timeSource||'Registrert grunntid','muted'));
    }
-   const time=el('details',null,'completion-time');time.open=Boolean(row.requiresTime);time.append(el('summary',row.requiresTime?'Avklar grunntid':'Juster grunntid'));
-   const label=el('label','Grunntid (t/'+row.unit+')');const input=el('input');input.type='number';input.min='0';input.max='10000';input.step='any';input.value=row.requiresTime?'':row.hours;input.setAttribute('aria-label','Avklar grunntid '+row.name);input.onchange=()=>{if(input.checkValidity()&&input.value)onTime(row,Number(input.value));};label.append(input);time.append(label);if(row.timeNote)time.append(el('p',row.timeNote,'muted'));card.append(time);
+   if(!row.materialOnly){const time=el('details',null,'completion-time');time.open=Boolean(row.requiresTime);time.append(el('summary',row.requiresTime?'Avklar grunntid':'Juster grunntid'));
+   const label=el('label','Grunntid (t/'+row.unit+')');const input=el('input');input.type='number';input.min='0';input.max='10000';input.step='any';input.value=row.requiresTime?'':row.hours;input.setAttribute('aria-label','Avklar grunntid '+row.name);input.onchange=()=>{if(input.checkValidity()&&input.value)onTime(row,Number(input.value));};label.append(input);time.append(label);if(row.timeNote)time.append(el('p',row.timeNote,'muted'));card.append(time);}
    if(row.priceKey){
     card.append(el('p',row.priceIssue?'Materialpris mangler eller må oppdateres':money(row.material)+'/'+row.materialUnit+' ekskl. MVA · '+row.priceSource+(row.priceDate?' · '+row.priceDate:''),row.priceIssue?'price-warning':'completion-price'));
     if(priceMode==='market'){const button=el('button',row.priceIssue?'Velg markedsvare':'Bytt markedsvare','secondary');button.type='button';button.onclick=()=>onMarket(row);card.append(button);}

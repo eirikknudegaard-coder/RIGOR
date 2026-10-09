@@ -49,14 +49,14 @@ with sync_playwright() as p:
  page.locator('#ai-budget').screenshot(path='/tmp/rigor-ai-budget-desktop.png')
  page.locator('#project-back').click();page.reload();page.get_by_role('button',name='Åpne prosjekt',exact=True).click();page.locator('#ai-budget').wait_for(state='visible');assert 'Foreløpig budsjettanslag' in page.locator('#ai-budget').inner_text()
  page.locator('#ai-make-detailed').click();page.locator('#assistant-preview').wait_for(state='visible');assert len(calls)==1 and calls[0]['mode']=='simple_estimator'
- page.locator('#assistant-apply').click();count=page.locator('tr[data-row-index]').count();assert count==5
+ page.locator('#assistant-apply').click();count=page.locator('tr[data-row-index]').count();assert count==6
  page.locator('#brief-generate').click();page.locator('#assistant-preview').wait_for(state='visible');assert page.locator('[data-assistant-element]:checked').count()==0;assert page.locator('tr[data-row-index]').count()==count
  # A detailed explicit wall request asks only for the missing area.
  page.locator('#project-back').click();page.locator('#start-detailed').click();page.locator('#project-name').fill('Yttervegg AI');page.locator('#project-submit').click()
  page.locator('#job-brief').fill('Legg inn 100 mm Hunton trefiberisolasjon på ytterveggen, ny vindsperre, 48x48 utlekting og liggende kledning.')
  before_calls=len(calls);page.locator('#brief-generate').click();assert page.locator('[data-clarification]').count()==1;assert 'veggareal' in page.locator('#assistant-clarification-fields').inner_text();assert len(calls)==before_calls
  page.locator('[data-clarification]').fill('140');page.locator('#assistant-continue').click();page.locator('#assistant-preview').wait_for(state='visible');assert page.locator('[data-assistant-quantity]').nth(0).input_value()=='140';assert page.locator('#assistant-questions').is_hidden()
- page.locator('#assistant-apply').click();assert page.locator('tr[data-row-index]').count()==4
+ page.locator('#assistant-apply').click();assert page.locator('tr[data-row-index]').count()==7
  # Explicit dimensions and product material limit actual market product choices.
  rows=page.locator('tr[data-row-index]')
  rows.nth(1).locator('.row-market-button').click();values=page.locator('#material-product option').evaluate_all('(options)=>options.map(o=>o.value)');assert 'hunton' in values and 'glava' not in values;page.locator('#material-cancel').click()

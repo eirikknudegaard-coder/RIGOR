@@ -1,4 +1,4 @@
-import {buildMarketReference,requirementForRow,requirementsForOffers,requirementLabel,requirementKey,referenceIsNewer,referenceUnit,validateRequirement,validReferenceSnapshot} from './market-reference.js?v=20261009-reference';
+import {buildMarketReference,requirementForRow,requirementsForOffers,requirementLabel,requirementKey,referenceIsNewer,referenceUnit,validateRequirement,validReferenceSnapshot} from './market-reference.js?v=20261009-festemidler';
 const el=(tag,label,cls)=>{const n=document.createElement(tag);if(label)n.textContent=label;if(cls)n.className=cls;return n;};
 const number=n=>Number.isFinite(n)?new Intl.NumberFormat('nb-NO',{maximumFractionDigits:2}).format(n):'—';
 const price=n=>Number.isFinite(n)?new Intl.NumberFormat('nb-NO',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n):'—';

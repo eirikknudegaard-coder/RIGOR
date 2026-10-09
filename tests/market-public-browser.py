@@ -11,7 +11,7 @@ with sync_playwright() as p:
  page.goto('http://127.0.0.1:8090/kalkyle.html');page.wait_for_function('document.getElementById("price-status").textContent.includes("1 ferske")')
  page.locator('#start-simple').click();page.locator('#project-name').fill('Markedsprisprosjekt');page.locator('#project-submit').click();page.locator('#pricing-tab').click()
  select=page.locator('[data-market-key="roof.underlay.sloyfer"]');select.select_option('obs:fixture')
- row=page.locator('tr[data-row-index]').filter(has=page.locator('td',has_text='Montere sløyfer'));assert row.locator('[data-field=material]').input_value()=='20'
+ row=page.locator('tr[data-row-index]').filter(has=page.get_by_label('Montere sløyfer materialpris',exact=True));assert row.locator('[data-field=material]').input_value()=='20'
  page.locator('#project-back').click();page.get_by_role('button',name='Åpne prosjekt').click();page.locator('#pricing-tab').click();assert select.input_value()=='obs:fixture'
  # A new project must not inherit another project's supplier/product choice.
  page.locator('#project-back').click();page.locator('#start-simple').click();page.locator('#project-name').fill('Nytt');page.locator('#project-submit').click();page.locator('#pricing-tab').click();assert select.input_value()==''

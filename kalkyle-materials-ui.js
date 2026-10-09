@@ -1,4 +1,4 @@
-import {materialList} from './kalkyle-materials.js?v=20261009-materialliste';
+import {materialList} from './kalkyle-materials.js?v=20261009-festemidler';
 const number=value=>Number.isFinite(value)?new Intl.NumberFormat('nb-NO',{maximumFractionDigits:2}).format(value):'—';
 const money=value=>Number.isFinite(value)?new Intl.NumberFormat('nb-NO',{style:'currency',currency:'NOK'}).format(value):'—';
 const el=(tag,value)=>{const node=document.createElement(tag);if(value)node.textContent=value;return node;};
@@ -13,6 +13,7 @@ export function renderMaterialList(target,rows,options){
   const name=el('td');name.append(el('strong',material.name),el('small','Til: '+material.task));
   if(material.supplierSku)name.append(el('small','Varenummer: '+material.supplierSku));
   if(material.needsProduct)name.append(el('small','Materialtype – konkret produkt er ikke valgt'));
+  if(material.materialNote)name.append(el('small',material.materialNote));
   tr.append(name,el('td',number(material.quantity)+' '+material.unit));
   const purchase=el('td',number(material.purchaseQuantity)+' '+material.unit);
   if(material.packages!==null)purchase.append(el('small',number(material.packages)+' '+material.packageUnit));tr.append(purchase);
