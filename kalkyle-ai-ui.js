@@ -2,7 +2,7 @@ import {createEstimateContext,questionPlan,AI_MODES} from './kalkyle-ai-modes.js
 import {answerContext,detailedContext,estimateInput} from './kalkyle-estimate-context.js?v=20261008-ai-modes';
 import {estimateAI} from './kalkyle-estimate-ai.js?v=20261008-ai-modes';
 import {validateModeResult} from './kalkyle-detailed-copilot.js?v=20261008-ai-modes';
-import {buildSimpleEstimate,validateExperienceRate,EXPERIENCE_SOURCES} from './kalkyle-simple-estimator.js?v=20261008-ai-modes';
+import {buildSimpleEstimate,validateExperienceRate,EXPERIENCE_SOURCES} from './kalkyle-simple-estimator.js?v=20261009-qa';
 const $=id=>document.getElementById(id);
 const money=n=>new Intl.NumberFormat('nb-NO',{style:'currency',currency:'NOK',maximumFractionDigits:0}).format(n);
 const number=n=>new Intl.NumberFormat('nb-NO',{maximumFractionDigits:2}).format(n);
@@ -37,7 +37,7 @@ export function setupAiModes({getState,saveContext,showProposal,renderQuestionFi
   list(panel,'Valgfrie presiseringer – stopper ikke anslaget',(context.suggestions||[]).map(s=>s.text));
   const details=el('details'),summary=el('summary','Pris- og tidskilder');details.append(summary);list(details,'Grunnlag',budget.sources.map(s=>s.source+(s.date?' · '+s.date:'')+(s.region?' · '+s.region:'')+(s.confidence?' · sikkerhet: '+({low:'lav',medium:'middels',high:'høy'}[s.confidence]):'')+(s.notes?' · '+s.notes:'')));panel.append(details);
   experienceEditor(panel);
-  const detailed=el('button','Gjør denne detaljert');detailed.type='button';detailed.id='ai-make-detailed';detailed.onclick=()=>{context=detailedContext(context);modeChosen=true;mode.value='detailed_copilot';switchDetailed();persist();run({reuse:true,preliminary:true});};panel.append(detailed);
+  const detailed=el('button','Gjør denne detaljert');detailed.type='button';detailed.id='ai-make-detailed';detailed.onclick=()=>{context=detailedContext(context);modeChosen=true;mode.value='detailed_copilot';switchDetailed(context);persist();proposal={...proposal,mode:'detailed_copilot',context};panel.hidden=true;showProposal(proposal,context.brief);$('brief-status').textContent='Budsjettets arbeidsomfang er beholdt. Kontroller og legg til oppgavene for detaljert beregning.';};panel.append(detailed);
  }
  function experienceEditor(parent){
   const details=el('details');details.id='ai-experience-editor';details.append(el('summary','Registrer et erfaringstall for dette prosjektet'));

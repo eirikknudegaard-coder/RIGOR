@@ -1,0 +1,196 @@
+{
+  "source": "Montér",
+  "url": "https://www.monter.no/tak-og-pipe/takstein/betongstein/takst-palema-teglrodsvart-dobbelkrum-ubehandlet",
+  "checkedAt": "2026-10-09T06:34:25.134Z",
+  "httpStatus": 200,
+  "rawSha256": "87c89f1f2574c9b89812a573d7a64512aebb8a917e97521253a30c028e194ba5",
+  "raw": {
+    "jsonLd": [
+      {
+        "name": "Takst palema teglrød/svart dobbelkrum ubehandlet",
+        "description": "Takst palema teglrød/svart dobbelkrum ubehandlet. Benders Palema Ubehandlet er en sterk og robust dobbelkrummet takstein med klassisk utseende som passer like godt på gamle hus som på nybygg. Dette er vår mest solgte profil gjennom tidene. Benders Palema er enkel og rask å legge. Benders ubehandlet takstein er helt gjennomfarget, noe som innebærer at jernoksid tilsettes i betongen ved produksjonen. Det er nettopp jernoksiden i den ubehandlede taksteinen som gir den optiske fargen. Den ubehandlede steinen får et naturlig kalkutslag på overflaten de første årene, for deretter å gå tilbake til sin opprinnelige farge.",
+        "image": [
+          "https://media.monter.no/9056b428-dfaf-419e-92db-cd75e7ff9831/1f00ea6e-aef0-48c2-923f-ffee1a9189e9/WqxcyeQZD3NPPwHR7Uw7JVxwT/s5lY3ibLUcPcszb46wxvwXSo6.png?f=webp&w=500",
+          "https://media.monter.no/9056b428-dfaf-419e-92db-cd75e7ff9831/9d21dcb2-3910-4bee-a8b2-87e22e0a8758/IcdKW8vfVvTXZFkHl0HJdVYos/9Xjos401485t1pBmbMeA1RJtL.tif?f=webp&w=500"
+        ],
+        "sku": "43044865",
+        "url": "https://www.monter.no/tak-og-pipe/takstein/betongstein/takst-palema-teglrodsvart-dobbelkrum-ubehandlet",
+        "brand": {
+          "@type": "Brand",
+          "name": "Benders"
+        },
+        "offers": [
+          {
+            "@type": "Offer",
+            "price": "20.70",
+            "priceCurrency": "NOK",
+            "itemOffered": {
+              "@type": "Sku",
+              "sku": "101152989",
+              "name": "Takst palema teglrød/svart dobbelkrum ubehandlet"
+            },
+            "availability": "https://schema.org/BackOrder",
+            "availabilityStarts": "2026-10-21T00:00:00+02:00"
+          }
+        ],
+        "category": "Tak og pipe/Takstein/Betongstein",
+        "gtin": "7340018180466",
+        "hasMeasurement": null,
+        "@context": "http://schema.org/",
+        "@type": "Product"
+      },
+      {
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+              "@id": "https://www.monter.no/tak-og-pipe",
+              "name": "Tak og pipe"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+              "@id": "https://www.monter.no/tak-og-pipe/takstein",
+              "name": "Takstein"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "item": {
+              "@id": "https://www.monter.no/tak-og-pipe/takstein/betongstein",
+              "name": "Betongstein"
+            }
+          }
+        ],
+        "@context": "http://schema.org/",
+        "@type": "BreadcrumbList"
+      }
+    ],
+    "currentPage": {
+      "displayName": "Takst palema teglrød/svart dobbelkrum ubehandlet",
+      "canonicalUrl": "https://www.monter.no/tak-og-pipe/takstein/betongstein/takst-palema-teglrodsvart-dobbelkrum-ubehandlet",
+      "variationCode": "MOC_101152989",
+      "price": null,
+      "description": "Takst palema teglrød/svart dobbelkrum ubehandlet. Benders Palema Ubehandlet er en sterk og robust dobbelkrummet takstein med klassisk utseende som passer like godt på gamle hus som på nybygg. Dette er vår mest solgte profil gjennom tidene. Benders Palema er enkel og rask å legge. Benders ubehandlet takstein er helt gjennomfarget, noe som innebærer at jernoksid tilsettes i betongen ved produksjonen. Det er nettopp jernoksiden i den ubehandlede taksteinen som gir den optiske fargen. Den ubehandlede steinen får et naturlig kalkutslag på overflaten de første årene, for deretter å gå tilbake til sin opprinnelige farge.",
+      "jsonLd": [
+        {
+          "name": "Takst palema teglrød/svart dobbelkrum ubehandlet",
+          "description": "Takst palema teglrød/svart dobbelkrum ubehandlet. Benders Palema Ubehandlet er en sterk og robust dobbelkrummet takstein med klassisk utseende som passer like godt på gamle hus som på nybygg. Dette er vår mest solgte profil gjennom tidene. Benders Palema er enkel og rask å legge. Benders ubehandlet takstein er helt gjennomfarget, noe som innebærer at jernoksid tilsettes i betongen ved produksjonen. Det er nettopp jernoksiden i den ubehandlede taksteinen som gir den optiske fargen. Den ubehandlede steinen får et naturlig kalkutslag på overflaten de første årene, for deretter å gå tilbake til sin opprinnelige farge.",
+          "image": [
+            "https://media.monter.no/9056b428-dfaf-419e-92db-cd75e7ff9831/1f00ea6e-aef0-48c2-923f-ffee1a9189e9/WqxcyeQZD3NPPwHR7Uw7JVxwT/s5lY3ibLUcPcszb46wxvwXSo6.png?f=webp&w=500",
+            "https://media.monter.no/9056b428-dfaf-419e-92db-cd75e7ff9831/9d21dcb2-3910-4bee-a8b2-87e22e0a8758/IcdKW8vfVvTXZFkHl0HJdVYos/9Xjos401485t1pBmbMeA1RJtL.tif?f=webp&w=500"
+          ],
+          "sku": "43044865",
+          "url": "https://www.monter.no/tak-og-pipe/takstein/betongstein/takst-palema-teglrodsvart-dobbelkrum-ubehandlet",
+          "brand": {
+            "@type": "Brand",
+            "name": "Benders"
+          },
+          "offers": [
+            {
+              "@type": "Offer",
+              "price": "20.70",
+              "priceCurrency": "NOK",
+              "itemOffered": {
+                "@type": "Sku",
+                "sku": "101152989",
+                "name": "Takst palema teglrød/svart dobbelkrum ubehandlet"
+              },
+              "availability": "https://schema.org/BackOrder",
+              "availabilityStarts": "2026-10-21T00:00:00+02:00"
+            }
+          ],
+          "category": "Tak og pipe/Takstein/Betongstein",
+          "gtin": "7340018180466",
+          "hasMeasurement": null,
+          "@context": "http://schema.org/",
+          "@type": "Product"
+        },
+        {
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "item": {
+                "@id": "https://www.monter.no/tak-og-pipe",
+                "name": "Tak og pipe"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "item": {
+                "@id": "https://www.monter.no/tak-og-pipe/takstein",
+                "name": "Takstein"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "item": {
+                "@id": "https://www.monter.no/tak-og-pipe/takstein/betongstein",
+                "name": "Betongstein"
+              }
+            }
+          ],
+          "@context": "http://schema.org/",
+          "@type": "BreadcrumbList"
+        }
+      ],
+      "units": {
+        "base": {
+          "name": "STK",
+          "multiplicationFactor": 1.0
+        },
+        "sales": {
+          "name": "STK",
+          "multiplicationFactor": 1.0
+        },
+        "price": {
+          "name": "STK",
+          "multiplicationFactor": 1.0
+        },
+        "additionalSales": [
+          {
+            "name": "STK",
+            "multiplicationFactor": 1.0
+          },
+          {
+            "name": "PAL",
+            "multiplicationFactor": 240.0
+          },
+          {
+            "name": "BNT",
+            "multiplicationFactor": 5.0
+          }
+        ],
+        "additionalPrice": [
+          {
+            "name": "PAL",
+            "multiplicationFactor": 240.0
+          },
+          {
+            "name": "BNT",
+            "multiplicationFactor": 5.0
+          }
+        ]
+      },
+      "stockUnit": null,
+      "variantSelectorSpecification": {
+        "ItemAttrNOBBLengdedybde": "420.0",
+        "Lengde": "420",
+        "ItemAttrNOBBBredde": "330.0",
+        "Bredde": "330",
+        "ItemAttrNOBBVekt": "4.05",
+        "ItemAttrMateriale": "Betong"
+      }
+    },
+    "priceSection": ""
+  },
+  "registerAtCheck": null,
+  "notes": "Rå kildeutdrag. Kontrolltid er live-kontroll, ikke endret produksjonsdato."
+}

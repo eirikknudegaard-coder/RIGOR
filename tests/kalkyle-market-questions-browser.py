@@ -1,6 +1,7 @@
 from portal_test_support import authorize_portal
 """Actual recorded roll evidence, legacy register units, mixed AI controls and home guide."""
 import json, subprocess
+from datetime import datetime, timezone
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
@@ -33,7 +34,7 @@ with sync_playwright() as p:
     page=browser.new_page(viewport={'width':1440,'height':1000});authorize_portal(page)
     errors=[]
     page.on('pageerror', lambda e:errors.append(str(e)))
-    page.add_init_script('Date.now=()=>Date.parse("2026-10-07T05:40:00Z")')
+    page.clock.set_fixed_time(datetime(2026,10,7,5,40,tzinfo=timezone.utc))
     requests=[]
     def register(route):
         requests.append(route.request.url)
@@ -55,7 +56,7 @@ with sync_playwright() as p:
     page.locator('#basis').select_option('footprint');page.locator('#area').fill('100');page.locator('#area').press('Tab')
     task=page.locator('#simple-completion [data-completion-id="roof.underlay.underlay"]')
     task.get_by_role('button',name='Velg markedsvare',exact=True).click()
-    page.locator('#material-store').select_option('2327')
+    assert page.locator('#material-store').is_hidden()
     assert page.locator('#material-product option').count()==3
     page.locator('#material-product').select_option(basic)
     detail=page.locator('#material-product-detail').inner_text()
@@ -66,49 +67,44 @@ with sync_playwright() as p:
     row=next(r for r in snapshot['rows'] if r['name']=='Legge undertak')
     assert row['marketPackages']==2 and row['marketPurchasedQuantity']==150 and row['marketMaterialCost']==10568
     assert row['priceDate']==catalog['offers'][1]['checked_at'][:10]
-    assert snapshot['marketStores']['byggmax']=='2327'
+    assert snapshot['marketStores'].get('byggmax','')==''
     # Refresh does fetch new data; a staged store change is not committed by cancellation.
     task.get_by_role('button',name='Bytt markedsvare',exact=True).click()
-    page.locator('#material-store').select_option('2314')
+    assert page.locator('#material-store').is_hidden()
     prior=len(requests)
     catalog['offers'][1]['last_error']='HTTP 403'
     page.locator('#material-refresh').click()
     page.wait_for_function('!document.getElementById("material-refresh").disabled')
     assert len(requests)>prior and all('?price_check=' in u for u in requests)
-    assert page.locator('#material-store').input_value()=='2314'
+    assert page.locator('#material-store').is_hidden()
     assert page.locator('#material-product option[value="'+basic+'"]').count()==0
     page.locator('#material-cancel').click()
-    assert page.locator('#byggmax-store').input_value()=='2327'
+    assert page.locator('#byggmax-store').input_value()==''
     # If there is no documented product, open this task's supplier-price form directly.
     catalog['offers'][0]['last_error']='HTTP 403'
     task.get_by_role('button',name='Velg markedsvare',exact=True).click()
     page.locator('#material-refresh').click();page.wait_for_function('!document.getElementById("material-refresh").disabled')
     assert page.locator('#material-product').is_disabled()
-    assert 'Obs BYGG-priser vises også' in page.locator('#material-dialog-note').inner_text()
+    assert 'Ingen ferske, dokumenterte produktpriser' in page.locator('#material-dialog-note').inner_text()
     page.locator('#material-manual').click()
     form=task.locator('.completion-manual form')
     assert form.is_visible() and form.locator('[name=price]').evaluate('e=>e===document.activeElement')
     form.locator('[name=price]').fill('88');form.locator('[name=source]').fill('Kontrollert leverandørtilbud')
     form.get_by_role('button',name='Bruk innkjøpspris').click()
     assert 'Kontrollert leverandørtilbud' in task.inner_text()
-    # A returned AI question list renders as selects, number and text, with no implicit row changes.
-    page.locator('#job-brief').fill('Saltak, 30 grader og 100 m² målt takflate med takstein, nytt undertak, sløyfer og lekter.')
-    before=page.locator('tr[data-row-index]').count()
-    page.locator('#brief-generate').click();page.locator('#assistant-preview').wait_for(state='visible')
-    fields=page.locator('.assistant-answer-form [data-clarification]')
-    assert fields.count()==5
-    assert fields.nth(0).evaluate('e=>e.tagName')=='SELECT'
-    assert fields.nth(1).evaluate('e=>e.tagName')=='SELECT'
-    assert [fields.nth(i).get_attribute('type') for i in [2,3,4]]==['number','text','text']
-    fields.nth(0).select_option('Saltak');fields.nth(1).select_option('Stående (vertikal)');fields.nth(2).fill('6')
-    fields.nth(3).fill('Dobbelfals 19 × 148 mm');fields.nth(4).fill('Råte må vurderes ved åpning.')
-    page.set_viewport_size({'width':390,'height':844})
-    assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
-    page.locator('.assistant-answer-form').screenshot(path='/tmp/rigor-ai-mixed-fields-mobile.png')
-    page.locator('.assistant-answer-form button').click();page.wait_for_function('window.testBriefs.length===2')
-    brief=page.evaluate('window.testBriefs[1]')
-    assert all(answer in brief for answer in ['Taktype: Saltak','Kledningsretning: Stående (vertikal)','Mønelengde: 6 m','Dobbelfals 19 × 148 mm','Råte må vurderes'])
+    # Provider follow-ups are optional refinements; critical inputs use typed controls before the API.
+    page.locator('#job-brief').fill('Saltak, 30 grader og 100 m² målt takflate. Nytt undertak og lekter. Normal tilkomst.')
+    page.locator('#ai-mode').select_option('detailed_copilot')
+    before=page.locator('tr[data-row-index]').count();page.locator('#brief-generate').click()
+    page.locator('[data-clarification=roof-covering]').select_option('Takstein');page.locator('#assistant-continue').click();page.locator('#assistant-preview').wait_for(state='visible')
+    assert page.locator('#assistant-questions').is_hidden()
+    assert 'Valgfrie presiseringer' in page.locator('#ai-budget').inner_text()
+    assert 'mønelengden' in page.locator('#ai-budget').inner_text()
+    page.locator('#job-brief').fill(page.locator('#job-brief').input_value()+'\nMønelengde: 6 m. Råte må vurderes ved åpning.')
+    page.locator('#brief-generate').click();page.wait_for_function('window.testBriefs.length===2')
+    assert 'Mønelengde: 6 m' in page.evaluate('window.testBriefs[1]')
     assert page.locator('tr[data-row-index]').count()==before
+    page.set_viewport_size({'width':390,'height':844});assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
     assert not errors,errors
-    print('PASS: real roll metadata correction, whole-roll procurement, store isolation, refresh/failure exclusion, supplier fallback, typed AI questions, preserved answers and home guide/mobile')
+    print('PASS: real roll metadata, whole-roll procurement, hidden store controls, failure exclusion, supplier fallback, optional refinements, unchanged scope and home guide/mobile')
     browser.close()

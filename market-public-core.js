@@ -1,4 +1,5 @@
-import {matchesAiMaterial} from './kalkyle-ai-material.js?v=20261008-ai-modes';
+import {matchesAiMaterial} from './kalkyle-ai-material.js?v=20261009-qa';
+import {documentedConsumption,validConsumption,roofTileRule} from './material-consumption.js?v=20261009-qa';
 // Public retailer data, parsed with explicit rules. No AI, sample prices or guesses.
 export const publicSources=[{id:'obs',name:'Obs BYGG',origin:'https://www.obsbygg.no',vat_policy_url:'https://www.obsbygg.no/kjopsvilkar'},{id:'byggmax',name:'Byggmax',origin:'https://www.byggmax.no',vat_policy_url:'https://www.byggmax.no/kundeservice/kj%C3%B8psvilk%C3%A5r'}];
 export function sourceUrl(value,source){const url=new URL(value);if(url.origin!==source.origin||url.username||url.password||url.hash)throw Error('Adresse utenfor leverandøren');return url.href;}
@@ -16,6 +17,17 @@ const units={m:'m',mtr:'m',meter:'m',lm:'m',løpemeter:'m',m2:'m2','m²':'m2',mt
 function unitOf(value){return units[String(value||'').toLowerCase().trim()]||null;}
 function plain(html){return html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;|&#160;/g,' ').replace(/&sup2;|&#178;/g,'²').replace(/&amp;/g,'&').replace(/\s+/g,' ');}
 function amount(value){const n=typeof value==='number'?value:Number(String(value).replace(/\s/g,'').replace(',','.'));if(!Number.isFinite(n)||n<=0||n>1e7)throw Error('Ugyldig pris');return n;}
+// Read a JSON object assignment without executing retailer JavaScript. Only the
+// current page's own fields may document consumption; recommendations cannot.
+function currentProductPage(html,url){
+ const match=/window\.CURRENT_PAGE\s*=\s*\{/.exec(html);if(!match)return null;
+ let depth=0,quoted=false,escaped=false;const start=match.index+match[0].length-1;
+ for(let i=start;i<html.length&&i-start<2000000;i++){
+  const c=html[i];if(quoted){if(escaped)escaped=false;else if(c==='\\')escaped=true;else if(c==='"')quoted=false;continue;}
+  if(c==='"')quoted=true;else if(c==='{')depth++;else if(c==='}'&&!--depth){try{const page=JSON.parse(html.slice(start,i+1));return new URL(page.canonicalUrl,url).pathname===new URL(url).pathname?page:null;}catch{return null;}}
+ }
+ return null;
+}
 function obsPriceSection(html){const opening=/<div\b[^>]*data-test-id=["']product-price-section["'][^>]*>/i.exec(html);if(!opening)return '';const tail=html.slice(opening.index+opening[0].length,opening.index+50000);let depth=1;for(const m of tail.matchAll(/<\/?div\b[^>]*>/gi)){depth+=m[0].startsWith('</')?-1:1;if(!depth)return tail.slice(0,m.index);}return '';}
 // Obs prices these membranes as one item. Its exact SKU name specifies the
 // roll's width and length in metres. Convert that documented gross area;
@@ -35,9 +47,21 @@ export function readPublicProduct(html,url,source,now=new Date().toISOString()){
  // Listings and variable-price product families cannot supply one definite price.
  const direct=products.filter(p=>p.url&&sourceUrl(p.url,source)===url);const candidates=direct.length?direct:products.length===1&&products[0]._groupUrl&&sourceUrl(products[0]._groupUrl,source)===url?products:products.filter(p=>!p.url);if(candidates.length!==1)throw Error('Ingen entydig Product i strukturerte data');const p=candidates[0],sku=String(p.sku||p.productID||p.gtin13||p.gtin||'');if(!sku||!p.name)throw Error('Produkt-ID eller navn mangler');
  const productUrl=p.url?sourceUrl(p.url,source):url;if(productUrl!==url&&(!p._groupUrl||sourceUrl(p._groupUrl,source)!==url||products.length!==1))throw Error('Produktadresse samsvarer ikke');
+ const page=source.id==='obs'?currentProductPage(html,productUrl):null;
+ const priceSection=source.id==='obs'?obsPriceSection(html):'';
+ if(source.id==='obs'&&(/(?:fra\s+\d|pris\s+fra|varier[\wæøå]*[^.]{0,100}(?:lagersted|butikk)|medlemspris|klubbpris)/i.test(plain(priceSection))||page?.price?.showFromPrice||page?.price?.hasPriceDifferences||page?.price?.isMemberPrice))throw Error('Betinget eller lokal lagersted-pris / fra-pris');
  const offers=[p.offers].flat().filter(Boolean);if(offers.length!==1||![offers[0]['@type']].flat().some(t=>String(t).split(/[\/#]/).at(-1)==='Offer'))throw Error('Ingen entydig Offer');const o=offers[0];if(o.url&&sourceUrl(o.url,source)!==productUrl)throw Error('Tilbudsadresse samsvarer ikke');if(o.eligibleCustomerType||o.eligibleRegion||o.availableAtOrFrom)throw Error('Betinget eller lokal pris');if(o.priceCurrency!=='NOK')throw Error('Ukjent valuta');const price=amount(o.price),text=plain(html);
  const specs=[o.priceSpecification].flat().filter(Boolean);if(specs.length>1)throw Error('Flere prisgrunnlag');const ps=specs[0];let unit=null,quantity=1,vat=null,evidence='',quantityBasis='unit';
  if(ps){if(String(ps['@type']).split(/[\/#]/).at(-1)!=='UnitPriceSpecification'||amount(ps.price)!==price||ps.priceCurrency!=='NOK'||ps.validForMemberTier||ps.eligibleCustomerType||ps.priceType&& !String(ps.priceType).endsWith('SalePrice'))throw Error('Ukjent prisgrunnlag');const reference=ps.referenceQuantity;unit=unitOf(reference?.unitCode||reference?.unitText);if(reference?.value!==undefined)quantity=amount(reference.value);if(typeof ps.valueAddedTaxIncluded==='boolean')vat=ps.valueAddedTaxIncluded?'inkl':'ekskl';if(unit)evidence='UnitPriceSpecification.referenceQuantity';}
+ // The exact length variant's Offer is the price of one board. Do not compare
+ // that amount directly with the displayed per-metre comparison price.
+ const length=String(p.size||'').match(/^(\d+(?:[.,]\d+)?)\s*M$/i);
+ if(!unit&&source.id==='obs'&&length&&/terrassebord|kledning|lekt|konstruksjonsvirke/i.test(p.name)&&page?.price?.unitName==='stk'){
+  unit='m';quantity=amount(length[1]);quantityBasis='package';evidence='Én eksakt lengdevariant: '+p.size+' per bord, fra Product.size og SKU-tilbud';
+ }
+ if(!unit&&page?.variationCode===sku&&page?.price?.current?.inclVat===price&&unitOf(page.price.unitName)){
+  unit=unitOf(page.price.unitName);evidence='Obs CURRENT_PAGE: valgt SKU, identisk NOK-beløp og eksplisitt price.unitName';
+ }
  if(!unit){const found=[];for(const m of text.matchAll(/(?:kr\s*)?(\d[\d ]*(?:[.,]\d{1,2})?)\s*(?:kr\s*)?(?:\/|per\s+|pr\.?\s+)\s*(m²|m2|meter|løpemeter|lm|m|stk|stykk)(?![a-zæøå0-9])/gi)){if(Number(m[1].replaceAll(' ','').replace(',','.'))===price){const context=text.slice(Math.max(0,m.index-80),m.index+m[0].length+80);if(/medlem|klubbpris|fra\s+kr|fra\s+\d/i.test(context))throw Error('Medlemspris eller fra-pris');found.push(unitOf(m[2]));}}const unique=[...new Set(found)];if(unique.length===1){unit=unique[0];evidence='Produktpris med eksplisitt /enhet';}else if(unique.length>1)throw Error('Motstridende prisenheter');}
  if(!unit&&source.id==='obs'){const priceSection=obsPriceSection(html);const found=[...priceSection.matchAll(/aria-description=["']([^"']+)["']/gi)].flatMap(m=>{const value=m[1].split('Sammenligningspris er')[0].trim().match(/^(\d[\d ]*)\s+kroner\s*(?:og\s*(\d{1,2})\s+øre\s*)?per\s+(m²|m2|meter|løpemeter|lm|m|stk|stykk)\s*$/i);return value&&Number(value[1].replaceAll(' ',''))+(Number(value[2]||0)/100)===price?[unitOf(value[3])]:[];});if(new Set(found).size===1){unit=found[0];evidence='Obs produktpris: aria-description, samme NOK-beløp som SKU-tilbudet';if(/medlemspris|klubbpris|fra[ <]/i.test(priceSection))throw Error('Betinget pris i produktfeltet');}}
  if((!unit||unit==='stk')&&source.id==='obs'&&p.size){const thickness=String(p.size).match(/^(\d{2,3})\s*MM$/i)?.[1];if(thickness){const regex=new RegExp('(?:^|[^0-9])'+thickness+'\\s*mm[,;:]?\\s*leveres i pakker\\s*[aáà]\\s*(\\d+(?:[.,]\\d+)?)\\s*m[²2](?![a-z0-9])','gi');const values=[...text.matchAll(regex)].map(m=>amount(m[1]));if(values.length===1){unit='m2';quantity=values[0];quantityBasis='package';evidence='Variant '+p.size+': leveres i pakker á '+quantity+' m²';}}}
@@ -48,7 +72,9 @@ export function readPublicProduct(html,url,source,now=new Date().toISOString()){
  if(vat===null&&source.tax_evidence?.vat==='inkl'){sourceUrl(source.tax_evidence.url,source);vat='inkl';}
  const kind=materialKind(p.name);if(!kind)throw Error('Ikke en støttet byggevare');if(!unit)throw Error('Prisenhet er ikke dokumentert');if(kind==='insulation'&&unit!=='m2')throw Error('Pakningsareal for isolasjon er ikke dokumentert');if(vat===null)throw Error('MVA-status er ikke dokumentert');if(!String(o.availability||'').endsWith('/InStock'))throw Error('Ikke bekreftet på lager');if(o.priceValidUntil&&(!/^\d{4}-\d{2}-\d{2}$/.test(o.priceValidUntil)||Date.parse(o.priceValidUntil+'T23:59:59Z')<Date.parse(now)))throw Error('Utløpt pris');
  const originalOre=Math.round(price*100),packageOre=Math.round(vat==='inkl'?originalOre/1.25:originalOre),id=source.id+':'+sku;
- return normalizePublicOffer({id,chain:source.id,name:String(p.name+(p.size?' · '+p.size:'')).slice(0,240),url:productUrl,source_page:url,source_id:sku,gtin:p.gtin13||p.gtin||null,kind,unit,vat,price_kind:'public',quantity_basis:quantityBasis,vat_evidence:source.tax_evidence||null,original_unit:quantityBasis==='package'?(evidence.includes('én plate')?'plate':'pakke'):quantity===1?unit:'priset enhet',package_quantity:quantity,original_ore:originalOre,package_price_ex_vat_ore:packageOre,normalized_ore:Math.round(packageOre/quantity),checked_at:now,valid_until:o.priceValidUntil||null,availability:o.availability,evidence});
+ const consumption=page&&documentedConsumption([page.productControlText,page.productDescription,...(page.productUsps||[])].filter(Boolean).join(' '),{source:productUrl,checkedAt:now,materialUnit:unit});
+ const consumptionRule=kind==='roofing'&&unit==='stk'&&page&&roofTileRule(page.productControlText,{source:productUrl,checkedAt:now});
+ return normalizePublicOffer({id,chain:source.id,name:String(p.name+(p.size?' · '+p.size:'')).slice(0,240),url:productUrl,source_page:url,source_id:sku,gtin:p.gtin13||p.gtin||null,kind,unit,vat,price_kind:'public',quantity_basis:quantityBasis,vat_evidence:source.tax_evidence||null,original_unit:quantityBasis==='package'?(length?'bord':evidence.includes('én plate')?'plate':'pakke'):quantity===1?unit:'priset enhet',package_quantity:quantity,original_ore:originalOre,package_price_ex_vat_ore:packageOre,normalized_ore:Math.round(packageOre/quantity),checked_at:now,valid_until:o.priceValidUntil||null,availability:o.availability,evidence,...(consumption?{materialConsumption:consumption}:{}),...(consumptionRule?{materialConsumptionRule:consumptionRule}:{})});
 }
 export function usableOffer(o,now=Date.now()){if(materialKind(o.name)!==o.kind||o.kind==='insulation'&&o.unit!=='m2'||o.unit==='stk'&&/(?:\d+\s*[- ]?pk\b|pakke|eske)/i.test(o.name))return false;const age=now-Date.parse(o.checked_at);return Number.isFinite(age)&&age>=0&&age<=86400000&&!o.last_error&&['m','m2','stk'].includes(o.unit)&&Number.isSafeInteger(o.normalized_ore)&&o.normalized_ore>0&&Number.isSafeInteger(o.package_price_ex_vat_ore)&&o.package_price_ex_vat_ore>0&&o.package_quantity>0&&String(o.availability).endsWith('/InStock')&&(!o.valid_until||Date.parse(o.valid_until+'T23:59:59Z')>=now);}
 export function offerInScope(o,stores={}){return o.store_id?o.price_kind==='local'&&String(stores[o.chain]||'')===String(o.store_id):o.price_kind==='public';}
@@ -60,7 +86,7 @@ export function offersForRow(row,offers,now=Date.now(),stores={}){
  // A shared material family is not enough: shingles cannot price tile or metal roofing,
  // and a vapour barrier cannot price a roof underlay.
  const type=/\.cover\.tile$|\.tile\.cover$/.test(key)?/takstein/i:/\.cover\.metal$|\.metal\.cover$/.test(key)?/takplate|metall|stål|aluminium/i:/shingle|shingel/.test(key)?/shingel/i:/membran.*tekking|takmembran|\.cover\.membrane$/.test(key+' '+name.toLowerCase())?/takpapp|takmembran|membran/i:/undertak|sutak/.test(key+' '+name.toLowerCase())?/undertak|sutak/i:/vindsperre/.test(key+' '+name.toLowerCase())?/vindsperre/i:/dampsperre/.test(key+' '+name.toLowerCase())?/dampsperre/i:null;
- return kind?offers.filter(o=>o.kind===kind&&o.unit===unit&&usableOffer(o,now)&&offerInScope(o,stores)&&(!type||type.test(o.name))&&(!thickness||new RegExp('(?:^|\\D)'+thickness+'\\s*mm(?:\\D|$)','i').test(o.name))&&matchesAiMaterial(row,o)):[];
+ return kind?offers.filter(o=>o.kind===kind&&(o.unit===unit||validConsumption(o.materialConsumption)&&String(row.unit).replace('m²','m2')===o.materialConsumption.workUnit||o.materialConsumptionRule?.type==='roof_tile_spacing'&&String(row.unit).replace('m²','m2')==='m2')&&usableOffer(o,now)&&offerInScope(o,stores)&&(!type||type.test(o.name))&&(!thickness||new RegExp('(?:^|\\D)'+thickness+'\\s*mm(?:\\D|$)','i').test(o.name))&&matchesAiMaterial(row,o)):[];
 }
 
 export function declaredVariantUrls(html,pageUrl,source){const urls=[];for(const m of html.matchAll(/<script\b[^>]*type\s*=\s*["']application\/ld\+json(?:;[^"']*)?["'][^>]*>([\s\S]*?)<\/script>/gi)){try{const root=JSON.parse(m[1]);for(const p of [root].flat()){if(String(p['@type']).split(/[\/#]/).at(-1)!=='ProductGroup'||!p.url||new URL(sourceUrl(p.url,source)).pathname!==new URL(pageUrl).pathname)continue;for(const v of [p.hasVariant].flat()){if(!v?.url||!v.sku)continue;const url=sourceUrl(v.url,source);if(new URL(url).pathname===new URL(pageUrl).pathname)urls.push(url);}}}catch{}}return [...new Set(urls)].slice(0,100);}

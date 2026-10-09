@@ -1,0 +1,238 @@
+{
+  "source": "Obs BYGG",
+  "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/konstruksjonsvirke/ubehandlet-rekker-og-lekter/2291095",
+  "checkedAt": "2026-10-09T06:30:22.703Z",
+  "httpStatus": 200,
+  "rawSha256": "e2790ccfb10fffe90281b89ef0c058311f0ad7afbb1e4fad0ff892b9ee24832e",
+  "raw": {
+    "jsonLd": [
+      {
+        "name": "48x48 Lekt/rekke",
+        "description": "Lekt til ikke-bærende konstruksjon. Benyttes som anlegg for takstein og kledning, stendere i delevegger og utlekting i forbindelse med etterisolering.",
+        "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/konstruksjonsvirke/ubehandlet-rekker-og-lekter/2291095",
+        "brand": {
+          "name": "MOELVEN",
+          "@type": "Brand"
+        },
+        "aggregateRating": {
+          "ratingValue": "4.33333",
+          "ratingCount": "42",
+          "@type": "AggregateRating"
+        },
+        "variesBy": [],
+        "hasVariant": [
+          {
+            "name": "48x48 Lekt/rekke",
+            "image": "/globalassets/productimages/194583_7040431809486_.jpg?ref=4A3B0548D3",
+            "sku": "ObsBygg-7040431809486",
+            "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/konstruksjonsvirke/ubehandlet-rekker-og-lekter/2291095?v=ObsBygg-7040431809486",
+            "size": "48 X 48",
+            "offers": {
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/konstruksjonsvirke/ubehandlet-rekker-og-lekter/2291095?v=ObsBygg-7040431809486",
+              "price": "24.90",
+              "priceCurrency": "NOK",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "@type": "Offer"
+            },
+            "@type": "Product"
+          }
+        ],
+        "@context": "https://schema.org",
+        "@type": "ProductGroup"
+      },
+      {
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer",
+              "name": "Trelast og byggevarer"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk",
+              "name": "Treverk"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/konstruksjonsvirke",
+              "name": "Konstruksjonsvirke"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/konstruksjonsvirke/ubehandlet-rekker-og-lekter",
+              "name": "Ubehandlet rekker og lekter"
+            }
+          }
+        ],
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList"
+      }
+    ],
+    "currentPage": {
+      "displayName": "48x48 Lekt/rekke",
+      "canonicalUrl": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/konstruksjonsvirke/ubehandlet-rekker-og-lekter/2291095",
+      "variationCode": "ObsBygg-7040431809486",
+      "price": {
+        "current": {
+          "inclVat": 24.9,
+          "exclVat": 19.92,
+          "vatPercent": 25.0
+        },
+        "original": {
+          "inclVat": 24.9,
+          "exclVat": 19.92,
+          "vatPercent": 25.0
+        },
+        "currentActivePriceGroup": "standard",
+        "member": {
+          "inclVat": 0.0,
+          "exclVat": 0.0,
+          "vatPercent": 0.0
+        },
+        "previous": null,
+        "hasPriceDifferences": false,
+        "showFromPrice": false,
+        "unitName": "m",
+        "invertPrices": false,
+        "comparisonPrices": {
+          "unitName": "m",
+          "current": null,
+          "original": null,
+          "member": null,
+          "previous": null,
+          "isEnabled": false
+        },
+        "savedAmount": null,
+        "isMemberPrice": false,
+        "isCampaignPrice": false,
+        "isDiscountedPrice": false,
+        "hasMemberPrice": false
+      },
+      "productControlText": "48x48 Lekt/rekke er laget for ikke-bærende konstruksjoner. Benyttes som anlegg for takstein og kledning, som stendere i delevegger eller utlekting i forbindelse med etterisolering. Produsert etter norsk standard (NS) og er i kvalitetsklasse 1. Trevirket er høvlet og ubehandlet. Selges i fallende lengder.",
+      "productDescription": "Lekt til ikke-bærende konstruksjon. Benyttes som anlegg for takstein og kledning, stendere i delevegger og utlekting i forbindelse med etterisolering.",
+      "productUsps": [
+        "Produsert etter norsk standard (NS)",
+        "Klasse 1",
+        "Ubehandlet"
+      ],
+      "jsonLd": [
+        {
+          "name": "48x48 Lekt/rekke",
+          "description": "Lekt til ikke-bærende konstruksjon. Benyttes som anlegg for takstein og kledning, stendere i delevegger og utlekting i forbindelse med etterisolering.",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/konstruksjonsvirke/ubehandlet-rekker-og-lekter/2291095",
+          "brand": {
+            "name": "MOELVEN",
+            "@type": "Brand"
+          },
+          "aggregateRating": {
+            "ratingValue": "4.33333",
+            "ratingCount": "42",
+            "@type": "AggregateRating"
+          },
+          "variesBy": [],
+          "hasVariant": [
+            {
+              "name": "48x48 Lekt/rekke",
+              "image": "/globalassets/productimages/194583_7040431809486_.jpg?ref=4A3B0548D3",
+              "sku": "ObsBygg-7040431809486",
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/konstruksjonsvirke/ubehandlet-rekker-og-lekter/2291095?v=ObsBygg-7040431809486",
+              "size": "48 X 48",
+              "offers": {
+                "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/konstruksjonsvirke/ubehandlet-rekker-og-lekter/2291095?v=ObsBygg-7040431809486",
+                "price": "24.90",
+                "priceCurrency": "NOK",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "@type": "Offer"
+              },
+              "@type": "Product"
+            }
+          ],
+          "@context": "https://schema.org",
+          "@type": "ProductGroup"
+        },
+        {
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer",
+                "name": "Trelast og byggevarer"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk",
+                "name": "Treverk"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/konstruksjonsvirke",
+                "name": "Konstruksjonsvirke"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/konstruksjonsvirke/ubehandlet-rekker-og-lekter",
+                "name": "Ubehandlet rekker og lekter"
+              }
+            }
+          ],
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList"
+        }
+      ]
+    },
+    "priceSection": "<div data-test-id=\"product-price-section\" class=\"b c\"><div class=\"i8 c\"><div class=\"i9\"></div></div><div class=\"ew fg c\"><div tabindex=\"0\" aria-description=\"24 kroner  og 90 øre  per m \" class=\"ia hw hx a7 bd be ah ib ef y ic\"><span data-test-id=\"pricecolumn\" class=\"b c\"><div class=\"id ie y ap o if\"><span class=\"c ig\"><p aria-hidden=\"true\" class=\"ih ic q\">24</p><p aria-hidden=\"true\" class=\"ii ij ik q\">90</p></span><span aria-hidden=\"true\" class=\"il ig im in\">per m</span></div></span></div></div><ul class=\"ak do dp ct cu ek\"></ul></div>"
+  },
+  "registerAtCheck": {
+    "id": "obs:ObsBygg-7040431809486",
+    "chain": "obs",
+    "name": "48x48 Lekt/rekke · 48 X 48",
+    "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/konstruksjonsvirke/ubehandlet-rekker-og-lekter/2291095?v=ObsBygg-7040431809486",
+    "source_page": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/konstruksjonsvirke/ubehandlet-rekker-og-lekter/2291095",
+    "source_id": "ObsBygg-7040431809486",
+    "gtin": null,
+    "kind": "battens",
+    "unit": "m",
+    "vat": "inkl",
+    "price_kind": "public",
+    "quantity_basis": "unit",
+    "vat_evidence": {
+      "url": "https://www.obsbygg.no/kjopsvilkar",
+      "vat": "inkl",
+      "statement": "Prisene er inklusiv mva.",
+      "checked_at": "2026-10-08T19:25:01.025Z"
+    },
+    "original_unit": "m",
+    "package_quantity": 1,
+    "original_ore": 2490,
+    "package_price_ex_vat_ore": 1992,
+    "normalized_ore": 1992,
+    "checked_at": "2026-10-08T19:28:35.286Z",
+    "valid_until": null,
+    "availability": "https://schema.org/InStock",
+    "evidence": "Obs produktpris: aria-description, samme NOK-beløp som SKU-tilbudet"
+  },
+  "notes": "Rå kildeutdrag. Kontrolltid er live-kontroll, ikke endret produksjonsdato."
+}

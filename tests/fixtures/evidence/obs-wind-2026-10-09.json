@@ -1,0 +1,209 @@
+{
+  "source": "Obs BYGG",
+  "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/vindsperre/2363765?v=ObsBygg-7030840013406",
+  "checkedAt": "2026-10-09T06:34:25.927Z",
+  "httpStatus": 200,
+  "rawSha256": "456123d2fcf61ca06f189dd6830891dee8267234ae9e366d2429ec05a49522bd",
+  "raw": {
+    "jsonLd": [
+      {
+        "name": "Filtex vindsperre/undertak",
+        "description": "Fungerer som en utvendig vindsperre i varmeisolerte yttervegger og takkonstruksjoner av tre.",
+        "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/vindsperre/2363765",
+        "brand": {
+          "name": "ANDRE MERKEVARER",
+          "@type": "Brand"
+        },
+        "aggregateRating": {
+          "ratingValue": "5",
+          "ratingCount": "6",
+          "@type": "AggregateRating"
+        },
+        "variesBy": [],
+        "hasVariant": [
+          {
+            "name": "Filtex vindsperre/undertak",
+            "image": "/globalassets/productimages/cooptemp5abeda0164d89.jpg?ref=C21E298E4E",
+            "sku": "ObsBygg-7030840013406",
+            "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/vindsperre/2363765?v=ObsBygg-7030840013406",
+            "size": "1.3 X 25 M",
+            "offers": {
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/vindsperre/2363765?v=ObsBygg-7030840013406",
+              "price": "999.00",
+              "priceCurrency": "NOK",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "@type": "Offer"
+            },
+            "@type": "Product"
+          }
+        ],
+        "@context": "https://schema.org",
+        "@type": "ProductGroup"
+      },
+      {
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer",
+              "name": "Trelast og byggevarer"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer",
+              "name": "Byggevarer"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon",
+              "name": "Isolasjon"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/vindsperre",
+              "name": "Vindsperre"
+            }
+          }
+        ],
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList"
+      }
+    ],
+    "currentPage": {
+      "displayName": "Filtex vindsperre/undertak",
+      "canonicalUrl": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/vindsperre/2363765",
+      "variationCode": "ObsBygg-7030840013406",
+      "price": {
+        "current": {
+          "inclVat": 999.0,
+          "exclVat": 799.2,
+          "vatPercent": 25.0
+        },
+        "original": {
+          "inclVat": 999.0,
+          "exclVat": 799.2,
+          "vatPercent": 25.0
+        },
+        "currentActivePriceGroup": "standard",
+        "member": {
+          "inclVat": 0.0,
+          "exclVat": 0.0,
+          "vatPercent": 0.0
+        },
+        "previous": null,
+        "hasPriceDifferences": false,
+        "showFromPrice": false,
+        "unitName": "stk",
+        "invertPrices": false,
+        "comparisonPrices": {
+          "unitName": null,
+          "current": null,
+          "original": null,
+          "member": null,
+          "previous": null,
+          "isEnabled": false
+        },
+        "savedAmount": null,
+        "isMemberPrice": false,
+        "isCampaignPrice": false,
+        "isDiscountedPrice": false,
+        "hasMemberPrice": false
+      },
+      "productControlText": "Filtex Vindsperre/undertak er med på å danne et lufttett sjikt på utsiden av varmeisolasjonen. Videre skal den sørge for at vann ikke kommer lenger inn i veggen. Vindsperren har mange bruksområder og den er ideell som utvendig vindsperre i varmeisolerte yttervegger og takkonstruksjoner av tre, som kombinert undertak og som vindsperre i isolerte skrå tretak med opplektet, luftet taktekning og utvendig nedløp.",
+      "productDescription": "Fungerer som en utvendig vindsperre i varmeisolerte yttervegger og takkonstruksjoner av tre.",
+      "productUsps": [
+        "1,3 x 25 meter",
+        "Utendørs"
+      ],
+      "jsonLd": [
+        {
+          "name": "Filtex vindsperre/undertak",
+          "description": "Fungerer som en utvendig vindsperre i varmeisolerte yttervegger og takkonstruksjoner av tre.",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/vindsperre/2363765",
+          "brand": {
+            "name": "ANDRE MERKEVARER",
+            "@type": "Brand"
+          },
+          "aggregateRating": {
+            "ratingValue": "5",
+            "ratingCount": "6",
+            "@type": "AggregateRating"
+          },
+          "variesBy": [],
+          "hasVariant": [
+            {
+              "name": "Filtex vindsperre/undertak",
+              "image": "/globalassets/productimages/cooptemp5abeda0164d89.jpg?ref=C21E298E4E",
+              "sku": "ObsBygg-7030840013406",
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/vindsperre/2363765?v=ObsBygg-7030840013406",
+              "size": "1.3 X 25 M",
+              "offers": {
+                "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/vindsperre/2363765?v=ObsBygg-7030840013406",
+                "price": "999.00",
+                "priceCurrency": "NOK",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "@type": "Offer"
+              },
+              "@type": "Product"
+            }
+          ],
+          "@context": "https://schema.org",
+          "@type": "ProductGroup"
+        },
+        {
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer",
+                "name": "Trelast og byggevarer"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer",
+                "name": "Byggevarer"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon",
+                "name": "Isolasjon"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/vindsperre",
+                "name": "Vindsperre"
+              }
+            }
+          ],
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList"
+        }
+      ]
+    },
+    "priceSection": "<div data-test-id=\"product-price-section\" class=\"b c\"><div class=\"i5 c\"><div class=\"i6\"></div></div><div class=\"ew fg c\"><div tabindex=\"0\" aria-description=\"999 kroner  \" class=\"i7 ht hu a7 bd be ah i8 ef y i9\"><span data-test-id=\"pricecolumn\" class=\"b c\"><div class=\"ia ib y ap o ic\"><span class=\"c id\"><p aria-hidden=\"true\" class=\"ie i9 q\">999</p><p aria-hidden=\"true\" class=\"if ig ih q\">00</p></span></div></span></div></div><ul class=\"ak do dp ct cu ek\"></ul></div>"
+  },
+  "registerAtCheck": null,
+  "notes": "Rå kildeutdrag. Kontrolltid er live-kontroll, ikke endret produksjonsdato."
+}

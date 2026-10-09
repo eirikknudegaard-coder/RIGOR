@@ -1,0 +1,173 @@
+{
+  "rates": {
+    "wage": 500,
+    "direct": 35,
+    "indirect": 25,
+    "billing": 80,
+    "laborMarkup": 20,
+    "materialMarkup": 20
+  },
+  "cases": [
+    {
+      "id": "terrace",
+      "name": "Terrasse Ås",
+      "area": 50,
+      "brief": "Skal skifte terrassebord på en terrasse på 50 m². Eksisterende bord rives, bjelkelaget beholdes. Nye 28x120 trykkimpregnerte terrassebord. Normal tilkomst. Rydding og avfall skal med.",
+      "scope": [
+        [
+          "terrace.strip.deck",
+          [
+            "step0",
+            "step1"
+          ]
+        ],
+        [
+          "terrace.new.deck",
+          [
+            "deck"
+          ]
+        ],
+        [
+          "roof.waste",
+          [
+            "waste"
+          ]
+        ]
+      ],
+      "choices": {
+        "terrace.new.deck": "obs:ObsBygg-7040431913428"
+      },
+      "expectedQuantity": {
+        "terrace.new.deck": 415
+      },
+      "experience": [
+        [
+          "terrace.new.deck",
+          "hours",
+          0.35,
+          "Benchmarkforutsetning – 0,35 personarbeidstimer/m², ikke offentlig norm"
+        ],
+        [
+          "roof.waste",
+          "material",
+          25,
+          "Benchmarkforutsetning – avfallsavsetning 1 250 kr for 50 m², pris må bekreftes"
+        ]
+      ],
+      "manual": {
+        "roof.waste": 25
+      }
+    },
+    {
+      "id": "wall",
+      "name": "Etterisolering Ødegård",
+      "area": 100,
+      "brief": "Etterisoler 100 m² yttervegg. Riv gammel kledning. 100 mm Hunton Nativo, ny vindsperre, 48x48 utlekting og ny liggende dobbelfals grunnet kledning. Normal tilkomst.",
+      "scope": [
+        [
+          "insulation.removal",
+          [
+            "remove",
+            "clean"
+          ]
+        ],
+        [
+          "insulation.insulation",
+          [
+            "frame",
+            "insulation"
+          ]
+        ],
+        [
+          "insulation.cladding",
+          [
+            "barrier",
+            "cladding"
+          ]
+        ]
+      ],
+      "choices": {
+        "insulation.utlekting": "obs:ObsBygg-7040431809486",
+        "insulation.isolasjon100": "obs:ObsBygg-7022611099016",
+        "insulation.vindsperre": "obs:ObsBygg-7030840013406",
+        "insulation.kledning": "obs:ObsBygg-7330034639079"
+      },
+      "expectedQuantity": {
+        "insulation.isolasjon100": 100,
+        "insulation.kledning": 770
+      },
+      "experience": [
+        [
+          "insulation.insulation",
+          "material",
+          174.0984,
+          "Live-kontrollert Obs 48x48 og Hunton 100 mm; eksakt 2,8 m²/pakke"
+        ],
+        [
+          "insulation.cladding",
+          "material",
+          330.11199999999997,
+          "Live-kontrollert Obs kledning 7,7 lm/m² og Filtex 32,5 m²/rull"
+        ]
+      ]
+    },
+    {
+      "id": "roof",
+      "name": "Takbytte Ærligveien",
+      "area": 100,
+      "brief": "Bytte saltak, 100 m² målt takflate, 30 grader. Riv gammel takstein, nytt undertak, nye sløyfer og lekter og ny betongtakstein. Normal tilkomst.",
+      "scope": [
+        [
+          "roof.removal",
+          [
+            "cover",
+            "clean"
+          ]
+        ],
+        [
+          "roof.underlay",
+          [
+            "underlay",
+            "battens",
+            "laths"
+          ]
+        ],
+        [
+          "roof.cover.tile",
+          [
+            "cover"
+          ]
+        ]
+      ],
+      "choices": {
+        "roof.underlay.undertak": "obs:ObsBygg-7057754300125",
+        "roof.underlay.sloyfer": "obs:ObsBygg-7040431809523",
+        "roof.underlay.lekter": "obs:ObsBygg-7040431809530",
+        "roof.cover.tile": "obs:ObsBygg-7340018159226"
+      },
+      "expectedQuantity": {
+        "roof.underlay.undertak": 100,
+        "roof.cover.tile": 888.888889
+      },
+      "experience": [
+        [
+          "roof.underlay",
+          "material",
+          171.67466666666667,
+          "Live-kontrollert Obs undertak/sløyfer/lekter; c/c 600 og 375 mm, uten svinn"
+        ],
+        [
+          "roof.cover.tile",
+          "material",
+          141.5288,
+          "Live-kontrollert Palema 15,92 kr/stk ekskl. MVA; 300 mm byggebredde og 375 mm lekteavstand gir 889 stk"
+        ]
+      ],
+      "settings": {
+        "lathSpacing": 375,
+        "battenSpacing": 600,
+        "roofWaste": 0
+      }
+    }
+  ]
+}

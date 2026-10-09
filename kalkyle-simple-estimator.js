@@ -1,9 +1,12 @@
 import {calculate,roofGeometry,timeFactor} from './kalkyle-engine.js?v=20261007-arbeidstimer';
 import {instantiate} from './kalkyle-library.js?v=20261008-ai-modes';
-import {applyPrices} from './kalkyle-prices.js?v=20261007-avklaringer';
+import {applyPrices} from './kalkyle-prices.js?v=20261009-qa';
 import {applyTimeCatalog} from './kalkyle-time.js?v=20261008-ai-modes';
 import {uniqueAssistantRows} from './kalkyle-task-overlap.js?v=20261007-overlapp';
-import {annotateAiMaterial,matchesAiMaterial} from './kalkyle-ai-material.js?v=20261008-ai-modes';
+import {annotateAiMaterial,matchesAiMaterial} from './kalkyle-ai-material.js?v=20261009-qa';
+import {applyDetailedMaterialPrices} from './kalkyle-market-reference.js?v=20261009-qa';
+import {roofConsumption} from './kalkyle-engine.js?v=20261007-arbeidstimer';
+import {conversionSettings} from './kalkyle-mode-transition.js?v=20261009-qa';
 export const EXPERIENCE_TYPES=['complete','material','hours','allowance'];
 export const EXPERIENCE_SOURCES=['manual_experience','historical_job','completed_project','public_source','market_data'];
 export function validateExperienceRate(rate,library,today=new Date().toISOString().slice(0,10)){
@@ -21,9 +24,10 @@ const costRow=(quantity,material,hours=0,factor=1)=>({enabled:true,quantity,mate
 // No percentage interval is invented: min/max come from supplied source data.
 // The current engine computes wages, markup, package costs and VAT at every level.
 export function buildSimpleEstimate({proposal,context,library,rates,settings,priceMode,prices=[],timeCatalog=[],existingRows=[],offers=[],bindings={}}){
+ existingRows=existingRows.filter(row=>!row.wizardGenerated||row.userEdited);
  if(!rates||!['wage','direct','indirect','billing','laborMarkup','materialMarkup'].every(k=>Number.isFinite(rates[k])&&rates[k]>=0)||rates.billing<=0||rates.billing>100)throw Error('Kontroller prosjektets timepris og påslag.');
  const sources=[],uncertainties=[],items=[];let low=0,high=0,hoursLow=0,hoursHigh=0,materialLow=0,materialHigh=0,otherLow=0,otherHigh=0;
- const budgetSettings=context.facts.domain==='roof'?{...settings,...context.measurements,job:'roof',angle:context.measurements.angle??0,basis:context.measurements.basis||'surface'}:settings;
+ const budgetSettings=conversionSettings(settings,context);
  const occupied=new Set();
  const records=(context.priceBasis?.experienceRates||[]).map(rate=>validateExperienceRate(rate,library));
  for(const item of proposal.items.filter(i=>i.scope!=='optional').sort((a,b)=>Number(a.scope!=='requested')-Number(b.scope!=='requested'))){
@@ -52,7 +56,7 @@ export function buildSimpleEstimate({proposal,context,library,rates,settings,pri
    const old=existingRows.filter(r=>unique.rows.some(candidate=>candidate.taskKey===r.taskKey));
    let detail=applyTimeCatalog(unique.rows,timeCatalog).map(row=>{const saved=old.find(r=>r.taskKey===row.taskKey);return saved?{...saved}:row;});
    if(detail.some(r=>['quantity','materialQuantity','material','hours','factor'].some(k=>!Number.isFinite(r[k])||r[k]<0)))throw Error('Kontroller manuelle mengder, priser og grunntider før budsjettet beregnes.');
-   detail=applyPrices(detail.map(r=>annotateAiMaterial(r,context.facts)),priceMode==='example'?'market':priceMode,prices);
+   detail=applyDetailedMaterialPrices(detail.map(r=>roofConsumption(annotateAiMaterial(r,context.facts,offers),budgetSettings)),{mode:priceMode==='example'?'market':priceMode,importedPrices:priceMode==='import'?prices:[],marketPrices:priceMode==='market'?prices:[],offers,bindings,detailed:true});
    if(priceMode==='market')detail=detail.map(r=>{const offer=offers.find(o=>o.id===bindings[r.priceKey]);return !r.manualPrice&&r.aiSpecification&&offer&&!matchesAiMaterial(r,offer)?{...r,material:0,marketMaterialCost:undefined,priceIssue:'Valgt vare passer ikke oppgitt spesifikasjon'}:r;});
    const hr=record('hours');
    if(hr){workLow=quantity*hr.min;workHigh=quantity*hr.max;sources.push(hr);}

@@ -1,5 +1,5 @@
-const money=n=>new Intl.NumberFormat('nb-NO',{style:'currency',currency:'NOK',maximumFractionDigits:2}).format(n);
-const number=n=>new Intl.NumberFormat('nb-NO',{maximumFractionDigits:2}).format(n);
+const money=n=>Number.isFinite(n)?new Intl.NumberFormat('nb-NO',{style:'currency',currency:'NOK',maximumFractionDigits:2}).format(n):'—';
+const number=n=>Number.isFinite(n)?new Intl.NumberFormat('nb-NO',{maximumFractionDigits:2}).format(n):'—';
 const el=(tag,text,cls)=>{const node=document.createElement(tag);if(text)node.textContent=text;if(cls)node.className=cls;return node;};
 
 export function renderCompletion(target,{rows,priceMode,hourly=null,onMarket,onPrice,onQuantity,onTime,onDetails}){

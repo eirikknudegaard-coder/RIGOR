@@ -1,0 +1,191 @@
+{
+  "source": "Obs BYGG",
+  "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/utvendig-kledning/2100566?v=ObsBygg-7330034639079",
+  "checkedAt": "2026-10-09T06:35:17.972Z",
+  "httpStatus": 200,
+  "rawSha256": "d2f4818de516ede1579b300469124a197c783b0f155456a378241a6a711f71dc",
+  "raw": {
+    "jsonLd": [
+      {
+        "name": "19x148 dobbelfals rettkant grunnet kledning med spor",
+        "description": "Grunnet kledning i gran av høy kvalitet til utvendig fasade på hus, hytter mm. Beregn 7,7 lm per m2.",
+        "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/utvendig-kledning/2100566",
+        "brand": {
+          "name": "SCA",
+          "@type": "Brand"
+        },
+        "aggregateRating": {
+          "ratingValue": "4",
+          "ratingCount": "1",
+          "@type": "AggregateRating"
+        },
+        "variesBy": [],
+        "hasVariant": [
+          {
+            "name": "19x148 dobbelfals rettkant grunnet kledning med spor",
+            "image": "/globalassets/productimages/484994_7330034639079_1.jpg?ref=A0C3968275",
+            "sku": "ObsBygg-7330034639079",
+            "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/utvendig-kledning/2100566?v=ObsBygg-7330034639079",
+            "offers": {
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/utvendig-kledning/2100566?v=ObsBygg-7330034639079",
+              "price": "48.40",
+              "priceCurrency": "NOK",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "@type": "Offer"
+            },
+            "@type": "Product"
+          }
+        ],
+        "@context": "https://schema.org",
+        "@type": "ProductGroup"
+      },
+      {
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer",
+              "name": "Trelast og byggevarer"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk",
+              "name": "Treverk"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/utvendig-kledning",
+              "name": "Utvendig kledning"
+            }
+          }
+        ],
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList"
+      }
+    ],
+    "currentPage": {
+      "displayName": "19x148 dobbelfals rettkant grunnet kledning med spor",
+      "canonicalUrl": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/utvendig-kledning/2100566",
+      "variationCode": "ObsBygg-7330034639079",
+      "price": {
+        "current": {
+          "inclVat": 48.4,
+          "exclVat": 38.72,
+          "vatPercent": 25.0
+        },
+        "original": {
+          "inclVat": 48.4,
+          "exclVat": 38.72,
+          "vatPercent": 25.0
+        },
+        "currentActivePriceGroup": "standard",
+        "member": {
+          "inclVat": 0.0,
+          "exclVat": 0.0,
+          "vatPercent": 0.0
+        },
+        "previous": null,
+        "hasPriceDifferences": false,
+        "showFromPrice": false,
+        "unitName": "m",
+        "invertPrices": false,
+        "comparisonPrices": {
+          "unitName": "m",
+          "current": null,
+          "original": null,
+          "member": null,
+          "previous": null,
+          "isEnabled": false
+        },
+        "savedAmount": null,
+        "isMemberPrice": false,
+        "isCampaignPrice": false,
+        "isDiscountedPrice": false,
+        "hasMemberPrice": false
+      },
+      "productControlText": "19x148 Dobbelfals grunnet kledning rettkant m/spor en kledning med fals, forsiden er uhøvlet. Produktet er grunnet fra fabrikk. Fordelen med grunnet kledning er at den er påført under optimale forhold, slik at faren for råteangrep blir redusert. Overmaling skal skje umiddelbart og senest innen 2 måneder etter montering. Husk alltid å påføre Visir grunning i endeved, kuttflater og ev. steder der grunningen ikke dekker ubehandlet tre i forbindelse med montering. Kledningen leveres i fallende lengde. Forbruk: 7,7 lm per m2.",
+      "productDescription": "Grunnet kledning i gran av høy kvalitet til utvendig fasade på hus, hytter mm. Beregn 7,7 lm per m2.",
+      "productUsps": [
+        "Unik overflate - Heftig!",
+        "Grunnet"
+      ],
+      "jsonLd": [
+        {
+          "name": "19x148 dobbelfals rettkant grunnet kledning med spor",
+          "description": "Grunnet kledning i gran av høy kvalitet til utvendig fasade på hus, hytter mm. Beregn 7,7 lm per m2.",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/utvendig-kledning/2100566",
+          "brand": {
+            "name": "SCA",
+            "@type": "Brand"
+          },
+          "aggregateRating": {
+            "ratingValue": "4",
+            "ratingCount": "1",
+            "@type": "AggregateRating"
+          },
+          "variesBy": [],
+          "hasVariant": [
+            {
+              "name": "19x148 dobbelfals rettkant grunnet kledning med spor",
+              "image": "/globalassets/productimages/484994_7330034639079_1.jpg?ref=A0C3968275",
+              "sku": "ObsBygg-7330034639079",
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/utvendig-kledning/2100566?v=ObsBygg-7330034639079",
+              "offers": {
+                "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/utvendig-kledning/2100566?v=ObsBygg-7330034639079",
+                "price": "48.40",
+                "priceCurrency": "NOK",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "@type": "Offer"
+              },
+              "@type": "Product"
+            }
+          ],
+          "@context": "https://schema.org",
+          "@type": "ProductGroup"
+        },
+        {
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer",
+                "name": "Trelast og byggevarer"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk",
+                "name": "Treverk"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/utvendig-kledning",
+                "name": "Utvendig kledning"
+              }
+            }
+          ],
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList"
+        }
+      ]
+    },
+    "priceSection": "<div data-test-id=\"product-price-section\" class=\"b c\"><div class=\"hw c\"><div class=\"hx\"></div></div><div class=\"ew fg c\"><div tabindex=\"0\" aria-description=\"48 kroner  og 40 øre  per m \" class=\"hy hz i0 a7 bd be ah i1 ef y i2\"><span data-test-id=\"pricecolumn\" class=\"b c\"><div class=\"i3 i4 y ap o i5\"><span class=\"c i6\"><p aria-hidden=\"true\" class=\"i7 i2 q\">48</p><p aria-hidden=\"true\" class=\"i8 i9 ia q\">40</p></span><span aria-hidden=\"true\" class=\"ib i6 ic id\">per m</span></div></span></div></div><ul class=\"ak do dp ct cu ek\"></ul></div>"
+  },
+  "registerAtCheck": null,
+  "notes": "Rå kildeutdrag. Kontrolltid er live-kontroll, ikke endret produksjonsdato."
+}

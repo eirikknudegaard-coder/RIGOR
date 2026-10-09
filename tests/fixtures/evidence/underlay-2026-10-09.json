@@ -1,0 +1,208 @@
+{
+  "source": "Obs BYGG",
+  "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/undertaksbelegg/2139208",
+  "checkedAt": "2026-10-09T06:30:22.230Z",
+  "httpStatus": 200,
+  "rawSha256": "3986c920e0743370e6dcf17685325fb5afd10361b4c8b6dbc9cb299f07c9d407",
+  "raw": {
+    "jsonLd": [
+      {
+        "name": "Filmtex 1,30x25m Diffusjonstett Undertak",
+        "description": "Diffusjonstett armert plastfolie for undertak. Egner seg godt i uisolerte takkonstruksjoner (garasje, drifts- og landbruksbygg).",
+        "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/undertaksbelegg/2139208",
+        "brand": {
+          "name": "ISOLA",
+          "@type": "Brand"
+        },
+        "variesBy": [],
+        "hasVariant": [
+          {
+            "name": "Filmtex 1,30x25m Diffusjonstett Undertak",
+            "image": "/globalassets/productimages/686145_7057754300125_.jfif?ref=28D171F3F5",
+            "sku": "ObsBygg-7057754300125",
+            "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/undertaksbelegg/2139208?v=ObsBygg-7057754300125",
+            "offers": {
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/undertaksbelegg/2139208?v=ObsBygg-7057754300125",
+              "price": "3219.00",
+              "priceCurrency": "NOK",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "@type": "Offer"
+            },
+            "@type": "Product"
+          }
+        ],
+        "@context": "https://schema.org",
+        "@type": "ProductGroup"
+      },
+      {
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer",
+              "name": "Trelast og byggevarer"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak",
+              "name": "Tak"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/undertaksbelegg",
+              "name": "Undertaksbelegg"
+            }
+          }
+        ],
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList"
+      }
+    ],
+    "currentPage": {
+      "displayName": "Filmtex 1,30x25m Diffusjonstett Undertak",
+      "canonicalUrl": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/undertaksbelegg/2139208",
+      "variationCode": "ObsBygg-7057754300125",
+      "price": {
+        "current": {
+          "inclVat": 3219.0,
+          "exclVat": 2575.2,
+          "vatPercent": 25.0
+        },
+        "original": {
+          "inclVat": 3219.0,
+          "exclVat": 2575.2,
+          "vatPercent": 25.0
+        },
+        "currentActivePriceGroup": "standard",
+        "member": {
+          "inclVat": 0.0,
+          "exclVat": 0.0,
+          "vatPercent": 0.0
+        },
+        "previous": null,
+        "hasPriceDifferences": false,
+        "showFromPrice": false,
+        "unitName": "stk",
+        "invertPrices": false,
+        "comparisonPrices": {
+          "unitName": "m2",
+          "current": 99.05,
+          "original": 99.05,
+          "member": null,
+          "previous": null,
+          "isEnabled": true
+        },
+        "savedAmount": null,
+        "isMemberPrice": false,
+        "isCampaignPrice": false,
+        "isDiscountedPrice": false,
+        "hasMemberPrice": false
+      },
+      "productControlText": null,
+      "productDescription": "Diffusjonstett armert plastfolie for undertak. Egner seg godt i uisolerte takkonstruksjoner (garasje, drifts- og landbruksbygg).",
+      "productUsps": [],
+      "jsonLd": [
+        {
+          "name": "Filmtex 1,30x25m Diffusjonstett Undertak",
+          "description": "Diffusjonstett armert plastfolie for undertak. Egner seg godt i uisolerte takkonstruksjoner (garasje, drifts- og landbruksbygg).",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/undertaksbelegg/2139208",
+          "brand": {
+            "name": "ISOLA",
+            "@type": "Brand"
+          },
+          "variesBy": [],
+          "hasVariant": [
+            {
+              "name": "Filmtex 1,30x25m Diffusjonstett Undertak",
+              "image": "/globalassets/productimages/686145_7057754300125_.jfif?ref=28D171F3F5",
+              "sku": "ObsBygg-7057754300125",
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/undertaksbelegg/2139208?v=ObsBygg-7057754300125",
+              "offers": {
+                "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/undertaksbelegg/2139208?v=ObsBygg-7057754300125",
+                "price": "3219.00",
+                "priceCurrency": "NOK",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "@type": "Offer"
+              },
+              "@type": "Product"
+            }
+          ],
+          "@context": "https://schema.org",
+          "@type": "ProductGroup"
+        },
+        {
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer",
+                "name": "Trelast og byggevarer"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak",
+                "name": "Tak"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/undertaksbelegg",
+                "name": "Undertaksbelegg"
+              }
+            }
+          ],
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList"
+        }
+      ]
+    },
+    "priceSection": "<div data-test-id=\"product-price-section\" class=\"b c\"><div class=\"hx c\"><div class=\"hy\"></div></div><div class=\"ew fg c\"><div tabindex=\"0\" aria-description=\"3219 kroner  per stk Sammenligningspris er 99 kroner  og 05 øre  per m2 \" class=\"hz i0 i1 a7 bd be ah i2 ef y i3\"><span data-test-id=\"pricecolumn\" class=\"b c\"><div class=\"i4 i5 y ap o i6\"><span class=\"c i7\"><p aria-hidden=\"true\" class=\"i8 i3 q\">3 219</p><p aria-hidden=\"true\" class=\"i9 ia ib q\">00</p></span><span aria-hidden=\"true\" class=\"ic i7 id ie\">stk</span></div><div data-test-id=\"pricecolumn-comparisonprice\" class=\"if ic ig i5 y ap o\"><span aria-hidden=\"true\">(</span><span class=\"c\"><p aria-hidden=\"true\" class=\"i8 i3 q\">99</p><p aria-hidden=\"true\" class=\"i9 ia ib q\">05</p></span><span aria-hidden=\"true\" class=\"ig ie\">per m2</span><span aria-hidden=\"true\">)</span></div></span></div></div><ul class=\"ak do dp ct cu ek\"></ul></div>"
+  },
+  "registerAtCheck": {
+    "id": "obs:ObsBygg-7057754300125",
+    "chain": "obs",
+    "name": "Filmtex 1,30x25m Diffusjonstett Undertak",
+    "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/undertaksbelegg/2139208?v=ObsBygg-7057754300125",
+    "source_page": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/undertaksbelegg/2139208",
+    "source_id": "ObsBygg-7057754300125",
+    "gtin": null,
+    "kind": "membranes",
+    "unit": "m2",
+    "vat": "inkl",
+    "price_kind": "public",
+    "quantity_basis": "package",
+    "vat_evidence": {
+      "url": "https://www.obsbygg.no/kjopsvilkar",
+      "vat": "inkl",
+      "statement": "Prisene er inklusiv mva.",
+      "checked_at": "2026-10-08T23:25:28.987Z"
+    },
+    "original_unit": "rull",
+    "package_quantity": 32.5,
+    "original_ore": 321900,
+    "package_price_ex_vat_ore": 257520,
+    "normalized_ore": 7924,
+    "checked_at": "2026-10-08T23:25:31.129Z",
+    "valid_until": null,
+    "availability": "https://schema.org/InStock",
+    "evidence": "Obs produktpris: aria-description, samme NOK-beløp som SKU-tilbudet; én rull 1.3×25 m = 32.5 m² brutto fra samme SKU-navn",
+    "source_price_unit": "stk",
+    "package_area_basis": "gross"
+  },
+  "notes": "Rå kildeutdrag. Kontrolltid er live-kontroll, ikke endret produksjonsdato."
+}

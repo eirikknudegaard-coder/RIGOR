@@ -48,8 +48,8 @@ with sync_playwright() as p:
  saved=page.evaluate('JSON.parse(window.testReadStorage("rigor-projects-v1"))[0].aiContext');assert len(saved['priceBasis']['experienceRates'])==3
  page.locator('#ai-budget').screenshot(path='/tmp/rigor-ai-budget-desktop.png')
  page.locator('#project-back').click();page.reload();page.get_by_role('button',name='Åpne prosjekt',exact=True).click();page.locator('#ai-budget').wait_for(state='visible');assert 'Foreløpig budsjettanslag' in page.locator('#ai-budget').inner_text()
- page.locator('#ai-make-detailed').click();page.locator('#assistant-preview').wait_for(state='visible');assert calls[-1]['mode']=='detailed_copilot'
- page.locator('#assistant-apply').click();count=page.locator('tr[data-row-index]').count();assert count==len(initial)+5
+ page.locator('#ai-make-detailed').click();page.locator('#assistant-preview').wait_for(state='visible');assert len(calls)==1 and calls[0]['mode']=='simple_estimator'
+ page.locator('#assistant-apply').click();count=page.locator('tr[data-row-index]').count();assert count==5
  page.locator('#brief-generate').click();page.locator('#assistant-preview').wait_for(state='visible');assert page.locator('[data-assistant-element]:checked').count()==0;assert page.locator('tr[data-row-index]').count()==count
  # A detailed explicit wall request asks only for the missing area.
  page.locator('#project-back').click();page.locator('#start-detailed').click();page.locator('#project-name').fill('Yttervegg AI');page.locator('#project-submit').click()
