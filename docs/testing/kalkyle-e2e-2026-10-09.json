@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-09T08:03:20.513Z",
+  "checkedAt": "2026-10-09T08:35:42.310152+00:00",
   "baselineCommit": "dc9c63b565179b73f5ff7cdebfcc94f355e323bf",
   "method": "Local actual UI/storage/CSV/PDF; mocked authenticated portal and AI transport. Dated real product evidence. Separate read-only live checks. No production register writes in test phase.",
   "node": {
@@ -947,14 +947,16 @@
           "pages": 1,
           "totalsMatch": true,
           "internalPrivacy": true,
-          "sha256": "1abce855d6d4748fabbb6be23290802835ee570f7a6f37cc2eebf7708cf76641"
+          "sha256": "0aa1a3531a8c41b2f63199553db442ea321c40365ca390f5349635365d787300",
+          "allRowsAndQuantitiesMatch": true
         },
         {
           "path": "terrace-desktop-calculation.pdf",
           "pages": 3,
           "totalsMatch": true,
           "internalPrivacy": true,
-          "sha256": "339155a738153dc57e72750463ea2f4dbdb80ff9fbd4015dbaf0a2252ab9efff"
+          "sha256": "adbc126ca94ad753aefac3a6ef7e245bab8e797f9f6e7b2fa73749b4163c2b2d",
+          "allRowsAndQuantitiesMatch": true
         }
       ],
       "csv": {
@@ -1776,14 +1778,16 @@
           "pages": 2,
           "totalsMatch": true,
           "internalPrivacy": true,
-          "sha256": "2fd6b664af6725428d68c2a27e413c29d14121ce3dbe3bec7b5563e446940697"
+          "sha256": "d041b749403d7f694794b5fb190ac2445c72531893b5bc47d83ccca296403525",
+          "allRowsAndQuantitiesMatch": true
         },
         {
           "path": "wall-desktop-calculation.pdf",
           "pages": 3,
           "totalsMatch": true,
           "internalPrivacy": true,
-          "sha256": "894dde9d2435d405235e25ebce7be9c0025835c347c6b2c812f9de35e6650a6c"
+          "sha256": "351558eb5b12117388896f2fa23fb39157a5b1d2860b2bbf19f5faa38e194c27",
+          "allRowsAndQuantitiesMatch": true
         }
       ],
       "csv": {
@@ -2567,7 +2571,7 @@
       },
       "difference": {
         "absolute": 0.04000000000814907,
-        "percent": 0.000020972604539598413,
+        "percent": 2.0972604539598413e-05,
         "engineNok": 0,
         "enginePercent": 0
       },
@@ -2577,14 +2581,16 @@
           "pages": 2,
           "totalsMatch": true,
           "internalPrivacy": true,
-          "sha256": "907c3df9e79fbebbde54d9c498166d459dc80aa92d10b9d3bd82c2fd5e1954b6"
+          "sha256": "88e6a7742d7b0c806dc302fd57d2c178907e010f060979ca191ddd565463c811",
+          "allRowsAndQuantitiesMatch": true
         },
         {
           "path": "roof-desktop-calculation.pdf",
           "pages": 3,
           "totalsMatch": true,
           "internalPrivacy": true,
-          "sha256": "408ff469b1a754623e98ff65134815efb897b95c82d1d4992806143946fa0f54"
+          "sha256": "ac73a12b939c84089c3f835096f75c5340880dde13982405d9b2cf7226ea5601",
+          "allRowsAndQuantitiesMatch": true
         }
       ],
       "csv": {
@@ -3440,14 +3446,16 @@
           "pages": 1,
           "totalsMatch": true,
           "internalPrivacy": true,
-          "sha256": "a646f54b1ac5c749428f2cabef338aaca0dbeb21898bae6b0d8d9e892b741a37"
+          "sha256": "91932b30272a6f042a22dad62510697757454399e3607fe865d3ec9869f4bc23",
+          "allRowsAndQuantitiesMatch": true
         },
         {
           "path": "terrace-mobile-calculation.pdf",
           "pages": 3,
           "totalsMatch": true,
           "internalPrivacy": true,
-          "sha256": "67e480886667bbcac00aa4a04d32f15911ece81ea5bdf9f9f4d26055dd03f6a5"
+          "sha256": "7b7a758f5331d272df6f48170c216c495759673a990f72ff958d63797f4e4d07",
+          "allRowsAndQuantitiesMatch": true
         }
       ],
       "csv": {
@@ -4269,14 +4277,16 @@
           "pages": 2,
           "totalsMatch": true,
           "internalPrivacy": true,
-          "sha256": "878d73a1522fe71d1322018c4af73d551cff5169c57bde90aa18fcd8bb691923"
+          "sha256": "92a63e2562b070dbceee6a3aa45c3106e2a6893d3537d6111b3b15dd790c8add",
+          "allRowsAndQuantitiesMatch": true
         },
         {
           "path": "wall-mobile-calculation.pdf",
           "pages": 3,
           "totalsMatch": true,
           "internalPrivacy": true,
-          "sha256": "3a31f4b554a9a5d9603f961316743ed5287d10d708c246743cd9f27878b6a4f0"
+          "sha256": "432ea441e34fbef72fa4ca986bf89e330b236ee2bb60749b7e270a8f14bf9e85",
+          "allRowsAndQuantitiesMatch": true
         }
       ],
       "csv": {
@@ -5060,7 +5070,7 @@
       },
       "difference": {
         "absolute": 0.04000000000814907,
-        "percent": 0.000020972604539598413,
+        "percent": 2.0972604539598413e-05,
         "engineNok": 0,
         "enginePercent": 0
       },
@@ -5070,14 +5080,16 @@
           "pages": 2,
           "totalsMatch": true,
           "internalPrivacy": true,
-          "sha256": "0169a0c92604273b2139cc203cb2a8c17a94b8f75f99c743d89b4e149c8cdc13"
+          "sha256": "13d8cbea81f1c4162545147ffecbbd7a65d21c9c9e1d3daea0aa77d73854ce7e",
+          "allRowsAndQuantitiesMatch": true
         },
         {
           "path": "roof-mobile-calculation.pdf",
           "pages": 3,
           "totalsMatch": true,
           "internalPrivacy": true,
-          "sha256": "09f44e1a056ccf963ee34a03ed3cf2ce1b1815d962288fa733eaa051ec23dbfe"
+          "sha256": "d1a9101970b3e3a10ad3bffc36502dbf961ac49efabfc94063365c076a09d955",
+          "allRowsAndQuantitiesMatch": true
         }
       ],
       "csv": {
@@ -5686,5 +5698,785 @@
     ],
     "pass": false,
     "candidatePass": true
+  },
+  "productionRelease": {
+    "checkedAt": "2026-10-09T08:30:35.223Z",
+    "codeCommit": "c2c71e872da92c42c3601cd27a2205c1af62fe9c",
+    "pagesRun": "https://github.com/eirikknudegaard-coder/RIGOR/actions/runs/37905254688",
+    "registerUpdatedAt": "2026-10-09T08:09:55.920Z",
+    "collection": {
+      "checkedFamilies": 9,
+      "successfulProducts": 20,
+      "failedProducts": 0,
+      "totalOffers": 254
+    },
+    "aiHealth": {
+      "version": 6,
+      "status": "ACTIVE",
+      "ready": true,
+      "unauthenticatedPostStatus": 401
+    },
+    "live": {
+      "checkedAt": "2026-10-09T08:30:35.223Z",
+      "registerUrl": "https://rigor.no/data/market-prices.json",
+      "registerUpdatedAt": "2026-10-09T08:09:55.920Z",
+      "totalOffers": 254,
+      "checks": [
+        {
+          "label": "Hunton 100 mm",
+          "id": "obs:ObsBygg-7022611099016",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099016",
+          "register": {
+            "name": "Hunton Nativo® Trefiberisolasjon · 100 MM",
+            "originalOre": 48900,
+            "normalizedOre": 13971,
+            "unit": "m2",
+            "packageQuantity": 2.8,
+            "checkedAt": "2026-10-09T08:09:49.054Z",
+            "error": null
+          },
+          "rawSha256": "26d9d6de326d0767bac00552d61838ce7c98cd7d98fafabc45c8a586c2f6036b",
+          "live": {
+            "name": "Hunton Nativo® Trefiberisolasjon · 100 MM",
+            "sku": "ObsBygg-7022611099016",
+            "dimensions": "100 MM",
+            "originalOre": 48900,
+            "netOre": 39120,
+            "normalizedOre": 13971,
+            "unit": "m2",
+            "quantity": 2.8,
+            "vat": "inkl",
+            "availability": "https://schema.org/InStock",
+            "public": true
+          },
+          "differenceOre": 0,
+          "status": "PASS",
+          "reason": null
+        },
+        {
+          "label": "Grunnet kledning med spor",
+          "id": "obs:ObsBygg-7330034639079",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/utvendig-kledning/2100566?v=ObsBygg-7330034639079",
+          "register": {
+            "name": "19x148 dobbelfals rettkant grunnet kledning med spor",
+            "originalOre": 4840,
+            "normalizedOre": 3872,
+            "unit": "m",
+            "packageQuantity": 1,
+            "checkedAt": "2026-10-09T08:09:45.020Z",
+            "error": null
+          },
+          "rawSha256": "0abdacefd23dece6ad079491b47b066c2f1167f5c9e035a56e958d46cad22254",
+          "live": {
+            "name": "19x148 dobbelfals rettkant grunnet kledning med spor",
+            "sku": "ObsBygg-7330034639079",
+            "dimensions": "19x148",
+            "originalOre": 4840,
+            "netOre": 3872,
+            "normalizedOre": 3872,
+            "unit": "m",
+            "quantity": 1,
+            "vat": "inkl",
+            "availability": "https://schema.org/InStock",
+            "public": true
+          },
+          "differenceOre": 0,
+          "status": "PASS",
+          "reason": null
+        },
+        {
+          "label": "48x48 lekt",
+          "id": "obs:ObsBygg-7040431809486",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/konstruksjonsvirke/ubehandlet-rekker-og-lekter/2291095?v=ObsBygg-7040431809486",
+          "register": {
+            "name": "48x48 Lekt/rekke · 48 X 48",
+            "originalOre": 2490,
+            "normalizedOre": 1992,
+            "unit": "m",
+            "packageQuantity": 1,
+            "checkedAt": "2026-10-09T08:09:43.092Z",
+            "error": null
+          },
+          "rawSha256": "8f138a38a326f774a0642cd5e3e0fce91cb590027db289c2adaa2bcc35a7df24",
+          "live": {
+            "name": "48x48 Lekt/rekke · 48 X 48",
+            "sku": "ObsBygg-7040431809486",
+            "dimensions": "48x48",
+            "originalOre": 2490,
+            "netOre": 1992,
+            "normalizedOre": 1992,
+            "unit": "m",
+            "quantity": 1,
+            "vat": "inkl",
+            "availability": "https://schema.org/InStock",
+            "public": true
+          },
+          "differenceOre": 0,
+          "status": "PASS",
+          "reason": null
+        },
+        {
+          "label": "23x48 sløyfe",
+          "id": "obs:ObsBygg-7040431809523",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/konstruksjonsvirke/ubehandlet-rekker-og-lekter/2291056?v=ObsBygg-7040431809523",
+          "register": {
+            "name": "23x48 Lekt/rekke · 23 X 48",
+            "originalOre": 1550,
+            "normalizedOre": 1240,
+            "unit": "m",
+            "packageQuantity": 1,
+            "checkedAt": "2026-10-09T08:09:39.101Z",
+            "error": null
+          },
+          "rawSha256": "6ad22a589cffd953e041523f1605076b5fe3d4eb00b3123d61b64420e1b1f212",
+          "live": {
+            "name": "23x48 Lekt/rekke · 23 X 48",
+            "sku": "ObsBygg-7040431809523",
+            "dimensions": "23x48",
+            "originalOre": 1550,
+            "netOre": 1240,
+            "normalizedOre": 1240,
+            "unit": "m",
+            "quantity": 1,
+            "vat": "inkl",
+            "availability": "https://schema.org/InStock",
+            "public": true
+          },
+          "differenceOre": 0,
+          "status": "PASS",
+          "reason": null
+        },
+        {
+          "label": "36x48 lekt",
+          "id": "obs:ObsBygg-7040431809530",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/konstruksjonsvirke/ubehandlet-rekker-og-lekter/2291060?v=ObsBygg-7040431809530",
+          "register": {
+            "name": "36x48 Lekt/rekke · 36 X 48",
+            "originalOre": 2250,
+            "normalizedOre": 1800,
+            "unit": "m",
+            "packageQuantity": 1,
+            "checkedAt": "2026-10-09T08:09:41.055Z",
+            "error": null
+          },
+          "rawSha256": "c9d2c5d95c49e71060095e5286b216fd1fc16cc9692ed8a127cfe3406938a0aa",
+          "live": {
+            "name": "36x48 Lekt/rekke · 36 X 48",
+            "sku": "ObsBygg-7040431809530",
+            "dimensions": "36x48",
+            "originalOre": 2250,
+            "netOre": 1800,
+            "normalizedOre": 1800,
+            "unit": "m",
+            "quantity": 1,
+            "vat": "inkl",
+            "availability": "https://schema.org/InStock",
+            "public": true
+          },
+          "differenceOre": 0,
+          "status": "PASS",
+          "reason": null
+        },
+        {
+          "label": "Undertak",
+          "id": "obs:ObsBygg-7057754300125",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/undertaksbelegg/2139208?v=ObsBygg-7057754300125",
+          "register": {
+            "name": "Filmtex 1,30x25m Diffusjonstett Undertak",
+            "originalOre": 321900,
+            "normalizedOre": 7924,
+            "unit": "m2",
+            "packageQuantity": 32.5,
+            "checkedAt": "2026-10-09T08:09:36.994Z",
+            "error": null
+          },
+          "rawSha256": "9c130bd0d64a4fe6f402360ce776c91bb86ce424621076d06ed4907a7c5c9b67",
+          "live": {
+            "name": "Filmtex 1,30x25m Diffusjonstett Undertak",
+            "sku": "ObsBygg-7057754300125",
+            "dimensions": "1,30x25",
+            "originalOre": 321900,
+            "netOre": 257520,
+            "normalizedOre": 7924,
+            "unit": "m2",
+            "quantity": 32.5,
+            "vat": "inkl",
+            "availability": "https://schema.org/InStock",
+            "public": true
+          },
+          "differenceOre": 0,
+          "status": "PASS",
+          "reason": null
+        },
+        {
+          "label": "Terrassebord 28x120",
+          "id": "obs:ObsBygg-7040431913404",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431913404",
+          "register": {
+            "name": "28x120 impregnert furu klasse 1 terrassebord · 3.6 M",
+            "originalOre": 7164,
+            "normalizedOre": 1592,
+            "unit": "m",
+            "packageQuantity": 3.6,
+            "checkedAt": "2026-10-09T08:09:47.067Z",
+            "error": null
+          },
+          "rawSha256": "3ec52e4d8b2dc590689a44f9bf78b3ccae1d59d6eb62756f72cce25c36f7aae4",
+          "live": {
+            "name": "28x120 impregnert furu klasse 1 terrassebord · 3.6 M",
+            "sku": "ObsBygg-7040431913404",
+            "dimensions": "28x120",
+            "originalOre": 7164,
+            "netOre": 5731,
+            "normalizedOre": 1592,
+            "unit": "m",
+            "quantity": 3.6,
+            "vat": "inkl",
+            "availability": "https://schema.org/InStock",
+            "public": true
+          },
+          "differenceOre": 0,
+          "status": "PASS",
+          "reason": null
+        },
+        {
+          "label": "Palema takstein",
+          "id": "obs:ObsBygg-7340018159226",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/takstein/3001211?v=ObsBygg-7340018159226",
+          "register": {
+            "name": "Benders Palema Candor svart takstein",
+            "originalOre": 1990,
+            "normalizedOre": 1592,
+            "unit": "stk",
+            "packageQuantity": 1,
+            "checkedAt": "2026-10-09T08:09:53.065Z",
+            "error": null
+          },
+          "rawSha256": "efeb10c40d11d18154cc31529fd882f6a7b30a8fd73673ea30004abdbe6fa1db",
+          "live": {
+            "name": "Benders Palema Candor svart takstein",
+            "sku": "ObsBygg-7340018159226",
+            "dimensions": null,
+            "originalOre": 1990,
+            "netOre": 1592,
+            "normalizedOre": 1592,
+            "unit": "stk",
+            "quantity": 1,
+            "vat": "inkl",
+            "availability": "https://schema.org/InStock",
+            "public": true
+          },
+          "differenceOre": 0,
+          "status": "PASS",
+          "reason": null
+        }
+      ],
+      "candidateChecks": [
+        {
+          "label": "Hunton 100 mm",
+          "id": "obs:ObsBygg-7022611099016",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099016",
+          "register": {
+            "name": "Hunton Nativo® Trefiberisolasjon · 100 MM",
+            "originalOre": 48900,
+            "normalizedOre": 13971,
+            "unit": "m2",
+            "packageQuantity": 2.8,
+            "checkedAt": "2026-10-09T08:30:35.223Z",
+            "error": null
+          },
+          "rawSha256": "460f39f1f0f8b0053cf6699c82eb24d2d1402387b69a97280980921d1ea33944",
+          "live": {
+            "name": "Hunton Nativo® Trefiberisolasjon · 100 MM",
+            "sku": "ObsBygg-7022611099016",
+            "dimensions": "100 MM",
+            "originalOre": 48900,
+            "netOre": 39120,
+            "normalizedOre": 13971,
+            "unit": "m2",
+            "quantity": 2.8,
+            "vat": "inkl",
+            "availability": "https://schema.org/InStock",
+            "public": true
+          },
+          "differenceOre": 0,
+          "status": "PASS",
+          "reason": null,
+          "scope": "Local corrected collector; not published"
+        },
+        {
+          "label": "Grunnet kledning med spor",
+          "id": "obs:ObsBygg-7330034639079",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/utvendig-kledning/2100566?v=ObsBygg-7330034639079",
+          "register": {
+            "name": "19x148 dobbelfals rettkant grunnet kledning med spor",
+            "originalOre": 4840,
+            "normalizedOre": 3872,
+            "unit": "m",
+            "packageQuantity": 1,
+            "checkedAt": "2026-10-09T08:30:35.223Z",
+            "error": null
+          },
+          "rawSha256": "9737dd8fd17ce88927858a5e05dee2c2130d6eed7ad85744d966ef8cd3520780",
+          "live": {
+            "name": "19x148 dobbelfals rettkant grunnet kledning med spor",
+            "sku": "ObsBygg-7330034639079",
+            "dimensions": "19x148",
+            "originalOre": 4840,
+            "netOre": 3872,
+            "normalizedOre": 3872,
+            "unit": "m",
+            "quantity": 1,
+            "vat": "inkl",
+            "availability": "https://schema.org/InStock",
+            "public": true
+          },
+          "differenceOre": 0,
+          "status": "PASS",
+          "reason": null,
+          "scope": "Local corrected collector; not published"
+        },
+        {
+          "label": "48x48 lekt",
+          "id": "obs:ObsBygg-7040431809486",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/konstruksjonsvirke/ubehandlet-rekker-og-lekter/2291095?v=ObsBygg-7040431809486",
+          "register": {
+            "name": "48x48 Lekt/rekke · 48 X 48",
+            "originalOre": 2490,
+            "normalizedOre": 1992,
+            "unit": "m",
+            "packageQuantity": 1,
+            "checkedAt": "2026-10-09T08:30:35.223Z",
+            "error": null
+          },
+          "rawSha256": "2cf58f68c16e52a24abfb6baca21e16ac8340dcd0589be0bcc295e58a2d7a04d",
+          "live": {
+            "name": "48x48 Lekt/rekke · 48 X 48",
+            "sku": "ObsBygg-7040431809486",
+            "dimensions": "48x48",
+            "originalOre": 2490,
+            "netOre": 1992,
+            "normalizedOre": 1992,
+            "unit": "m",
+            "quantity": 1,
+            "vat": "inkl",
+            "availability": "https://schema.org/InStock",
+            "public": true
+          },
+          "differenceOre": 0,
+          "status": "PASS",
+          "reason": null,
+          "scope": "Local corrected collector; not published"
+        },
+        {
+          "label": "23x48 sløyfe",
+          "id": "obs:ObsBygg-7040431809523",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/konstruksjonsvirke/ubehandlet-rekker-og-lekter/2291056?v=ObsBygg-7040431809523",
+          "register": {
+            "name": "23x48 Lekt/rekke · 23 X 48",
+            "originalOre": 1550,
+            "normalizedOre": 1240,
+            "unit": "m",
+            "packageQuantity": 1,
+            "checkedAt": "2026-10-09T08:30:35.223Z",
+            "error": null
+          },
+          "rawSha256": "e0a7aa7534e92b6a8781d694fa63128e4350825bfcc0a2d2ff8df825934280d1",
+          "live": {
+            "name": "23x48 Lekt/rekke · 23 X 48",
+            "sku": "ObsBygg-7040431809523",
+            "dimensions": "23x48",
+            "originalOre": 1550,
+            "netOre": 1240,
+            "normalizedOre": 1240,
+            "unit": "m",
+            "quantity": 1,
+            "vat": "inkl",
+            "availability": "https://schema.org/InStock",
+            "public": true
+          },
+          "differenceOre": 0,
+          "status": "PASS",
+          "reason": null,
+          "scope": "Local corrected collector; not published"
+        },
+        {
+          "label": "36x48 lekt",
+          "id": "obs:ObsBygg-7040431809530",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/konstruksjonsvirke/ubehandlet-rekker-og-lekter/2291060?v=ObsBygg-7040431809530",
+          "register": {
+            "name": "36x48 Lekt/rekke · 36 X 48",
+            "originalOre": 2250,
+            "normalizedOre": 1800,
+            "unit": "m",
+            "packageQuantity": 1,
+            "checkedAt": "2026-10-09T08:30:35.223Z",
+            "error": null
+          },
+          "rawSha256": "ce3d8d65e109fb0a47e0132b4bb4ef1faac6ee364f352322a2901eeaf446ad0e",
+          "live": {
+            "name": "36x48 Lekt/rekke · 36 X 48",
+            "sku": "ObsBygg-7040431809530",
+            "dimensions": "36x48",
+            "originalOre": 2250,
+            "netOre": 1800,
+            "normalizedOre": 1800,
+            "unit": "m",
+            "quantity": 1,
+            "vat": "inkl",
+            "availability": "https://schema.org/InStock",
+            "public": true
+          },
+          "differenceOre": 0,
+          "status": "PASS",
+          "reason": null,
+          "scope": "Local corrected collector; not published"
+        },
+        {
+          "label": "Undertak",
+          "id": "obs:ObsBygg-7057754300125",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/undertaksbelegg/2139208?v=ObsBygg-7057754300125",
+          "register": {
+            "name": "Filmtex 1,30x25m Diffusjonstett Undertak",
+            "originalOre": 321900,
+            "normalizedOre": 7924,
+            "unit": "m2",
+            "packageQuantity": 32.5,
+            "checkedAt": "2026-10-09T08:30:35.223Z",
+            "error": null
+          },
+          "rawSha256": "89383278f2918f80139d3a4bdb56e40e923ecaf77132d447b63f3044ac3b5d86",
+          "live": {
+            "name": "Filmtex 1,30x25m Diffusjonstett Undertak",
+            "sku": "ObsBygg-7057754300125",
+            "dimensions": "1,30x25",
+            "originalOre": 321900,
+            "netOre": 257520,
+            "normalizedOre": 7924,
+            "unit": "m2",
+            "quantity": 32.5,
+            "vat": "inkl",
+            "availability": "https://schema.org/InStock",
+            "public": true
+          },
+          "differenceOre": 0,
+          "status": "PASS",
+          "reason": null,
+          "scope": "Local corrected collector; not published"
+        },
+        {
+          "label": "Terrassebord 28x120",
+          "id": "obs:ObsBygg-7040431913404",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431913404",
+          "register": {
+            "name": "28x120 impregnert furu klasse 1 terrassebord · 3.6 M",
+            "originalOre": 7164,
+            "normalizedOre": 1592,
+            "unit": "m",
+            "packageQuantity": 3.6,
+            "checkedAt": "2026-10-09T08:30:35.223Z",
+            "error": null
+          },
+          "rawSha256": "6829788a5adb59eefc5b8eb9259d587853aabe3e1d5ce62eedc7e4f9cc87f2ce",
+          "live": {
+            "name": "28x120 impregnert furu klasse 1 terrassebord · 3.6 M",
+            "sku": "ObsBygg-7040431913404",
+            "dimensions": "28x120",
+            "originalOre": 7164,
+            "netOre": 5731,
+            "normalizedOre": 1592,
+            "unit": "m",
+            "quantity": 3.6,
+            "vat": "inkl",
+            "availability": "https://schema.org/InStock",
+            "public": true
+          },
+          "differenceOre": 0,
+          "status": "PASS",
+          "reason": null,
+          "scope": "Local corrected collector; not published"
+        },
+        {
+          "label": "Palema takstein",
+          "id": "obs:ObsBygg-7340018159226",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/takstein/3001211?v=ObsBygg-7340018159226",
+          "register": {
+            "name": "Benders Palema Candor svart takstein",
+            "originalOre": 1990,
+            "normalizedOre": 1592,
+            "unit": "stk",
+            "packageQuantity": 1,
+            "checkedAt": "2026-10-09T08:30:35.223Z",
+            "error": null
+          },
+          "rawSha256": "3160db145b7b2268db4df127d4ba5586e4fca4db5a3c720df47550f0b9c21f77",
+          "live": {
+            "name": "Benders Palema Candor svart takstein",
+            "sku": "ObsBygg-7340018159226",
+            "dimensions": null,
+            "originalOre": 1990,
+            "netOre": 1592,
+            "normalizedOre": 1592,
+            "unit": "stk",
+            "quantity": 1,
+            "vat": "inkl",
+            "availability": "https://schema.org/InStock",
+            "public": true
+          },
+          "differenceOre": 0,
+          "status": "PASS",
+          "reason": null,
+          "scope": "Local corrected collector; not published"
+        }
+      ],
+      "otherSources": [
+        {
+          "source": "Byggmakker",
+          "url": "https://www.byggmakker.no/produkt/trefiberisolasjon-nativo-100x565x1220-hunton/7022611099016",
+          "status": "CHECKED",
+          "rawSha256": "279e5282f28d0fe9bf08bfcef13dc0d2a70e4d73827702d7b2de3d8a2e48fc4b",
+          "products": [],
+          "referenceEligible": false,
+          "reason": "Fra-pris og ikke tilgjengelig fra nettlager"
+        },
+        {
+          "source": "Montér",
+          "url": "https://www.monter.no/tak-og-pipe/takstein/betongstein/takst-palema-teglrodsvart-dobbelkrum-ubehandlet",
+          "status": "CHECKED",
+          "rawSha256": "c4d0273d9b3a41be13abe61e3b489069073f056cf8e5b55aeb22bfe7a6152846",
+          "products": [
+            {
+              "name": "Takst palema teglrød/svart dobbelkrum ubehandlet",
+              "sku": "43044865",
+              "offer": [
+                {
+                  "@type": "Offer",
+                  "price": "20.70",
+                  "priceCurrency": "NOK",
+                  "itemOffered": {
+                    "@type": "Sku",
+                    "sku": "101152989",
+                    "name": "Takst palema teglrød/svart dobbelkrum ubehandlet"
+                  },
+                  "availability": "https://schema.org/BackOrder",
+                  "availabilityStarts": "2026-10-21T00:00:00+02:00"
+                }
+              ]
+            }
+          ],
+          "referenceEligible": false,
+          "reason": "Ingen ubetinget pris med enhet, MVA og bekreftet lager som kvalifiserer til registeret"
+        },
+        {
+          "source": "Montér",
+          "url": "https://www.monter.no/trelast/kledning/liggende-kledning/dobbelfalset-kledning-28-19x148-mm-grunnet-gran",
+          "status": "CHECKED",
+          "rawSha256": "5e865b688230aca681e32cc517e98b62f76567436597a82ad07f8501acb6a068",
+          "products": [
+            {
+              "name": "Dobbelfalset kledning 28° 19x148 mm grunnet gran",
+              "sku": "50445405",
+              "offer": [
+                {
+                  "@type": "Offer",
+                  "price": "61.60",
+                  "priceCurrency": "NOK",
+                  "itemOffered": {
+                    "@type": "Sku",
+                    "sku": "101193871",
+                    "name": "Dobbelfalset kledning 28° 19x148 mm grunnet gran"
+                  },
+                  "availability": "https://schema.org/BackOrder",
+                  "availabilityStarts": "2026-10-14T00:00:00+02:00"
+                }
+              ]
+            }
+          ],
+          "referenceEligible": false,
+          "reason": "Ingen ubetinget pris med enhet, MVA og bekreftet lager som kvalifiserer til registeret"
+        }
+      ],
+      "excludedHistorical": [
+        {
+          "id": "obs:ObsBygg-4048962329919",
+          "error": "Pakningsareal for isolasjon er ikke dokumentert",
+          "checkedAt": "2026-10-06T13:58:56.866Z"
+        },
+        {
+          "id": "obs:ObsBygg-7040431811922",
+          "error": "Produkt eller prisenhet er endret: krever kontroll",
+          "checkedAt": "2026-10-07T14:31:39.845Z"
+        },
+        {
+          "id": "obs:ObsBygg-7029350188810",
+          "error": "Produktet tilhører ikke dokumentert materialtype",
+          "checkedAt": "2026-10-06T14:15:22.582Z"
+        },
+        {
+          "id": "obs:ObsBygg-7029350188834",
+          "error": "Produktet tilhører ikke dokumentert materialtype",
+          "checkedAt": "2026-10-06T14:15:22.582Z"
+        },
+        {
+          "id": "obs:ObsBygg-7029350271895",
+          "error": "Produktet tilhører ikke dokumentert materialtype",
+          "checkedAt": "2026-10-06T14:15:22.582Z"
+        },
+        {
+          "id": "obs:ObsBygg-7029350188797",
+          "error": "Produktet tilhører ikke dokumentert materialtype",
+          "checkedAt": "2026-10-06T14:15:22.582Z"
+        },
+        {
+          "id": "obs:ObsBygg-7029350188858",
+          "error": "Produktet tilhører ikke dokumentert materialtype",
+          "checkedAt": "2026-10-06T14:15:22.582Z"
+        },
+        {
+          "id": "obs:ObsBygg-7029350188896",
+          "error": "Produktet tilhører ikke dokumentert materialtype",
+          "checkedAt": "2026-10-06T14:15:22.582Z"
+        },
+        {
+          "id": "obs:ObsBygg-7029350188872",
+          "error": "Produktet tilhører ikke dokumentert materialtype",
+          "checkedAt": "2026-10-06T14:15:22.582Z"
+        },
+        {
+          "id": "obs:ObsBygg-7029350188773",
+          "error": "Produktet tilhører ikke dokumentert materialtype",
+          "checkedAt": "2026-10-06T14:15:22.582Z"
+        },
+        {
+          "id": "obs:ObsBygg-7022611099085",
+          "error": "Pakningsareal for isolasjon er ikke dokumentert",
+          "checkedAt": "2026-10-06T14:15:24.099Z"
+        },
+        {
+          "id": "obs:ObsBygg-7040437512038",
+          "error": "Produktvarianten finnes ikke eller er ikke tilgjengelig på kontrollert produktside",
+          "checkedAt": "2026-10-06T22:41:57.884Z"
+        },
+        {
+          "id": "obs:ObsBygg-7330034803135",
+          "error": "Prisenhet er ikke dokumentert",
+          "checkedAt": "2026-10-06T22:42:07.888Z"
+        }
+      ],
+      "pass": true,
+      "candidatePass": true
+    },
+    "browser": [
+      {
+        "project": "terrace",
+        "priceExVat": 50575.78,
+        "vat": 12643.95,
+        "gross": 63219.73,
+        "hours": 32.5,
+        "difference": {
+          "absolute": 14.779999999998836,
+          "percent": 0.029232016771817873
+        },
+        "bindings": {
+          "terrace.new.deck": "obs:ObsBygg-7040431913428"
+        },
+        "persistencePass": true,
+        "uiErrors": [],
+        "pdf": [
+          {
+            "path": "published/terrace-desktop-offer.pdf",
+            "pages": 1,
+            "totalsMatch": true,
+            "internalPrivacy": true,
+            "sha256": "6a9f7f469808041b46581920b9c23a67c6af07f805ed4b6e70694dcff693ecc0"
+          },
+          {
+            "path": "published/terrace-desktop-calculation.pdf",
+            "pages": 3,
+            "totalsMatch": true,
+            "internalPrivacy": true,
+            "sha256": "54cb1edebb7d1af3de8dce33e76149c2f1f3c96e106f5bc479040d132e418f9d"
+          }
+        ],
+        "csv": "published/terrace-desktop.csv"
+      },
+      {
+        "project": "wall",
+        "priceExVat": 250349.0,
+        "vat": 62587.25,
+        "gross": 312936.25,
+        "hours": 150.0,
+        "difference": {
+          "absolute": 0.0,
+          "percent": 0.0
+        },
+        "bindings": {
+          "insulation.utlekting": "obs:ObsBygg-7040431809486",
+          "insulation.isolasjon100": "obs:ObsBygg-7022611099016",
+          "insulation.vindsperre": "obs:ObsBygg-7030840013406",
+          "insulation.kledning": "obs:ObsBygg-7330034639079"
+        },
+        "persistencePass": true,
+        "uiErrors": [],
+        "pdf": [
+          {
+            "path": "published/wall-desktop-offer.pdf",
+            "pages": 2,
+            "totalsMatch": true,
+            "internalPrivacy": true,
+            "sha256": "eba7d910a189a5ea011f45571f81de26ad06a27f2e51cdd83438529cd58df22f"
+          },
+          {
+            "path": "published/wall-desktop-calculation.pdf",
+            "pages": 3,
+            "totalsMatch": true,
+            "internalPrivacy": true,
+            "sha256": "2225b5be878868d534519dea27cb1420e0692eb22c7ac955f83ffe91b64c6a89"
+          }
+        ],
+        "csv": "published/wall-desktop.csv"
+      },
+      {
+        "project": "roof",
+        "priceExVat": 190725.04,
+        "vat": 47681.26,
+        "gross": 238406.3,
+        "hours": 121.0,
+        "difference": {
+          "absolute": 0.04000000000814907,
+          "percent": 2.0972604539598413e-05
+        },
+        "bindings": {
+          "roof.underlay.undertak": "obs:ObsBygg-7057754300125",
+          "roof.underlay.sloyfer": "obs:ObsBygg-7040431809523",
+          "roof.underlay.lekter": "obs:ObsBygg-7040431809530",
+          "roof.cover.tile": "obs:ObsBygg-7340018159226"
+        },
+        "persistencePass": true,
+        "uiErrors": [],
+        "pdf": [
+          {
+            "path": "published/roof-desktop-offer.pdf",
+            "pages": 2,
+            "totalsMatch": true,
+            "internalPrivacy": true,
+            "sha256": "b16f3f3f09ee66838c9a7496866ea3c6776c6eb29021152265257a31a3036afe"
+          },
+          {
+            "path": "published/roof-desktop-calculation.pdf",
+            "pages": 3,
+            "totalsMatch": true,
+            "internalPrivacy": true,
+            "sha256": "f767e7426766cbbb3a26d8f9836ee17ed828ff1d206a80b23a72dcaf0c1fdd2e"
+          }
+        ],
+        "csv": "published/roof-desktop.csv"
+      }
+    ],
+    "boundaryMocks": [
+      "Verified portal session",
+      "AI transport"
+    ],
+    "actualOpenAITest": "Pending explicit approval; no API keys retrieved"
   }
 }

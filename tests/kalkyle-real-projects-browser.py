@@ -19,6 +19,8 @@ live_register=os.getenv('RIGOR_TEST_LIVE_REGISTER')=='1'
 views=[('desktop',1440,1000)] if os.getenv('RIGOR_QA_VIEWS')=='desktop' else [('desktop',1440,1000),('mobile',390,844)]
 def amount(text):return float(re.sub(r'[^0-9,.-]','',text).replace(',','.'))
 def money(value):return f'{value:,.2f}'.replace(',',' ').replace('.',',')+' kr'
+def quantity(value):return f'{value:,.2f}'.rstrip('0').rstrip('.').replace(',',' ').replace('.',',')
+def compact(text):return ' '.join(text.split())
 def assert_clean(page):
     text=page.locator('body').inner_text()
     for forbidden in ['NaN','Infinity','undefined','null kr']:
@@ -55,6 +57,20 @@ def read_pdf(page,project,view,kind):
     with page.expect_download() as download:page.locator('#pdf-download').click()
     download.value.save_as(path);page.wait_for_function('!document.getElementById("pdf-download").disabled')
     doc=fitz.open(path);text='\n'.join(p.get_text()for p in doc)
+    normalized=compact(text)
+    included=[r for r in saved(page)['snapshot']['rows'] if r.get('enabled',True)]
+    sales_codes=re.findall(r'Salgskode:\s*(RG-S-[0-9-]+)',text)
+    assert len(sales_codes)==len(included),(sales_codes,len(included))
+    assert len(set(sales_codes))==len(sales_codes),sales_codes
+    for row,code in zip(included,sales_codes):
+        assert compact(row['name']) in normalized,row['name']
+        unit={'m2':'m²'}.get(row['unit'],row['unit'])
+        work=quantity(row['quantity'])+' '+unit
+        if kind=='offer':assert 'Salgskode: '+code+' '+work in normalized,(row['name'],work)
+        else:
+            material_unit={'m2':'m²'}.get(row['materialUnit'],row['materialUnit'])
+            assert 'Arbeid: '+work+' ×' in normalized,work
+            assert 'Materiell: '+quantity(row['materialQuantity'])+' '+material_unit+' ×' in normalized,row['name']
     for forbidden in ['NaN','Infinity','undefined']:assert forbidden not in text
     for value in [project['name'],'Kunde Ødegård',money(amount(page.locator('#total').inner_text())),money(amount(page.locator('#vat').inner_text())),money(amount(page.locator('#gross').inner_text()))]:assert value in text,value
     if kind=='offer':
