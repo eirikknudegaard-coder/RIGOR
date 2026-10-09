@@ -28,6 +28,11 @@ export function validateActions(actions,member,spanM){
   const clean={id:a.id||'action-'+i,name:a.name,kind:a.kind,source:a.source,duration:a.kind==='G'?'permanent':a.duration};
   if(!durationOrder.includes(clean.duration))throw Error('Velg lastvarighet.');
   for(const key of actionKeys){clean[key]=bounded(a[key]??0,key,0,5000);nonzero ||= clean[key]>0;}
+  if(a.points!==undefined){
+   if(member!=='beam'||!Array.isArray(a.points)||a.points.length>250)throw Error('Punktlastgruppen krever en bjelke og høyst 250 lastpunkter.');
+   clean.points=a.points.map(point=>({xM:bounded(point.xM,'lastpunkt',0,spanM),pKn:bounded(point.pKn,'punktkraft',0,5000)}));
+   nonzero ||= clean.points.some(point=>point.pKn>0);
+  }
   if(member==='beam'&&(clean.nKn||clean.myKnM||clean.mzKnM||clean.hKn))throw Error('Bjelkeskjemaet støtter nedoverrettet linje- og punktlast. Andre lastretninger krever en utvidet modell.');
   if(member==='column'&&(clean.qKnM||clean.pKn))throw Error('Søyleskjemaet bruker normalkraft, moment og horisontalkraft ved toppen.');
   if(clean.pKn>0)clean.xM=bounded(a.xM,'punktlastens plassering',0,spanM);else clean.xM=0;
@@ -40,7 +45,7 @@ export function validateActions(actions,member,spanM){
 function combine(actions,factors,id,limit,reference,leading=null){
  const values=Object.fromEntries(actionKeys.map(k=>[k,0])),points=[];
  let duration='permanent';
- actions.forEach((a,i)=>{const factor=factors[i];for(const k of actionKeys)values[k]+=a[k]*factor;if(a.pKn&&factor)points.push({xM:a.xM,forceN:a.pKn*factor*1000});if(factor&&durationOrder.indexOf(a.duration)>durationOrder.indexOf(duration))duration=a.duration;});
+ actions.forEach((a,i)=>{const factor=factors[i];for(const k of actionKeys)values[k]+=a[k]*factor;if(a.pKn&&factor)points.push({xM:a.xM,forceN:a.pKn*factor*1000});for(const point of a.points||[])if(point.pKn&&factor){points.push({xM:point.xM,forceN:point.pKn*factor*1000});values.pKn+=point.pKn*factor;}if(factor&&durationOrder.indexOf(a.duration)>durationOrder.indexOf(duration))duration=a.duration;});
  return {id,limit,reference,leading,values,points,duration,terms:actions.map((a,i)=>({actionId:a.id,name:a.name,factor:factors[i],source:a.source}))};
 }
 export function loadCombinations(actions,profile){
