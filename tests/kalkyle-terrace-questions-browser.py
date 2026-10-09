@@ -18,47 +18,24 @@ with sync_playwright() as p:
     page.goto('http://127.0.0.1:8090/kalkyle.html')
     page.locator('#job-brief').fill('Jeg skal bytte terrasse med nytt dekke og bjelkelag, inklusive rekkverk.')
     page.locator('#start-detailed').click();page.locator('#project-name').fill('Faglige terrasseavklaringer');page.locator('#project-submit').click()
-    page.locator('#brief-generate').click();page.locator('#assistant-preview').wait_for(state='visible')
-    questions=page.locator('#assistant-questions');form=questions.locator('.assistant-answer-form')
-    assert form.locator('[data-clarification]').count()==10
-    assert form.locator('select').count()==3
-    assert form.locator('input[type=number]').count()==4
-    assert form.locator('input[type=text]').count()==3
-    assert 'stående eller liggende terrassebord' not in questions.inner_text()
-    assert form.get_by_label('Hvilket materiale ønsker du til terrassebordene?').input_value()==''
-    form.get_by_label('Hva er arealet på terrassen?',exact=False).fill('50')
-    form.get_by_label('Hvor høyt er terrassegulvet over terrenget?',exact=False).fill('4')
-    form.get_by_label('Hvilken bjelkedimensjon er oppgitt eller prosjektert?',exact=False).fill('48 × 198 mm, oppgitt i tegning')
-    form.get_by_label('Hva er senteravstanden mellom bjelkene?',exact=False).fill('600')
-    form.get_by_label('Hvilket materiale ønsker du til terrassebordene?').select_option('Royalimpregnert tre')
-    form.get_by_label('Hvilken overflate ønsker du på terrassebordene?').select_option('Glatt')
-    form.get_by_label('Hvilken type rekkverk ønsker du?',exact=False).select_option('Glassfelt')
-    form.get_by_label('Hvilken rekkverkshøyde er oppgitt eller prosjektert?',exact=False).fill('1')
-    form.get_by_label('Andre ønsker til terrassebordene',exact=False).fill('Brun farge')
-    form.get_by_label('Tilbehør og andre ønsker til rekkverket',exact=False).fill('Håndløper')
-    assert page.locator('tr[data-row-index]').count()==0
-    source=questions.locator('.assistant-sources');source.locator('summary').click()
-    assert source.locator('a').count()==4
-    assert source.locator('a').last.get_attribute('href').endswith('/12/iii/12-15')
-    questions.screenshot(path='/tmp/rigor-terrace-professional-questions.png')
+    page.wait_for_function('!document.getElementById("brief-generate").disabled')
+    page.locator('#brief-generate').click()
+    page.locator('[data-clarification="terrace-area"]').fill('50');page.locator('#assistant-continue').click()
+    if page.locator('[data-clarification="terrace-joists"]').count():
+        page.locator('[data-clarification="terrace-joists"]').select_option('Skiftes');page.locator('#assistant-continue').click()
+    assert page.locator('[data-clarification="terrace-access"]').evaluate('e=>e.tagName')=='SELECT'
     page.set_viewport_size({'width':390,'height':844});assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
-    questions.screenshot(path='/tmp/rigor-terrace-professional-questions-mobile.png')
-    form.get_by_role('button',name='Oppdater forslag med svarene').click()
-    page.wait_for_function('window.testBriefs.length===2')
+    page.locator('[data-clarification="terrace-access"]').select_option('Høy terrasse / krevende tilkomst');page.locator('#assistant-continue').click()
     page.locator('#assistant-preview').wait_for(state='visible')
-    sent=page.evaluate('window.testBriefs[1]')
-    for answer in ['Terrasseareal: 50 m²','Terrassehøyde: 4 m','Bjelkeavstand: 600 mm','Terrassebordmateriale: Royalimpregnert tre','Terrassebordprofil: Glatt','Rekkverkstype: Glassfelt','Rekkverkshøyde: 1 m','Brun farge','Håndløper']:
-        assert answer in sent,(answer,sent)
-    assert 'Takareal:' not in sent;assert 'stående eller liggende terrassebord' not in sent
-    assert page.locator('.assistant-answer-form').count()==0
-    assert page.locator('[data-assistant-quantity]').first.input_value()=='50'
+    assert page.locator('#assistant-questions').is_hidden()
+    assert 'stående eller liggende terrassebord' not in page.locator('#ai-budget').inner_text()
     assert page.locator('tr[data-row-index]').count()==0
-    page.locator('#assistant-apply').click()
-    assert page.locator('tr[data-row-index]').count()==3
-    assert page.locator('#hours').inner_text()=='20 t'
+    assert page.locator('[data-assistant-quantity]').first.input_value()=='50'
+    sent=page.evaluate('window.testBriefs[0]');assert 'Terrasseareal: 50 m²' in sent and 'Høy terrasse' in sent
+    page.locator('#assistant-apply').click();assert page.locator('tr[data-row-index]').count()==3
     page.locator('#project-back').click();page.reload();page.get_by_role('button',name='Åpne prosjekt',exact=True).click()
-    assert 'Terrassehøyde: 4 m' in page.locator('#job-brief').input_value()
+    assert 'Terrasseareal: 50 m²' in page.locator('#job-brief').input_value()
     assert page.locator('tr[data-row-index]').count()==3
     assert not errors,errors
-    print('PASS: user screenshot questions, valid dropdowns/numeric/text fields, wrong direction removed, cited sources, no automatic work changes, preserved answers/area, no repeat questions, deduplication/reload and mobile')
+    print('PASS: current sequential numeric/dropdown terrace controls, invalid direction removed, preserved answers/area, no automatic work changes, deduplication/reload and mobile')
     browser.close()

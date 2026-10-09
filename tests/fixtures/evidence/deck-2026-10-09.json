@@ -1,0 +1,482 @@
+{
+  "source": "Obs BYGG",
+  "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132",
+  "checkedAt": "2026-10-09T06:30:20.998Z",
+  "httpStatus": 200,
+  "rawSha256": "b01a4dcfea029ea08d0db70f9d90d189957e5d49fd7de1586829dc7ad9f1f24c",
+  "raw": {
+    "jsonLd": [
+      {
+        "name": "28x120 impregnert furu klasse 1 terrassebord",
+        "description": "Et solid og holdbart terrassebord.",
+        "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132",
+        "brand": {
+          "name": "MOELVEN",
+          "@type": "Brand"
+        },
+        "aggregateRating": {
+          "ratingValue": "3.90837",
+          "ratingCount": "251",
+          "@type": "AggregateRating"
+        },
+        "variesBy": [
+          "https://schema.org/size"
+        ],
+        "hasVariant": [
+          {
+            "name": "28x120 impregnert furu klasse 1 terrassebord",
+            "image": "/globalassets/productimages/402534_7040431912582_1.jpg?ref=3B9AADDBDE",
+            "sku": "ObsBygg-7040431913404",
+            "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431913404",
+            "size": "3.6 M",
+            "offers": {
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431913404",
+              "price": "71.64",
+              "priceCurrency": "NOK",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "@type": "Offer"
+            },
+            "@type": "Product"
+          },
+          {
+            "name": "28x120 impregnert furu klasse 1 terrassebord",
+            "image": "/globalassets/productimages/402534_7040431912582_1.jpg?ref=3B9AADDBDE",
+            "sku": "ObsBygg-7040431913428",
+            "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431913428",
+            "size": "4.2 M",
+            "offers": {
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431913428",
+              "price": "83.58",
+              "priceCurrency": "NOK",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "@type": "Offer"
+            },
+            "@type": "Product"
+          },
+          {
+            "name": "28x120 impregnert furu klasse 1 terrassebord",
+            "image": "/globalassets/productimages/402534_7040431912582_1.jpg?ref=3B9AADDBDE",
+            "sku": "ObsBygg-7040431917778",
+            "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431917778",
+            "size": "4.8 M",
+            "offers": {
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431917778",
+              "price": "95.52",
+              "priceCurrency": "NOK",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "@type": "Offer"
+            },
+            "@type": "Product"
+          },
+          {
+            "name": "28x120 impregnert furu klasse 1 terrassebord",
+            "image": "/globalassets/productimages/402534_7040431912582_1.jpg?ref=3B9AADDBDE",
+            "sku": "ObsBygg-7040431917792",
+            "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431917792",
+            "size": "5.4 M",
+            "offers": {
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431917792",
+              "price": "107.46",
+              "priceCurrency": "NOK",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "@type": "Offer"
+            },
+            "@type": "Product"
+          },
+          {
+            "name": "28x120 impregnert furu klasse 1 terrassebord",
+            "image": "/globalassets/productimages/402534_7040431912582_1.jpg?ref=3B9AADDBDE",
+            "sku": "ObsBygg-7040431917785",
+            "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431917785",
+            "size": "5.1 M",
+            "offers": {
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431917785",
+              "price": "101.49",
+              "priceCurrency": "NOK",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "@type": "Offer"
+            },
+            "@type": "Product"
+          },
+          {
+            "name": "28x120 impregnert furu klasse 1 terrassebord",
+            "image": "/globalassets/productimages/402534_7040431912582_1.jpg?ref=3B9AADDBDE",
+            "sku": "ObsBygg-7040431913411",
+            "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431913411",
+            "size": "3.9 M",
+            "offers": {
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431913411",
+              "price": "77.61",
+              "priceCurrency": "NOK",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "@type": "Offer"
+            },
+            "@type": "Product"
+          },
+          {
+            "name": "28x120 impregnert furu klasse 1 terrassebord",
+            "image": "/globalassets/productimages/402534_7040431912582_1.jpg?ref=3B9AADDBDE",
+            "sku": "ObsBygg-7040431913398",
+            "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431913398",
+            "size": "3.3 M",
+            "offers": {
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431913398",
+              "price": "65.67",
+              "priceCurrency": "NOK",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "@type": "Offer"
+            },
+            "@type": "Product"
+          },
+          {
+            "name": "28x120 impregnert furu klasse 1 terrassebord",
+            "image": "/globalassets/productimages/402534_7040431912582_1.jpg?ref=3B9AADDBDE",
+            "sku": "ObsBygg-7040431917761",
+            "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431917761",
+            "size": "3 M",
+            "offers": {
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431917761",
+              "price": "59.70",
+              "priceCurrency": "NOK",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "@type": "Offer"
+            },
+            "@type": "Product"
+          },
+          {
+            "name": "28x120 impregnert furu klasse 1 terrassebord",
+            "image": "/globalassets/productimages/402534_7040431912582_1.jpg?ref=3B9AADDBDE",
+            "sku": "ObsBygg-7040431913435",
+            "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431913435",
+            "size": "4.5 M",
+            "offers": {
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431913435",
+              "price": "89.55",
+              "priceCurrency": "NOK",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "@type": "Offer"
+            },
+            "@type": "Product"
+          }
+        ],
+        "@context": "https://schema.org",
+        "@type": "ProductGroup"
+      },
+      {
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer",
+              "name": "Trelast og byggevarer"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk",
+              "name": "Treverk"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord",
+              "name": "Terrassebord"
+            }
+          }
+        ],
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList"
+      }
+    ],
+    "currentPage": {
+      "displayName": "28x120 impregnert furu klasse 1 terrassebord",
+      "canonicalUrl": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132",
+      "variationCode": "ObsBygg-7040431913404",
+      "price": {
+        "current": {
+          "inclVat": 71.64,
+          "exclVat": 57.31,
+          "vatPercent": 25.0
+        },
+        "original": {
+          "inclVat": 71.64,
+          "exclVat": 57.31,
+          "vatPercent": 25.0
+        },
+        "currentActivePriceGroup": "standard",
+        "member": {
+          "inclVat": 0.0,
+          "exclVat": 0.0,
+          "vatPercent": 0.0
+        },
+        "previous": null,
+        "hasPriceDifferences": false,
+        "showFromPrice": false,
+        "unitName": "stk",
+        "invertPrices": true,
+        "comparisonPrices": {
+          "unitName": "meter",
+          "current": 19.9,
+          "original": 19.9,
+          "member": null,
+          "previous": null,
+          "isEnabled": true
+        },
+        "savedAmount": null,
+        "isMemberPrice": false,
+        "isCampaignPrice": false,
+        "isDiscountedPrice": false,
+        "hasMemberPrice": false
+      },
+      "productControlText": "28x120 Impregnert terrassebord KL 1. Bord i trykkimpregnert furu med kanter som er avrundet. CU-impregnering gjør at bordene er beskyttet mot råte- og insektsangrep.\n\nStr. (TxB) 28x120 mm. Beregn forbruk på 8,3 lm per m². Bordene kan spikres eller skrus. Selges i fallende lengder. \n\nVedlikehold: \nDet anbefales at man årlig vasker og overflatebehandler bodene med beis eller olje for å oppnå best mulig holdbarhet.",
+      "productDescription": "Et solid og holdbart terrassebord.",
+      "productUsps": [
+        "Beregn ca. 8,3 lm pr. m²",
+        "Krever vedlikehold"
+      ],
+      "jsonLd": [
+        {
+          "name": "28x120 impregnert furu klasse 1 terrassebord",
+          "description": "Et solid og holdbart terrassebord.",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132",
+          "brand": {
+            "name": "MOELVEN",
+            "@type": "Brand"
+          },
+          "aggregateRating": {
+            "ratingValue": "3.90837",
+            "ratingCount": "251",
+            "@type": "AggregateRating"
+          },
+          "variesBy": [
+            "https://schema.org/size"
+          ],
+          "hasVariant": [
+            {
+              "name": "28x120 impregnert furu klasse 1 terrassebord",
+              "image": "/globalassets/productimages/402534_7040431912582_1.jpg?ref=3B9AADDBDE",
+              "sku": "ObsBygg-7040431913404",
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431913404",
+              "size": "3.6 M",
+              "offers": {
+                "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431913404",
+                "price": "71.64",
+                "priceCurrency": "NOK",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "@type": "Offer"
+              },
+              "@type": "Product"
+            },
+            {
+              "name": "28x120 impregnert furu klasse 1 terrassebord",
+              "image": "/globalassets/productimages/402534_7040431912582_1.jpg?ref=3B9AADDBDE",
+              "sku": "ObsBygg-7040431913428",
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431913428",
+              "size": "4.2 M",
+              "offers": {
+                "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431913428",
+                "price": "83.58",
+                "priceCurrency": "NOK",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "@type": "Offer"
+              },
+              "@type": "Product"
+            },
+            {
+              "name": "28x120 impregnert furu klasse 1 terrassebord",
+              "image": "/globalassets/productimages/402534_7040431912582_1.jpg?ref=3B9AADDBDE",
+              "sku": "ObsBygg-7040431917778",
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431917778",
+              "size": "4.8 M",
+              "offers": {
+                "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431917778",
+                "price": "95.52",
+                "priceCurrency": "NOK",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "@type": "Offer"
+              },
+              "@type": "Product"
+            },
+            {
+              "name": "28x120 impregnert furu klasse 1 terrassebord",
+              "image": "/globalassets/productimages/402534_7040431912582_1.jpg?ref=3B9AADDBDE",
+              "sku": "ObsBygg-7040431917792",
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431917792",
+              "size": "5.4 M",
+              "offers": {
+                "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431917792",
+                "price": "107.46",
+                "priceCurrency": "NOK",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "@type": "Offer"
+              },
+              "@type": "Product"
+            },
+            {
+              "name": "28x120 impregnert furu klasse 1 terrassebord",
+              "image": "/globalassets/productimages/402534_7040431912582_1.jpg?ref=3B9AADDBDE",
+              "sku": "ObsBygg-7040431917785",
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431917785",
+              "size": "5.1 M",
+              "offers": {
+                "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431917785",
+                "price": "101.49",
+                "priceCurrency": "NOK",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "@type": "Offer"
+              },
+              "@type": "Product"
+            },
+            {
+              "name": "28x120 impregnert furu klasse 1 terrassebord",
+              "image": "/globalassets/productimages/402534_7040431912582_1.jpg?ref=3B9AADDBDE",
+              "sku": "ObsBygg-7040431913411",
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431913411",
+              "size": "3.9 M",
+              "offers": {
+                "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431913411",
+                "price": "77.61",
+                "priceCurrency": "NOK",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "@type": "Offer"
+              },
+              "@type": "Product"
+            },
+            {
+              "name": "28x120 impregnert furu klasse 1 terrassebord",
+              "image": "/globalassets/productimages/402534_7040431912582_1.jpg?ref=3B9AADDBDE",
+              "sku": "ObsBygg-7040431913398",
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431913398",
+              "size": "3.3 M",
+              "offers": {
+                "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431913398",
+                "price": "65.67",
+                "priceCurrency": "NOK",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "@type": "Offer"
+              },
+              "@type": "Product"
+            },
+            {
+              "name": "28x120 impregnert furu klasse 1 terrassebord",
+              "image": "/globalassets/productimages/402534_7040431912582_1.jpg?ref=3B9AADDBDE",
+              "sku": "ObsBygg-7040431917761",
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431917761",
+              "size": "3 M",
+              "offers": {
+                "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431917761",
+                "price": "59.70",
+                "priceCurrency": "NOK",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "@type": "Offer"
+              },
+              "@type": "Product"
+            },
+            {
+              "name": "28x120 impregnert furu klasse 1 terrassebord",
+              "image": "/globalassets/productimages/402534_7040431912582_1.jpg?ref=3B9AADDBDE",
+              "sku": "ObsBygg-7040431913435",
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431913435",
+              "size": "4.5 M",
+              "offers": {
+                "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040431913435",
+                "price": "89.55",
+                "priceCurrency": "NOK",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "@type": "Offer"
+              },
+              "@type": "Product"
+            }
+          ],
+          "@context": "https://schema.org",
+          "@type": "ProductGroup"
+        },
+        {
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer",
+                "name": "Trelast og byggevarer"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk",
+                "name": "Treverk"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord",
+                "name": "Terrassebord"
+              }
+            }
+          ],
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList"
+        }
+      ]
+    },
+    "priceSection": "<div data-test-id=\"product-price-section\" class=\"b c\"><div class=\"ia c\"><div class=\"ib\"></div></div><div class=\"ew fg c\"><div tabindex=\"0\" aria-description=\"19 kroner  og 90 øre  per meter Sammenligningspris er 71 kroner  og 64 øre  per stk \" class=\"ic hw hx a7 bd be ah id ef y ie\"><span data-test-id=\"pricecolumn\" class=\"b c\"><div class=\"if ig y ap o ih\"><span class=\"c ii\"><p aria-hidden=\"true\" class=\"ij ie q\">19</p><p aria-hidden=\"true\" class=\"ik il im q\">90</p></span><span aria-hidden=\"true\" class=\"in ii io ip\">per meter</span></div><div data-test-id=\"pricecolumn-comparisonprice\" class=\"iq in ir ig y ap o\"><span aria-hidden=\"true\">(</span><span class=\"c\"><p aria-hidden=\"true\" class=\"ij ie q\">71</p><p aria-hidden=\"true\" class=\"ik il im q\">64</p></span><span aria-hidden=\"true\" class=\"ir ip\">stk</span><span aria-hidden=\"true\">)</span></div></span></div></div><ul class=\"ak do dp ct cu ek\"></ul></div>"
+  },
+  "registerAtCheck": {
+    "id": "obs:ObsBygg-7040437512038",
+    "chain": "obs",
+    "name": "28x120 Impregnert terrassebord · 1 M",
+    "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132?v=ObsBygg-7040437512038",
+    "source_page": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/terrassebord/2151132",
+    "source_id": "ObsBygg-7040437512038",
+    "gtin": null,
+    "kind": "decking",
+    "unit": "m",
+    "vat": "inkl",
+    "price_kind": "public",
+    "quantity_basis": "unit",
+    "vat_evidence": {
+      "url": "https://www.obsbygg.no/kjopsvilkar",
+      "vat": "inkl",
+      "statement": "Prisene er inklusiv mva.",
+      "checked_at": "2026-10-06T22:41:37.764Z"
+    },
+    "original_unit": "m",
+    "package_quantity": 1,
+    "original_ore": 1990,
+    "package_price_ex_vat_ore": 1592,
+    "normalized_ore": 1592,
+    "checked_at": "2026-10-06T22:41:57.884Z",
+    "valid_until": null,
+    "availability": "https://schema.org/InStock",
+    "evidence": "Obs produktpris: aria-description, samme NOK-beløp som SKU-tilbudet",
+    "last_error": "Prisenhet er ikke dokumentert"
+  },
+  "notes": "Rå kildeutdrag. Kontrolltid er live-kontroll, ikke endret produksjonsdato."
+}

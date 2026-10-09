@@ -1,0 +1,371 @@
+{
+  "source": "Obs BYGG",
+  "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099085",
+  "checkedAt": "2026-10-09T06:30:21.711Z",
+  "httpStatus": 200,
+  "rawSha256": "40c47c110deafba08be2cd39f9b6c125f6d06cd7604fbf1511c6f717296291dc",
+  "raw": {
+    "jsonLd": [
+      {
+        "name": "Hunton Nativo® Trefiberisolasjon",
+        "description": "Norskprodusert isolasjon basert på trefiber. Kjennetegnes av ekstra gode lyddempende egenskaper, i tillegg til god fukthåndtering og varmelagring.",
+        "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834",
+        "brand": {
+          "name": "HUNTON",
+          "@type": "Brand"
+        },
+        "aggregateRating": {
+          "ratingValue": "4.70455",
+          "ratingCount": "44",
+          "@type": "AggregateRating"
+        },
+        "variesBy": [
+          "https://schema.org/size"
+        ],
+        "hasVariant": [
+          {
+            "name": "Hunton Nativo® Trefiberisolasjon",
+            "image": "/globalassets/productimages/903402_7022611099009_1.jpg?ref=48F9C9787A",
+            "sku": "ObsBygg-7022611099009",
+            "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099009",
+            "size": "50 MM",
+            "offers": {
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099009",
+              "price": "559.00",
+              "priceCurrency": "NOK",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "@type": "Offer"
+            },
+            "@type": "Product"
+          },
+          {
+            "name": "Hunton Nativo® Trefiberisolasjon",
+            "image": "/globalassets/productimages/903402_7022611099009_1.jpg?ref=48F9C9787A",
+            "sku": "ObsBygg-7022611099085",
+            "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099085",
+            "size": "70 MM",
+            "offers": {
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099085",
+              "price": "599.00",
+              "priceCurrency": "NOK",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "@type": "Offer"
+            },
+            "@type": "Product"
+          },
+          {
+            "name": "Hunton Nativo® Trefiberisolasjon",
+            "image": "/globalassets/productimages/455351_7022611099009_2.jpg?ref=F56326B122",
+            "sku": "ObsBygg-7022611099016",
+            "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099016",
+            "size": "100 MM",
+            "offers": {
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099016",
+              "price": "489.00",
+              "priceCurrency": "NOK",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "@type": "Offer"
+            },
+            "@type": "Product"
+          },
+          {
+            "name": "Hunton Nativo® Trefiberisolasjon",
+            "image": "/globalassets/productimages/903402_7022611099009_1.jpg?ref=48F9C9787A",
+            "sku": "ObsBygg-7022611099023",
+            "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099023",
+            "size": "150 MM",
+            "offers": {
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099023",
+              "price": "559.00",
+              "priceCurrency": "NOK",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "@type": "Offer"
+            },
+            "@type": "Product"
+          },
+          {
+            "name": "Hunton Nativo® Trefiberisolasjon",
+            "image": "/globalassets/productimages/903402_7022611099009_1.jpg?ref=48F9C9787A",
+            "sku": "ObsBygg-7022611099030",
+            "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099030",
+            "size": "200 MM",
+            "offers": {
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099030",
+              "price": "499.00",
+              "priceCurrency": "NOK",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "@type": "Offer"
+            },
+            "@type": "Product"
+          }
+        ],
+        "@context": "https://schema.org",
+        "@type": "ProductGroup"
+      },
+      {
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer",
+              "name": "Trelast og byggevarer"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer",
+              "name": "Byggevarer"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon",
+              "name": "Isolasjon"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon",
+              "name": "Bygningsisolasjon"
+            }
+          }
+        ],
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList"
+      }
+    ],
+    "currentPage": {
+      "displayName": "Hunton Nativo® Trefiberisolasjon",
+      "canonicalUrl": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834",
+      "variationCode": "ObsBygg-7022611099085",
+      "price": {
+        "current": {
+          "inclVat": 599.0,
+          "exclVat": 479.2,
+          "vatPercent": 25.0
+        },
+        "original": {
+          "inclVat": 599.0,
+          "exclVat": 479.2,
+          "vatPercent": 25.0
+        },
+        "currentActivePriceGroup": "standard",
+        "member": {
+          "inclVat": 0.0,
+          "exclVat": 0.0,
+          "vatPercent": 0.0
+        },
+        "previous": null,
+        "hasPriceDifferences": false,
+        "showFromPrice": false,
+        "unitName": "stk",
+        "invertPrices": false,
+        "comparisonPrices": {
+          "unitName": "m2",
+          "current": 124.15,
+          "original": 124.15,
+          "member": null,
+          "previous": null,
+          "isEnabled": true
+        },
+        "savedAmount": null,
+        "isMemberPrice": false,
+        "isCampaignPrice": false,
+        "isDiscountedPrice": false,
+        "hasMemberPrice": false
+      },
+      "productControlText": "Hunton Nativo® Trefiberisolasjon er norskprodusert isolasjon laget av granflis fra 100% PEFC™-sertifisert skogbruk.\n\nSkal du bygge nytt eller etterisolere huset eller hytta? Trefiberisolasjon kjennetegnes av ekstra gode lyddempende egenskaper, i tillegg til god fukthåndtering og varmelagring. Isolasjonen anvendes i vegg, gulv og tak. Den er behagelig å jobbe med, og gir ikke kløe eller ubehag. Isolasjonen er tilsatt en naturlig brannhemmer og tilfredsstiller Euroklasse E, og kan brukes i brannklasse 1 (bygg inntil 3 etasjer).\n\nTrefiberisolasjon lagrer karbon gjennom hele produktets levetid, og kan resirkuleres. Avkapp kan returneres til Hunton, eller kildesorteres som trevirke på nærmeste miljøstasjon/godkjent avfallsmottak der trevirke kan gjenvinnes. \n\nNativo Trefiberisolasjon har avfallskode 030105 / 170201. \n\nFormater: 50/100/150/200mm tykkelse, 565mm bredde, 1220mm lengde.\n\nLeveres i fire forskjellige tykkelser:\n- 50 mm, leveres i pakker á 6,2 m²\n- 100 mm, leveres i pakker á 2,8 m²\n- 150 mm, leveres i pakker á 2,1 m²\n- 200 mm, leveres i pakker á 1,4 m²\n\n• Absorberer og demper lyd svært godt\n• Lagrer karbon og har et dokumentert lavt klimafotavtrykk\n• Opptar og avgir fukt avhengig av luftens relative fuktighet\n• Gir ikke ubehag på hud eller i luftveier\n• Produktet har SINTEF teknisk godkjenning",
+      "productDescription": "Norskprodusert isolasjon basert på trefiber. Kjennetegnes av ekstra gode lyddempende egenskaper, i tillegg til god fukthåndtering og varmelagring.",
+      "productUsps": [
+        "Lagrer karbon og har et dokumentert lavt klimafotavtrykk",
+        "Opptar og avgir fukt avhengig av luftens relative fuktighet",
+        "Absorberer og demper lyd svært godt",
+        "SINTEF teknisk godkjenning"
+      ],
+      "jsonLd": [
+        {
+          "name": "Hunton Nativo® Trefiberisolasjon",
+          "description": "Norskprodusert isolasjon basert på trefiber. Kjennetegnes av ekstra gode lyddempende egenskaper, i tillegg til god fukthåndtering og varmelagring.",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834",
+          "brand": {
+            "name": "HUNTON",
+            "@type": "Brand"
+          },
+          "aggregateRating": {
+            "ratingValue": "4.70455",
+            "ratingCount": "44",
+            "@type": "AggregateRating"
+          },
+          "variesBy": [
+            "https://schema.org/size"
+          ],
+          "hasVariant": [
+            {
+              "name": "Hunton Nativo® Trefiberisolasjon",
+              "image": "/globalassets/productimages/903402_7022611099009_1.jpg?ref=48F9C9787A",
+              "sku": "ObsBygg-7022611099009",
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099009",
+              "size": "50 MM",
+              "offers": {
+                "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099009",
+                "price": "559.00",
+                "priceCurrency": "NOK",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "@type": "Offer"
+              },
+              "@type": "Product"
+            },
+            {
+              "name": "Hunton Nativo® Trefiberisolasjon",
+              "image": "/globalassets/productimages/903402_7022611099009_1.jpg?ref=48F9C9787A",
+              "sku": "ObsBygg-7022611099085",
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099085",
+              "size": "70 MM",
+              "offers": {
+                "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099085",
+                "price": "599.00",
+                "priceCurrency": "NOK",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "@type": "Offer"
+              },
+              "@type": "Product"
+            },
+            {
+              "name": "Hunton Nativo® Trefiberisolasjon",
+              "image": "/globalassets/productimages/455351_7022611099009_2.jpg?ref=F56326B122",
+              "sku": "ObsBygg-7022611099016",
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099016",
+              "size": "100 MM",
+              "offers": {
+                "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099016",
+                "price": "489.00",
+                "priceCurrency": "NOK",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "@type": "Offer"
+              },
+              "@type": "Product"
+            },
+            {
+              "name": "Hunton Nativo® Trefiberisolasjon",
+              "image": "/globalassets/productimages/903402_7022611099009_1.jpg?ref=48F9C9787A",
+              "sku": "ObsBygg-7022611099023",
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099023",
+              "size": "150 MM",
+              "offers": {
+                "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099023",
+                "price": "559.00",
+                "priceCurrency": "NOK",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "@type": "Offer"
+              },
+              "@type": "Product"
+            },
+            {
+              "name": "Hunton Nativo® Trefiberisolasjon",
+              "image": "/globalassets/productimages/903402_7022611099009_1.jpg?ref=48F9C9787A",
+              "sku": "ObsBygg-7022611099030",
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099030",
+              "size": "200 MM",
+              "offers": {
+                "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099030",
+                "price": "499.00",
+                "priceCurrency": "NOK",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "@type": "Offer"
+              },
+              "@type": "Product"
+            }
+          ],
+          "@context": "https://schema.org",
+          "@type": "ProductGroup"
+        },
+        {
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer",
+                "name": "Trelast og byggevarer"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer",
+                "name": "Byggevarer"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon",
+                "name": "Isolasjon"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon",
+                "name": "Bygningsisolasjon"
+              }
+            }
+          ],
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList"
+        }
+      ]
+    },
+    "priceSection": "<div data-test-id=\"product-price-section\" class=\"b c\"><div class=\"i9 c\"><div class=\"ia\"></div></div><div class=\"ew fg c\"><div tabindex=\"0\" aria-description=\"599 kroner  per stk Sammenligningspris er 124 kroner  og 15 øre  per m2 \" class=\"ib hv hw a7 bd be ah ic ef y id\"><span data-test-id=\"pricecolumn\" class=\"b c\"><div class=\"ie if y ap o ig\"><span class=\"c ih\"><p aria-hidden=\"true\" class=\"ii id q\">599</p><p aria-hidden=\"true\" class=\"ij ik il q\">00</p></span><span aria-hidden=\"true\" class=\"im ih in io\">stk</span></div><div data-test-id=\"pricecolumn-comparisonprice\" class=\"ip im iq if y ap o\"><span aria-hidden=\"true\">(</span><span class=\"c\"><p aria-hidden=\"true\" class=\"ii id q\">124</p><p aria-hidden=\"true\" class=\"ij ik il q\">15</p></span><span aria-hidden=\"true\" class=\"iq io\">per m2</span><span aria-hidden=\"true\">)</span></div></span></div></div><ul class=\"ak do dp ct cu ek\"></ul></div>"
+  },
+  "registerAtCheck": {
+    "id": "obs:ObsBygg-7022611099009",
+    "chain": "obs",
+    "name": "Hunton Nativo® Trefiberisolasjon · 50 MM",
+    "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099009",
+    "source_page": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/byggevarer/isolasjon/bygningsisolasjon/2113834?v=ObsBygg-7022611099085",
+    "source_id": "ObsBygg-7022611099009",
+    "gtin": null,
+    "kind": "insulation",
+    "unit": "m2",
+    "vat": "inkl",
+    "price_kind": "public",
+    "quantity_basis": "package",
+    "vat_evidence": {
+      "url": "https://www.obsbygg.no/kjopsvilkar",
+      "vat": "inkl",
+      "statement": "Prisene er inklusiv mva.",
+      "checked_at": "2026-10-08T23:25:28.987Z"
+    },
+    "original_unit": "pakke",
+    "package_quantity": 6.2,
+    "original_ore": 55900,
+    "package_price_ex_vat_ore": 44720,
+    "normalized_ore": 7213,
+    "checked_at": "2026-10-08T23:27:16.824Z",
+    "valid_until": null,
+    "availability": "https://schema.org/InStock",
+    "evidence": "Variant 50 MM: leveres i pakker á 6.2 m²"
+  },
+  "notes": "Rå kildeutdrag. Kontrolltid er live-kontroll, ikke endret produksjonsdato."
+}

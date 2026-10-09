@@ -1,4 +1,4 @@
-import {applyPrices,priceStatus} from './kalkyle-prices.js?v=20261007-avklaringer';
+import {applyPrices,priceStatus} from './kalkyle-prices.js?v=20261009-qa';
 import {buildMarketReference,requirementForRow,referenceUnit,requirementKey,createReferenceSnapshot,validReferenceSnapshot} from './market-reference.js?v=20261009-reference';
 
 // Uses the existing price application and calculation engine; only price choice

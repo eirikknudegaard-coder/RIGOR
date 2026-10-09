@@ -1,4 +1,4 @@
-import {publicSources,sourceUrl,normalizePublicOffer} from './market-public-core.js?v=20261007-avklaringer';
+import {publicSources,sourceUrl,normalizePublicOffer} from './market-public-core.js?v=20261009-qa';
 export async function loadPublicCatalog(){
  const r=await fetch('./data/market-prices.json?price_check='+Date.now(),{cache:'no-store',signal:AbortSignal.timeout(15000)});if(!r.ok)throw Error('Det offentlige prisregisteret er ikke tilgjengelig ('+r.status+').');const text=await r.text();if(text.length>8000000)throw Error('Prisregisteret er for stort');const data=JSON.parse(text);if(data.version!==1||!Array.isArray(data.offers)||data.offers.length>20000||!Array.isArray(data.sources))throw Error('Ugyldig prisregister');
  if(data.stores!==undefined&&(!Array.isArray(data.stores)||data.stores.length>100||data.stores.some(s=>s.chain!=='byggmax'||!/^\d{1,6}$/.test(s.id)||typeof s.name!=='string'||!s.name.trim())))throw Error('Ugyldig butikkliste');

@@ -1,0 +1,193 @@
+{
+  "source": "Montér",
+  "url": "https://www.monter.no/trelast/kledning/liggende-kledning/dobbelfalset-kledning-28-19x148-mm-grunnet-gran",
+  "checkedAt": "2026-10-09T06:34:25.382Z",
+  "httpStatus": 200,
+  "rawSha256": "7ea58901ef929313e754c310de4fffebceb6d7174d6100c9b68210825da5d81e",
+  "raw": {
+    "jsonLd": [
+      {
+        "name": "Dobbelfalset kledning 28° 19x148 mm grunnet gran",
+        "description": "Dobbelfals kledning er en kledning med dobbel høvlet fals, forsiden er uhøvlet. Den skrå kanten på dobbelfals ny type er 60 grader (til forskjell fra gammel type, som er 28 grader). Kledningen leveres grunnet, grunningen anbefales overmalt snarest og senest innen 2 år for dekkende farger og 1 år for transparente farger (normalt Østlandsklima).Hovedfunksjonen til kledningen er å beskytte veggkjernen mot klimapåvirkninger og mekaniske skader.  Man bør bruke en utlektet, luftet og drenert kledning som gjør det mulig å oppnå to-trinns tetting av veggen. Vann som driver inn bak kledningen, blir drenert ned og kledningen tørker raskt ut pga. luftsirkulasjonen i luftespalten. Liggende kledning monteres horisontalt på vertikale lekter som er festet i stenderne.",
+        "image": [
+          "https://media.monter.no/9056b428-dfaf-419e-92db-cd75e7ff9831/6cd7e4a6-f131-4f9c-a09e-42ad6948064f/a7bBd8yew43NEQ66Qr5zq2Jhk/F21PFuhKWNlSyd2t3hUgaXfKI.jpg?f=webp&w=500",
+          "https://media.monter.no/9056b428-dfaf-419e-92db-cd75e7ff9831/aafa67c3-2518-451e-b56c-34e6537cf0ed/yLlfsh2TvsGf4mK45gT0u8doA/VqdnvEeCAVMpvDVMBmSoHGjyd.jpg?f=webp&w=500",
+          "https://media.monter.no/9056b428-dfaf-419e-92db-cd75e7ff9831/15f9a092-8dd0-4b63-bf9a-89555c290b4e/lTFlsBymxemzU5pNrU9Qba4GI/XcezVAfsGBGznD0nqyJ2E3ZSG.jpg?f=webp&w=500",
+          "https://media.monter.no/9056b428-dfaf-419e-92db-cd75e7ff9831/45224e85-3fe4-4861-8012-1268f66264c3/UnsQOPKUddc7mnbfxcB3S5ebE/WDWsxXrUKyeKdOEujPg0hUNH0.jpg?f=webp&w=500"
+        ],
+        "sku": "50445405",
+        "url": "https://www.monter.no/trelast/kledning/liggende-kledning/dobbelfalset-kledning-28-19x148-mm-grunnet-gran",
+        "brand": {
+          "@type": "Brand",
+          "name": "Bergene Holm"
+        },
+        "offers": [
+          {
+            "@type": "Offer",
+            "price": "61.60",
+            "priceCurrency": "NOK",
+            "itemOffered": {
+              "@type": "Sku",
+              "sku": "101193871",
+              "name": "Dobbelfalset kledning 28° 19x148 mm grunnet gran"
+            },
+            "availability": "https://schema.org/BackOrder",
+            "availabilityStarts": "2026-10-14T00:00:00+02:00"
+          }
+        ],
+        "category": "Trelast/Kledning/Liggende kledning",
+        "gtin": "7070276147689",
+        "hasMeasurement": null,
+        "@context": "http://schema.org/",
+        "@type": "Product"
+      },
+      {
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+              "@id": "https://www.monter.no/trelast",
+              "name": "Trelast"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+              "@id": "https://www.monter.no/trelast/kledning",
+              "name": "Kledning"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "item": {
+              "@id": "https://www.monter.no/trelast/kledning/liggende-kledning",
+              "name": "Liggende kledning"
+            }
+          }
+        ],
+        "@context": "http://schema.org/",
+        "@type": "BreadcrumbList"
+      }
+    ],
+    "currentPage": {
+      "displayName": "Dobbelfalset kledning 28° 19x148 mm grunnet gran",
+      "canonicalUrl": "https://www.monter.no/trelast/kledning/liggende-kledning/dobbelfalset-kledning-28-19x148-mm-grunnet-gran",
+      "variationCode": "MOC_101193871",
+      "price": null,
+      "description": "Dobbelfals kledning er en kledning med dobbel høvlet fals, forsiden er uhøvlet. Den skrå kanten på dobbelfals ny type er 60 grader (til forskjell fra gammel type, som er 28 grader). Kledningen leveres grunnet, grunningen anbefales overmalt snarest og senest innen 2 år for dekkende farger og 1 år for transparente farger (normalt Østlandsklima).Hovedfunksjonen til kledningen er å beskytte veggkjernen mot klimapåvirkninger og mekaniske skader.  Man bør bruke en utlektet, luftet og drenert kledning som gjør det mulig å oppnå to-trinns tetting av veggen. Vann som driver inn bak kledningen, blir drenert ned og kledningen tørker raskt ut pga. luftsirkulasjonen i luftespalten. Liggende kledning monteres horisontalt på vertikale lekter som er festet i stenderne.",
+      "jsonLd": [
+        {
+          "name": "Dobbelfalset kledning 28° 19x148 mm grunnet gran",
+          "description": "Dobbelfals kledning er en kledning med dobbel høvlet fals, forsiden er uhøvlet. Den skrå kanten på dobbelfals ny type er 60 grader (til forskjell fra gammel type, som er 28 grader). Kledningen leveres grunnet, grunningen anbefales overmalt snarest og senest innen 2 år for dekkende farger og 1 år for transparente farger (normalt Østlandsklima).Hovedfunksjonen til kledningen er å beskytte veggkjernen mot klimapåvirkninger og mekaniske skader.  Man bør bruke en utlektet, luftet og drenert kledning som gjør det mulig å oppnå to-trinns tetting av veggen. Vann som driver inn bak kledningen, blir drenert ned og kledningen tørker raskt ut pga. luftsirkulasjonen i luftespalten. Liggende kledning monteres horisontalt på vertikale lekter som er festet i stenderne.",
+          "image": [
+            "https://media.monter.no/9056b428-dfaf-419e-92db-cd75e7ff9831/6cd7e4a6-f131-4f9c-a09e-42ad6948064f/a7bBd8yew43NEQ66Qr5zq2Jhk/F21PFuhKWNlSyd2t3hUgaXfKI.jpg?f=webp&w=500",
+            "https://media.monter.no/9056b428-dfaf-419e-92db-cd75e7ff9831/aafa67c3-2518-451e-b56c-34e6537cf0ed/yLlfsh2TvsGf4mK45gT0u8doA/VqdnvEeCAVMpvDVMBmSoHGjyd.jpg?f=webp&w=500",
+            "https://media.monter.no/9056b428-dfaf-419e-92db-cd75e7ff9831/15f9a092-8dd0-4b63-bf9a-89555c290b4e/lTFlsBymxemzU5pNrU9Qba4GI/XcezVAfsGBGznD0nqyJ2E3ZSG.jpg?f=webp&w=500",
+            "https://media.monter.no/9056b428-dfaf-419e-92db-cd75e7ff9831/45224e85-3fe4-4861-8012-1268f66264c3/UnsQOPKUddc7mnbfxcB3S5ebE/WDWsxXrUKyeKdOEujPg0hUNH0.jpg?f=webp&w=500"
+          ],
+          "sku": "50445405",
+          "url": "https://www.monter.no/trelast/kledning/liggende-kledning/dobbelfalset-kledning-28-19x148-mm-grunnet-gran",
+          "brand": {
+            "@type": "Brand",
+            "name": "Bergene Holm"
+          },
+          "offers": [
+            {
+              "@type": "Offer",
+              "price": "61.60",
+              "priceCurrency": "NOK",
+              "itemOffered": {
+                "@type": "Sku",
+                "sku": "101193871",
+                "name": "Dobbelfalset kledning 28° 19x148 mm grunnet gran"
+              },
+              "availability": "https://schema.org/BackOrder",
+              "availabilityStarts": "2026-10-14T00:00:00+02:00"
+            }
+          ],
+          "category": "Trelast/Kledning/Liggende kledning",
+          "gtin": "7070276147689",
+          "hasMeasurement": null,
+          "@context": "http://schema.org/",
+          "@type": "Product"
+        },
+        {
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "item": {
+                "@id": "https://www.monter.no/trelast",
+                "name": "Trelast"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "item": {
+                "@id": "https://www.monter.no/trelast/kledning",
+                "name": "Kledning"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "item": {
+                "@id": "https://www.monter.no/trelast/kledning/liggende-kledning",
+                "name": "Liggende kledning"
+              }
+            }
+          ],
+          "@context": "http://schema.org/",
+          "@type": "BreadcrumbList"
+        }
+      ],
+      "units": {
+        "base": {
+          "name": "LM",
+          "multiplicationFactor": 1.0
+        },
+        "sales": {
+          "name": "LM",
+          "multiplicationFactor": 1.0
+        },
+        "price": {
+          "name": "LM",
+          "multiplicationFactor": 1.0
+        },
+        "additionalSales": [
+          {
+            "name": "LM",
+            "multiplicationFactor": 1.0
+          },
+          {
+            "name": "M2",
+            "multiplicationFactor": 7.692308
+          },
+          {
+            "name": "PAK",
+            "multiplicationFactor": 880.0
+          }
+        ],
+        "additionalPrice": [
+          {
+            "name": "M2",
+            "multiplicationFactor": 7.692308
+          },
+          {
+            "name": "PAK",
+            "multiplicationFactor": 880.0
+          }
+        ]
+      },
+      "stockUnit": null,
+      "variantSelectorSpecification": {}
+    },
+    "priceSection": ""
+  },
+  "registerAtCheck": null,
+  "notes": "Rå kildeutdrag. Kontrolltid er live-kontroll, ikke endret produksjonsdato."
+}

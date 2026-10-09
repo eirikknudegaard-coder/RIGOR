@@ -9,7 +9,7 @@ def amount(text):
 stamp=datetime.now(timezone.utc).isoformat()
 def offer(id,name,kind,unit,price,store=None,package=1):
     return dict(id=id,chain='byggmax' if store else 'obs',source_id=id,name=name,kind=kind,unit=unit,url=('https://www.byggmax.no/' if store else 'https://www.obsbygg.no/')+id,checked_at=stamp,availability='https://schema.org/InStock',vat='inkl',original_ore=round(price*package*125),normalized_ore=round(price*100),package_price_ex_vat_ore=round(price*package*100),package_quantity=package,quantity_basis='package' if package>1 else 'unit',original_unit='rull' if package>1 else unit,price_kind='local' if store else 'public',**({'store_id':store,'store_name':'Arendal' if store=='2314' else 'Grimstad'} if store else {}))
-catalog=dict(version=1,updated_at=stamp,sources=[],stores=[dict(chain='byggmax',id='2314',name='Arendal'),dict(chain='byggmax',id='2327',name='Grimstad')],offers=[offer('underlay','Test Undertak 10 m²','membranes','m2',40,package=10),offer('batten','23x48 Impregnert lekt','battens','m',13.2,'2314'),offer('lath','36x48 Lekt','battens','m',18,'2314'),offer('otherstore','23x48 Impregnert lekt','battens','m',99,'2327')],last_run=dict(finished_at=stamp))
+catalog=dict(version=1,updated_at=stamp,sources=[],stores=[dict(chain='byggmax',id='2314',name='Arendal'),dict(chain='byggmax',id='2327',name='Grimstad')],offers=[offer('underlay','Test Undertak 10 m²','membranes','m2',40,package=10),offer('batten','23x48 Impregnert lekt','battens','m',13.2),offer('lath','36x48 Lekt','battens','m',18),offer('otherstore','23x48 Impregnert lekt','battens','m',99,'2327')],last_run=dict(finished_at=stamp))
 proposal={'summary':'Undertak, sløyfer og lekter','items':[{'elementId':'roof.underlay','taskIds':['underlay','battens','laths'],'scope':'requested','reason':'Oppgitt arbeid'}],'questions':[]}
 module='export async function assistantStatus(){return true;} export async function requestEstimate(){return '+json.dumps(proposal)+';}'
 with sync_playwright() as p:
@@ -33,13 +33,12 @@ with sync_playwright() as p:
     assert 'Materialpris mangler' in row.nth(0).inner_text()
     assert 'kr/m ekskl. MVA' in row.nth(1).inner_text()
     assert 'roof.underlay' not in row.nth(0).inner_text()
-    # Cancelling a store selection must not alter the project's price basis.
+    # Cancelling a staged product must not alter the project's price basis.
     before_store=page.evaluate('JSON.parse(window.testReadStorage("rigor-projects-v1"))[0].snapshot.marketStores')
-    row.nth(1).get_by_role('button',name='Velg markedsvare til Montere sløyfer').click();page.locator('#material-store').select_option('2327');page.locator('#material-cancel').click()
+    row.nth(1).get_by_role('button',name='Velg markedsvare til Montere sløyfer').click();assert page.locator('#material-store').is_hidden();page.locator('#material-product').select_option('batten');page.locator('#material-cancel').click()
     assert page.evaluate('JSON.parse(window.testReadStorage("rigor-projects-v1"))[0].snapshot.marketStores')==before_store
     for i,product in enumerate(['underlay','batten','lath']):
         row.nth(i).locator('.row-market-button').click()
-        if i>0: page.locator('#material-store').select_option('2314')
         page.locator('#material-product').select_option(product);page.locator('#material-submit').click()
     assert [r.locator('[data-field=material]').input_value() for r in row.all()]==['40','13.2','18']
     assert abs(amount(page.locator('#total').inner_text())-27258.46875)<.01

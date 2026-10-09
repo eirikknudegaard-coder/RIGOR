@@ -1,0 +1,208 @@
+{
+  "source": "Obs BYGG",
+  "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/utvendig-kledning/2100555",
+  "checkedAt": "2026-10-09T06:30:22.005Z",
+  "httpStatus": 200,
+  "rawSha256": "6d80b448b37845aae15e0a7e3b1cf4c7b04bc7cd4f63535906ef91362ee39ba6",
+  "raw": {
+    "jsonLd": [
+      {
+        "name": "19X148 dobbelfals rettkant grunnet gran kledning",
+        "description": "Med 1 cm åpning mellom kledningsbord",
+        "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/utvendig-kledning/2100555",
+        "brand": {
+          "name": "SCA",
+          "@type": "Brand"
+        },
+        "variesBy": [],
+        "hasVariant": [
+          {
+            "name": "19X148 dobbelfals rettkant grunnet gran kledning",
+            "image": "/globalassets/productimages/485092_7330034656410_1.jpg?ref=1E5C77ECC7",
+            "sku": "ObsBygg-7330034656410",
+            "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/utvendig-kledning/2100555?v=ObsBygg-7330034656410",
+            "offers": {
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/utvendig-kledning/2100555?v=ObsBygg-7330034656410",
+              "price": "48.40",
+              "priceCurrency": "NOK",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "@type": "Offer"
+            },
+            "@type": "Product"
+          }
+        ],
+        "@context": "https://schema.org",
+        "@type": "ProductGroup"
+      },
+      {
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer",
+              "name": "Trelast og byggevarer"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk",
+              "name": "Treverk"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/utvendig-kledning",
+              "name": "Utvendig kledning"
+            }
+          }
+        ],
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList"
+      }
+    ],
+    "currentPage": {
+      "displayName": "19X148 dobbelfals rettkant grunnet gran kledning",
+      "canonicalUrl": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/utvendig-kledning/2100555",
+      "variationCode": "ObsBygg-7330034656410",
+      "price": {
+        "current": {
+          "inclVat": 48.4,
+          "exclVat": 38.72,
+          "vatPercent": 25.0
+        },
+        "original": {
+          "inclVat": 48.4,
+          "exclVat": 38.72,
+          "vatPercent": 25.0
+        },
+        "currentActivePriceGroup": "standard",
+        "member": {
+          "inclVat": 0.0,
+          "exclVat": 0.0,
+          "vatPercent": 0.0
+        },
+        "previous": null,
+        "hasPriceDifferences": false,
+        "showFromPrice": false,
+        "unitName": "m",
+        "invertPrices": false,
+        "comparisonPrices": {
+          "unitName": "m",
+          "current": null,
+          "original": null,
+          "member": null,
+          "previous": null,
+          "isEnabled": false
+        },
+        "savedAmount": null,
+        "isMemberPrice": false,
+        "isCampaignPrice": false,
+        "isDiscountedPrice": false,
+        "hasMemberPrice": false
+      },
+      "productControlText": null,
+      "productDescription": "Med 1 cm åpning mellom kledningsbord",
+      "productUsps": [
+        "Grunnet"
+      ],
+      "jsonLd": [
+        {
+          "name": "19X148 dobbelfals rettkant grunnet gran kledning",
+          "description": "Med 1 cm åpning mellom kledningsbord",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/utvendig-kledning/2100555",
+          "brand": {
+            "name": "SCA",
+            "@type": "Brand"
+          },
+          "variesBy": [],
+          "hasVariant": [
+            {
+              "name": "19X148 dobbelfals rettkant grunnet gran kledning",
+              "image": "/globalassets/productimages/485092_7330034656410_1.jpg?ref=1E5C77ECC7",
+              "sku": "ObsBygg-7330034656410",
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/utvendig-kledning/2100555?v=ObsBygg-7330034656410",
+              "offers": {
+                "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/utvendig-kledning/2100555?v=ObsBygg-7330034656410",
+                "price": "48.40",
+                "priceCurrency": "NOK",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "@type": "Offer"
+              },
+              "@type": "Product"
+            }
+          ],
+          "@context": "https://schema.org",
+          "@type": "ProductGroup"
+        },
+        {
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer",
+                "name": "Trelast og byggevarer"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk",
+                "name": "Treverk"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/utvendig-kledning",
+                "name": "Utvendig kledning"
+              }
+            }
+          ],
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList"
+        }
+      ]
+    },
+    "priceSection": "<div data-test-id=\"product-price-section\" class=\"b c\"><div class=\"hv c\"><div class=\"hw\"></div></div><div class=\"ew fg c\"><div tabindex=\"0\" aria-description=\"48 kroner  og 40 øre  per m \" class=\"hx hy hz a7 bd be ah i0 ef y i1\"><span data-test-id=\"pricecolumn\" class=\"b c\"><div class=\"i2 i3 y ap o i4\"><span class=\"c i5\"><p aria-hidden=\"true\" class=\"i6 i1 q\">48</p><p aria-hidden=\"true\" class=\"i7 i8 i9 q\">40</p></span><span aria-hidden=\"true\" class=\"ia i5 ib ic\">per m</span></div></span></div></div><ul class=\"ak do dp ct cu ek\"></ul></div>"
+  },
+  "registerAtCheck": {
+    "id": "obs:ObsBygg-7330034656410",
+    "chain": "obs",
+    "name": "19X148 dobbelfals rettkant grunnet gran kledning",
+    "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/utvendig-kledning/2100555?v=ObsBygg-7330034656410",
+    "source_page": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/treverk/utvendig-kledning/2100555",
+    "source_id": "ObsBygg-7330034656410",
+    "gtin": null,
+    "kind": "cladding",
+    "unit": "m",
+    "vat": "inkl",
+    "price_kind": "public",
+    "quantity_basis": "unit",
+    "vat_evidence": {
+      "url": "https://www.obsbygg.no/kjopsvilkar",
+      "vat": "inkl",
+      "statement": "Prisene er inklusiv mva.",
+      "checked_at": "2026-10-08T23:25:28.987Z"
+    },
+    "original_unit": "m",
+    "package_quantity": 1,
+    "original_ore": 4840,
+    "package_price_ex_vat_ore": 3872,
+    "normalized_ore": 3872,
+    "checked_at": "2026-10-08T23:27:10.875Z",
+    "valid_until": null,
+    "availability": "https://schema.org/InStock",
+    "evidence": "Obs produktpris: aria-description, samme NOK-beløp som SKU-tilbudet"
+  },
+  "notes": "Rå kildeutdrag. Kontrolltid er live-kontroll, ikke endret produksjonsdato."
+}

@@ -1,7 +1,7 @@
 import {buildMarketReference,requirementForRow,requirementsForOffers,requirementLabel,requirementKey,referenceIsNewer,referenceUnit,validateRequirement,validReferenceSnapshot} from './market-reference.js?v=20261009-reference';
 const el=(tag,label,cls)=>{const n=document.createElement(tag);if(label)n.textContent=label;if(cls)n.className=cls;return n;};
-const number=n=>new Intl.NumberFormat('nb-NO',{maximumFractionDigits:2}).format(n);
-const price=n=>new Intl.NumberFormat('nb-NO',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n);
+const number=n=>Number.isFinite(n)?new Intl.NumberFormat('nb-NO',{maximumFractionDigits:2}).format(n):'—';
+const price=n=>Number.isFinite(n)?new Intl.NumberFormat('nb-NO',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n):'—';
 const displayUnit=u=>u==='m2'?'m²':u;
 const confidence={high:'Høy',medium:'Moderat',low:'Lav'};
 const date=stamp=>new Date(stamp).toLocaleDateString('nb-NO',{timeZone:'Europe/Oslo',day:'2-digit',month:'2-digit',year:'numeric'});
@@ -19,8 +19,9 @@ export function setupMarketReferenceUi(callbacks) {
  dialog=el('dialog',null,'reference-dialog');dialog.id='reference-dialog';dialog.setAttribute('aria-labelledby','reference-title');
  document.body.append(dialog);
  const panel=document.getElementById('market-panel'),oldNote=panel.querySelector('p'),help=el('p','Detaljert: materialspesifikasjon matches mot offentlige priser. En god markedsreferanse brukes uten butikkvalg. Se prisgrunnlag på posten for kilder eller bytte av pris. Lagrede prisøyeblikk oppdateres bare når du velger det.','muted');help.hidden=true;panel.prepend(help);
- const storeLabel=document.getElementById('byggmax-store').closest('label'),originalLabel=storeLabel.firstChild.textContent;
- return {render:renderPriceReference,open:openReference,setDetailed:detailed=>{help.hidden=!detailed;oldNote.hidden=detailed;storeLabel.firstChild.textContent=detailed?'Byggmax-butikk (valgfritt, kun konkrete lokale varer)':originalLabel;}};
+ const storeLabel=document.getElementById('byggmax-store').closest('label');
+ storeLabel.hidden=true;
+ return {render:renderPriceReference,open:openReference,setDetailed:detailed=>{help.hidden=!detailed;oldNote.hidden=detailed;storeLabel.hidden=true;}};
 }
 function button(label,fn){const b=el('button',label,'secondary reference-button');b.type='button';b.onclick=fn;return b;}
 function summary(target,basis) {
@@ -51,7 +52,8 @@ function renderDialog(row,state) {
  dialog.replaceChildren();const title=el('h2','Prisgrunnlag: '+row.name);title.id='reference-title';dialog.append(title);
  dialog.append(el('p','Automatisk prisvalg prioriterer manuell prosjektpris og gyldig importert avtalepris. Du kan bytte prisgrunnlag for denne posten med knappene under. Markedsreferansen bruker sammenlignbare offentlige priser uten butikkvalg.','muted'));
  const basisLabel={manual_project:'Manuell prosjektpris',imported_agreement:'Importert avtalepris',product:'Konkret produktpris',market_reference:'Markedsreferanse',example:'Eksempelpris'};
- if(!row.priceIssue)dialog.append(el('p','Gjeldende pris: '+price(row.material)+' kr/'+displayUnit(referenceUnit(row.materialUnit||row.unit))+' · '+(basisLabel[row.priceBasis]||row.priceSource)));
+ if(!row.priceIssue&&Number.isFinite(row.material))dialog.append(el('p','Gjeldende pris: '+price(row.material)+' kr/'+displayUnit(referenceUnit(row.materialUnit||row.unit))+' · '+(basisLabel[row.priceBasis]||row.priceSource)));
+ else dialog.append(el('p','Gjeldende pris: mangler · '+(basisLabel[row.priceBasis]||'Velg prisgrunnlag')));
  const saved=requirementForRow(row),type=saved?.productType;
  let validSaved=false;try{validSaved=Boolean(saved&&validReferenceSnapshot(row.priceSnapshot,saved));}catch{}
  if(!type){dialog.append(el('p','Denne varetypen har ikke sikre matcheregler ennå. Velg konkret produkt, importer priser eller registrer egen pris.'));dialog.append(button('Lukk',()=>dialog.close()));return;}

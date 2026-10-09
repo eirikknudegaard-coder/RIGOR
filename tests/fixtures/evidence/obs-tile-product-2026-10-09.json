@@ -1,0 +1,185 @@
+{
+  "source": "Obs BYGG",
+  "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/takstein/3001208?v=ObsBygg-7340018158021",
+  "checkedAt": "2026-10-09T06:36:24.348Z",
+  "httpStatus": 200,
+  "rawSha256": "70b446548d5d650f0ef5c98113139a9c64df7ddfa7b0505b75a603b6c5b6f7a3",
+  "raw": {
+    "jsonLd": [
+      {
+        "name": "Benders Palema Candor venstre terracottarød 88mm gavlstein",
+        "description": "Gavlstein er et alternativ til det tradisjonelle vindskibordet. Gavlsteinen gir en ekstremt sikker tetting og sparer vedlikehold av vindskien. Den kombinerer funksjonalitet med å også tilføre en estetisk helhet til taket.",
+        "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/takstein/3001208",
+        "brand": {
+          "name": "BENDERS",
+          "@type": "Brand"
+        },
+        "variesBy": [],
+        "hasVariant": [
+          {
+            "name": "Benders Palema Candor venstre terracottarød 88mm gavlstein",
+            "image": "/globalassets/productimages/1084708_7340018158021_.jpg?ref=200F9CFF93",
+            "sku": "ObsBygg-7340018158021",
+            "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/takstein/3001208?v=ObsBygg-7340018158021",
+            "color": "SVART",
+            "offers": {
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/takstein/3001208?v=ObsBygg-7340018158021",
+              "price": "165.00",
+              "priceCurrency": "NOK",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "@type": "Offer"
+            },
+            "@type": "Product"
+          }
+        ],
+        "@context": "https://schema.org",
+        "@type": "ProductGroup"
+      },
+      {
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer",
+              "name": "Trelast og byggevarer"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak",
+              "name": "Tak"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "item": {
+              "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/takstein",
+              "name": "Takstein"
+            }
+          }
+        ],
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList"
+      }
+    ],
+    "currentPage": {
+      "displayName": "Benders Palema Candor venstre terracottarød 88mm gavlstein",
+      "canonicalUrl": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/takstein/3001208",
+      "variationCode": "ObsBygg-7340018158021",
+      "price": {
+        "current": {
+          "inclVat": 165.0,
+          "exclVat": 132.0,
+          "vatPercent": 25.0
+        },
+        "original": {
+          "inclVat": 165.0,
+          "exclVat": 132.0,
+          "vatPercent": 25.0
+        },
+        "currentActivePriceGroup": "standard",
+        "member": {
+          "inclVat": 0.0,
+          "exclVat": 0.0,
+          "vatPercent": 0.0
+        },
+        "previous": null,
+        "hasPriceDifferences": false,
+        "showFromPrice": false,
+        "unitName": "stk",
+        "invertPrices": false,
+        "comparisonPrices": {
+          "unitName": null,
+          "current": null,
+          "original": null,
+          "member": null,
+          "previous": null,
+          "isEnabled": false
+        },
+        "savedAmount": null,
+        "isMemberPrice": false,
+        "isCampaignPrice": false,
+        "isDiscountedPrice": false,
+        "hasMemberPrice": false
+      },
+      "productControlText": "Produktegenskaper\nTilpaset profilen til taksteinen, i dette tilfellet Palema dobbelkrummet takstein. Denne steinen monteres på venstre side av taket, sett fra bakken.  Gavlstein med 88mm fals monteres på lekteintervall 335-375mm. Har man kortere lekteintervall må man bruke gavlstein med 110mm fals (312-375mm). \n\nBruksområde\nMonteres på venstre side av taket på lekteintervall 335 til 375mm. Må skrues fast i vindski.\n\nLeveringsomfang\nLeveres i stk. Kun gavlstein som følger med.\n\nSpesfikasjoner\nByggebredde 265mm. Lengde 420mm. Høyde inkl gavlside 156mm. Vekt 5,8 kg. \n\nVedlikehold\nIngen behov for vedlikehold annet enn vask eventuelt opprettholde farge.\n\nGaranti\n30 års materalgaranti. Les mer på www.benders.no",
+      "productDescription": "Gavlstein er et alternativ til det tradisjonelle vindskibordet. Gavlsteinen gir en ekstremt sikker tetting og sparer vedlikehold av vindskien. Den kombinerer funksjonalitet med å også tilføre en estetisk helhet til taket.",
+      "productUsps": [
+        "Passer til Benders Palema takstein",
+        "Tetter gavlsiden på taket",
+        "Beskytter vindski",
+        "30 års materialgaranti"
+      ],
+      "jsonLd": [
+        {
+          "name": "Benders Palema Candor venstre terracottarød 88mm gavlstein",
+          "description": "Gavlstein er et alternativ til det tradisjonelle vindskibordet. Gavlsteinen gir en ekstremt sikker tetting og sparer vedlikehold av vindskien. Den kombinerer funksjonalitet med å også tilføre en estetisk helhet til taket.",
+          "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/takstein/3001208",
+          "brand": {
+            "name": "BENDERS",
+            "@type": "Brand"
+          },
+          "variesBy": [],
+          "hasVariant": [
+            {
+              "name": "Benders Palema Candor venstre terracottarød 88mm gavlstein",
+              "image": "/globalassets/productimages/1084708_7340018158021_.jpg?ref=200F9CFF93",
+              "sku": "ObsBygg-7340018158021",
+              "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/takstein/3001208?v=ObsBygg-7340018158021",
+              "color": "SVART",
+              "offers": {
+                "url": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/takstein/3001208?v=ObsBygg-7340018158021",
+                "price": "165.00",
+                "priceCurrency": "NOK",
+                "availability": "https://schema.org/InStock",
+                "itemCondition": "https://schema.org/NewCondition",
+                "@type": "Offer"
+              },
+              "@type": "Product"
+            }
+          ],
+          "@context": "https://schema.org",
+          "@type": "ProductGroup"
+        },
+        {
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer",
+                "name": "Trelast og byggevarer"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak",
+                "name": "Tak"
+              }
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "item": {
+                "@id": "https://www.obsbygg.no/trelast-og-tyngre-byggevarer/tak/takstein",
+                "name": "Takstein"
+              }
+            }
+          ],
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList"
+        }
+      ]
+    },
+    "priceSection": "<div data-test-id=\"product-price-section\" class=\"b c\"><div class=\"hv c\"><div class=\"hw\"></div></div><div class=\"ew fg c\"><div tabindex=\"0\" aria-description=\"165 kroner  \" class=\"hx hy hz a7 bd be ah i0 ef y i1\"><span data-test-id=\"pricecolumn\" class=\"b c\"><div class=\"i2 i3 y ap o i4\"><span class=\"c i5\"><p aria-hidden=\"true\" class=\"i6 i1 q\">165</p><p aria-hidden=\"true\" class=\"i7 i8 i9 q\">00</p></span></div></span></div></div><ul class=\"ak do dp ct cu ek\"></ul></div>"
+  },
+  "registerAtCheck": null,
+  "notes": "Rå kildeutdrag. Kontrolltid er live-kontroll, ikke endret produksjonsdato."
+}
