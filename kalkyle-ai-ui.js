@@ -1,4 +1,4 @@
-import {createEstimateContext,questionPlan,AI_MODES} from './kalkyle-ai-modes.js?v=20261008-ai-modes';
+import {createEstimateContext,questionPlan,AI_MODES} from './kalkyle-ai-modes.js?v=20261009-qa';
 import {answerContext,detailedContext,estimateInput} from './kalkyle-estimate-context.js?v=20261008-ai-modes';
 import {estimateAI} from './kalkyle-estimate-ai.js?v=20261008-ai-modes';
 import {validateModeResult} from './kalkyle-detailed-copilot.js?v=20261008-ai-modes';

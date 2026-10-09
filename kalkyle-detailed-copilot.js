@@ -1,4 +1,4 @@
-import {proposalForMode} from './kalkyle-ai-modes.js?v=20261008-ai-modes';
+import {proposalForMode} from './kalkyle-ai-modes.js?v=20261009-qa';
 export function validateModeResult(result,library,context,mode){
  if(result.mode!==undefined&&result.mode!==mode)throw Error('AI-svaret har feil modus. Ingen poster er endret.');
  const raw={summary:result.summary,questions:result.questions,items:result.items.map(item=>({elementId:item.elementId,taskIds:item.taskIds,reason:item.reason,scope:item.scope}))};

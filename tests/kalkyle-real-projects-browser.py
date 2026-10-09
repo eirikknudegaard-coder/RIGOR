@@ -15,6 +15,8 @@ fixture=json.loads((root/'fixtures/evidence/benchmark-projects.json').read_text(
 base=os.getenv('RIGOR_TEST_BASE_URL','http://127.0.0.1:8090')
 output=Path(os.getenv('RIGOR_QA_OUTPUT','/tmp/rigor-kalkyle-qa'));output.mkdir(exist_ok=True)
 reports=[]
+live_register=os.getenv('RIGOR_TEST_LIVE_REGISTER')=='1'
+views=[('desktop',1440,1000)] if os.getenv('RIGOR_QA_VIEWS')=='desktop' else [('desktop',1440,1000),('mobile',390,844)]
 def amount(text):return float(re.sub(r'[^0-9,.-]','',text).replace(',','.'))
 def money(value):return f'{value:,.2f}'.replace(',',' ').replace('.',',')+' kr'
 def assert_clean(page):
@@ -70,13 +72,13 @@ def read_pdf(page,project,view,kind):
 
 with sync_playwright() as p:
     browser=p.chromium.launch(executable_path='/usr/bin/chromium',args=['--no-sandbox'])
-    for view,width,height in [('desktop',1440,1000),('mobile',390,844)]:
+    for view,width,height in views:
       for project in fixture['cases']:
         page=browser.new_page(viewport={'width':width,'height':height},accept_downloads=True);authorize_portal(page);errors=[];calls=[]
         page.on('pageerror',lambda e:errors.append(str(e)));page.on('dialog',lambda d:d.accept())
-        page.clock.set_fixed_time(datetime.fromisoformat(catalog['updated_at'].replace('Z','+00:00')))
+        if not live_register:page.clock.set_fixed_time(datetime.fromisoformat(catalog['updated_at'].replace('Z','+00:00')))
         served=json.loads(json.dumps(catalog))
-        page.route('**/data/market-prices.json*',lambda r:r.fulfill(content_type='application/json',body=json.dumps(served)))
+        if not live_register:page.route('**/data/market-prices.json*',lambda r:r.fulfill(content_type='application/json',body=json.dumps(served)))
         proposal={'summary':project['name'],'questions':[],'items':[{'elementId':e,'taskIds':tasks,'reason':'Eksplisitt bestilt i brukerbeskrivelsen','scope':'requested'}for e,tasks in project['scope']]}
         def ai(route):
             if route.request.method=='GET':route.fulfill(content_type='application/json',body='{"ready":true}');return
@@ -119,7 +121,7 @@ with sync_playwright() as p:
         (output/(project['id']+'-'+view+'-comparison.json')).write_text(json.dumps({'simple':{'ui':simple_text,'price':simple_price,'context':simple_record['aiContext']},'detailed':after,'total':total,'difference':delta,'percent':percent},ensure_ascii=False,indent=2))
         assert abs(percent)<=20,{'simple':simple_price,'detailed':total,'difference':delta,'percent':percent}
         assert abs(delta)<100000
-        report={'project':project,'viewport':view,'simple':{'ui':simple_text,'priceExVatDisplayed':simple_price,'context':simple_record['aiContext']},'detailed':{'snapshot':after['snapshot'],'priceExVat':total,'vat':amount(page.locator('#vat').inner_text()),'gross':amount(page.locator('#gross').inner_text()),'hours':amount(page.locator('#hours').inner_text())},'difference':{'absolute':delta,'percent':percent},'pdf':[]}
+        report={'project':project,'viewport':view,'liveRegister':live_register,'simple':{'ui':simple_text,'priceExVatDisplayed':simple_price,'context':simple_record['aiContext']},'detailed':{'snapshot':after['snapshot'],'priceExVat':total,'vat':amount(page.locator('#vat').inner_text()),'gross':amount(page.locator('#gross').inner_text()),'hours':amount(page.locator('#hours').inner_text())},'difference':{'absolute':delta,'percent':percent},'pdf':[]}
         with page.expect_download() as csv_download:page.locator('#export').click()
         csv_path=output/(project['id']+'-'+view+'.csv');csv_download.value.save_as(csv_path)
         csv_text=csv_path.read_text(encoding='utf-8-sig');assert not re.search(r'NaN|Infinity|undefined|null kr',csv_text)
@@ -133,7 +135,7 @@ with sync_playwright() as p:
         row_for(page,key).locator('.row-market-button').click();assert page.locator('#material-product').input_value()==product;page.locator('#material-cancel').click()
         page.locator('#pricing-tab').click();page.locator('#refresh-prices').click();page.wait_for_function('!document.getElementById("refresh-prices").disabled');assert saved(page)['snapshot']['marketBindings'][key]==product
         page.locator('#detailed').click();assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
-        if project['id']=='terrace':
+        if project['id']=='terrace' and not live_register:
             # Fault injection into a captured register, not invented market evidence.
             row=row_for(page,key);previous=saved(page)['snapshot'];row.locator('[data-field=material]').fill('')
             assert page.locator('#save').is_disabled() and page.locator('#export').is_disabled()
