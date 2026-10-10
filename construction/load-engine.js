@@ -16,6 +16,7 @@ export function buildStructuralModel(input){
  if(!span&&goal==='remove_wall'&&get('openingM')){span=get('openingM');assumptions.push({id:'spanM',value:span,status:'ASSUMED',text:'Beregningsspennet er foreløpig satt lik ønsket åpning. Faktisk avstand mellom oppleggsreaksjonene må bekreftes.'});}
  if(!span)required.push(goal==='remove_wall'?'openingM':'spanM');
  if(c.conflicts.memberRole||get('nominalSection')&&!get('memberRole'))required.push('memberRole');
+ if(c.conflicts.nominalSection)required.push('nominalSection');
  if(c.conflicts.system)required.push('system');
  need('loadChoice');let q=0;const points=[];
  if(['line','mixed'].includes(get('loadChoice'))){need('lineLoadKnM');q=(get('lineLoadKnM')||0)*1000;}

@@ -4,7 +4,7 @@ import {nextQuestion,questionFor} from './conversation.js';
 import {buildLoadPath} from './load-path.js';
 import {buildStructuralModel} from './load-engine.js';
 import {analyzeStructure,explainResult} from './analysis.js';
-import {validateInterpretation,validateFocus} from './ai-contract.js';
+import {reviewInterpretation,validateFocus} from './ai-contract.js';
 import {constructionAiStatus,requestConstruction} from './ai-client.js';
 import {renderLoadPath,renderBeam,renderDiagrams} from './diagram-renderer.js';
 import {initManual} from './manual-ui.js';
@@ -26,7 +26,7 @@ function message(text){$('construction-message').textContent=text;}
 function resetResult(){state.result=null;state.proposals=[];state.revision++;}
 function basisRow(id,value,status,source,editable=false){
  const tr=node('tr'),name=node('td',labels[id]||id),data=node('td',describe(value)),provenance=node('td');provenance.append(node('span',{KNOWN:'Oppgitt',ASSUMED:'Antatt',DERIVED:'Utledet',REQUIRED:'Må avklares'}[status]+' · '+status,'basis-status'),node('span',source));
- if(editable){try{questionFor(id);const b=node('button','Endre','secondary');b.type='button';b.onclick=()=>{state.question=questionFor(id);renderQuestion();$('construction-question-card').scrollIntoView({block:'nearest',behavior:'smooth'});};name.append(b);}catch{}}
+ if(editable){try{questionFor(id,state.context);const b=node('button','Endre','secondary');b.type='button';b.onclick=()=>{state.question=questionFor(id,state.context);renderQuestion();$('construction-question-card').scrollIntoView({block:'nearest',behavior:'smooth'});};name.append(b);}catch{}}
  tr.append(name,data,provenance);$('construction-facts').append(tr);
 }
 function showList(container,values){container.replaceChildren();const ul=node('ul');for(const v of values)ul.append(node('li',v));container.append(ul);}
@@ -109,8 +109,8 @@ $('construction-start').onsubmit=async event=>{
  if(!state.aiReady){message('AI er ikke tilgjengelig akkurat nå. Du kan bruke den faglige spørreflyten og beregningsmotoren.');return;}
  message('AI tolker beskrivelsen. Alle foreslåtte opplysninger må kontrolleres.');$('construction-submit').disabled=true;
  try{const response=await requestConstruction({action:'interpret',brief,schemaVersion:2});if(ticket!==state.revision)return;
-  const validated=validateInterpretation({facts:response.facts?.map(({field,value,evidence})=>({field,value,evidence}))},brief);
-  state.proposals=validated.facts.filter(f=>fact(state.context,f.field)!==f.value);renderProposals();message((response.partial?'Noen detaljer kunne ikke bekreftes og blir avklart med spørsmål. ':'')+(state.proposals.length?'Kontroller tolkningen under før vi bruker opplysningene.':'De entydige opplysningene er registrert. Vi spør bare om det som trengs videre.'));
+  const validated=reviewInterpretation({facts:response.facts?.map(({field,value,evidence})=>({field,value,evidence}))},brief);
+  state.proposals=validated.facts.filter(f=>fact(state.context,f.field)!==f.value);renderProposals();message((response.partial||validated.partial?'Noen detaljer kunne ikke bekreftes og blir avklart med spørsmål. ':'')+(state.proposals.length?'Kontroller tolkningen under før vi bruker opplysningene.':'De entydige opplysningene er registrert. Vi spør bare om det som trengs videre.'));
  }catch(error){if(ticket===state.revision)message(error.message+' Du kan fortsette med spørreflyten.');}
  finally{if(ticket===state.revision){state.busy=false;$('construction-submit').disabled=false;advance();}}
 };

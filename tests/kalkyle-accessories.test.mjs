@@ -35,7 +35,8 @@ test('The documented 28x120/c600 choice supplies 1350 screws for 50m²; manual c
  setAccessoryQuantity(rows[1],2800);assert.equal(rows[1].accessoryRecipe,null);const restored=synchronizeAccessories(JSON.parse(JSON.stringify(rows)));assert.equal(restored[1].materialQuantity,2800);assert.equal(restored[1].materialRatio,28);
  assert.throws(()=>setAccessoryRecipe({...rows[1],accessoryType:'wind_tape'},'deck_28x120_cc600'));assert.throws(()=>setAccessoryQuantity(rows[1],0));
 });
-test('Real 1000-piece screw package prices need as two whole boxes, without adding any work hours',()=>{
+test('Real 1000-piece screw package prices need as two whole boxes, without adding any work hours',t=>{
+ t.mock.timers.enable({apis:['Date'],now:Date.parse(offer.checked_at)});
  let rows=synchronizeAccessories([parent()]);setAccessoryRecipe(rows[1],'deck_28x120_cc600');rows[1].materialPriceChoice='product';rows[1].selectedProduct=selectedProductSnapshot(offer);rows=priceRows(rows);
  assert.equal(rows[1].marketPackages,2);assert.equal(rows[1].marketPurchasedQuantity,2000);assert.equal(rows[1].marketMaterialCost,478.4);
  assert.equal(calculate(rows,rates,50).hours,calculate([rows[0]],rates,50).hours);assert(Math.abs(calculate(rows,rates,50).price-calculate([rows[0]],rates,50).price-574.08)<1e-8);
@@ -47,7 +48,8 @@ test('Unknown quantities stay unknown in BOM, block customer/purchase exports, a
  assert.throws(()=>exportBasis({rows,rates},'purchase'),/mengder/);assert.throws(()=>exportBasis({rows,rates},'sale'),/mengder/);assert.equal(exportBasis({rows,rates},'work').length,2);
  assert.throws(()=>preparePdfDocument({rows,rates,project:{id:'test'},profile:{},options:{type:'calculation'}}),/mengder/);
 });
-test('A real priced fastener appears in the PDF model, purchase and sales lists, with original stable element code and zero wages',()=>{
+test('A real priced fastener appears in the PDF model, purchase and sales lists, with original stable element code and zero wages',t=>{
+ t.mock.timers.enable({apis:['Date'],now:Date.parse(offer.checked_at)});
  let rows=synchronizeAccessories([parent()]);setAccessoryRecipe(rows[1],'deck_28x120_cc600');rows[1].materialPriceChoice='product';rows[1].selectedProduct=selectedProductSnapshot(offer);rows=priceRows(rows);
  const data={rows,rates,project:{id:'test',name:'Test',customer:'Kunde'},offers:[offer],bindings:{[rows[1].priceKey]:offer.id},priceMode:'market'};
  const pdf=preparePdfDocument({...data,profile:{company:'Testbygg'},options:{type:'offer'}});assert.equal(pdf.materials[1].name,offer.name);assert.equal(pdf.materials[1].packages,2);assert.equal(pdf.materials[1].quantity,1350);assert.equal(pdf.materials[1].cost,478.4);

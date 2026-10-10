@@ -1,6 +1,26 @@
 import {emptyContext,setFact,validateValue} from './context.js';
 const n=s=>Number(s.replace(',','.'));
 const numeric='(\\d+(?:[.,]\\d+)?)';
+const memberNames={
+ rafters:'(?:taksperr|sperr)(?:e|en|er|ene)',
+ joists:'bjelkelag(?:et)?|etasjeskiller(?:en)?|gulvbjelk(?:e|en|er|ene)',
+ column:'(?:(?:vertikale?|stående)\\s*)?(?:søyl(?:e|en|er|ene)|stolp(?:e|en|er|ene)|stend(?:er|eren|ere|erne))',
+ beam:'drager(?:en|e|ne)?|bjelk(?:e|en|er|ene)'
+};
+// Bind a nominal size only to an adjacent, explicitly named member. Merely
+// asking whether a new beam is needed does not assign the wall studs to it.
+export function nominalSectionMentions(brief){
+ const s=brief.toLowerCase(),mentions=[],link='(?:\\s+(?:av|i|på|med|er|dimensjon(?:en)?))*\\s*';
+ for(const m of s.matchAll(/\b2\s*["″”]?\s*[x×]\s*([68])\b(?:\s*["″”])?/g)){
+  const before=s.slice(0,m.index).match(/[^.!?;,\n]*$/)[0].slice(-60),after=s.slice(m.index+m[0].length).match(/^[^.!?;,\n]*/)[0].slice(0,60),roles=[];
+  for(const [role,name]of Object.entries(memberNames)){
+   const left=before.match(new RegExp('\\b(?:'+name+')'+link+'$')),right=after.match(new RegExp('^'+link+'(?:'+name+')\\b'));
+   if(left||right)roles.push({value:role,evidence:(left?.[0]||'')+m[0]+(right?.[0]||'')});
+  }
+  mentions.push({value:'2x'+m[1],evidence:m[0],roles});
+ }
+ return mentions;
+}
 // Deliberately narrow rules: a measurement must name its member and its unit.
 // Broader AI interpretations remain proposals until the user confirms them.
 export function interpretDescription(brief){
@@ -18,10 +38,15 @@ export function interpretDescription(brief){
  else detect(/(?:beregne|kontrollere|undersøke|sjekke)[^.\n]{0,45}(?:søyl|stolp)/g,'goal','check_column');
  for(const [id,phrase]of [['terraceLengthM','terrassens lengde'],['terraceDepthM','terrassens dybde'],['terraceHeightM','høyde over terreng']])for(const m of s.matchAll(new RegExp('(?:'+phrase+')(?: er| på)?\\s*'+numeric+'\\s*(?:meter|m)\\b','g')))put(id,n(m[1]),m[0]);
  detect(/saltak/g,'roofType','gable');detect(/pulttak/g,'roofType','mono');detect(/valmtak/g,'roofType','hip');detect(/flatt tak/g,'roofType','flat');
- detect(/(?:taksperre|sperrene|sperrer)/g,'memberRole','rafters');
- // Mentioning both rafters and joists does not assign a nominal size to either.
- detect(/bjelkelag|etasjeskiller/g,'memberRole','joists');
- for(const m of s.matchAll(/\b2\s*[x×]\s*([68])\b/g))put('nominalSection','2x'+m[1],m[0]);
+ const sections=nominalSectionMentions(brief),roles=sections.flatMap(m=>m.roles);
+ if(roles.length)for(const role of roles)put('memberRole',role.value,role.evidence);
+ else{
+  // Without an explicit size/member association, competing roles stay unclear.
+  detect(/(?:taksperre|sperrene|sperrer)/g,'memberRole','rafters');
+  detect(/bjelkelag|etasjeskiller/g,'memberRole','joists');
+  detect(new RegExp('\\b(?:'+memberNames.column+')\\b','g'),'memberRole','column');
+ }
+ for(const m of sections)put('nominalSection',m.value,m.evidence);
  for(const m of s.matchAll(/(?:c\s*\/\s*c|cc|c\/c)\s*(\d{2,4})(?:\s*(mm|cm))?\b/g))put('spacingMm',Number(m[1])*(m[2]==='cm'||!m[2]&&Number(m[1])<100?10:1),m[0]);
  for(const m of s.matchAll(new RegExp('(?:takvinkel(?:en)?(?: er| på)?|med)\\s*'+numeric+'\\s*(?:grader|°)','g')))put('roofAngleDeg',n(m[1]),m[0]);
  for(const m of s.matchAll(new RegExp('(?:åpning(?:en)?(?: på| er| skal være)?|fjerne(?:r)?(?: ca\\.?| omtrent)?|fjerne\\s+(?:ca\\.?\\s*)?)\\s*'+numeric+'\\s*(?:meter|m)\\b','g')))put('openingM',n(m[1]),m[0]);

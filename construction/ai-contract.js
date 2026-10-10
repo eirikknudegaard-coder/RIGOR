@@ -1,4 +1,5 @@
 import {fields,validateValue,labels} from './context.js';
+import {nominalSectionMentions} from './language.js';
 export const interpretationFields=Object.keys(fields).filter(id=>!['unsupportedReason','sectionRequested','deflectionRatio','selfWeightInLoad','loadSource','loadBasis'].includes(id));
 export function interpretationSchema(){
  return {type:'object',additionalProperties:false,required:['facts'],properties:{facts:{type:'array',maxItems:20,items:{anyOf:interpretationFields.map(id=>{
@@ -8,9 +9,13 @@ export function interpretationSchema(){
 }
 export function validateInterpretation(input,brief){
  if(!input||Object.keys(input).some(k=>k!=='facts')||!Array.isArray(input.facts)||input.facts.length>20)throw Error('Ugyldig AI-tolkning.');
+ const sectionRoles=[...new Set(nominalSectionMentions(brief).flatMap(m=>m.roles.map(r=>r.value)))];
  const seen=new Set();const facts=input.facts.map(f=>{
   if(!f||Object.keys(f).some(k=>!['field','value','evidence'].includes(k))||!interpretationFields.includes(f.field)||seen.has(f.field)||typeof f.evidence!=='string'||f.evidence.trim().length<2||f.evidence.length>600||!brief.toLowerCase().includes(f.evidence.toLowerCase()))throw Error('AI-tolkningen mangler et entydig sitat.');
   seen.add(f.field);validateValue(f.field,f.value);
+  if(f.field==='nominalSection'&&!nominalSectionMentions(f.evidence).some(m=>m.value===f.value))throw Error('AI foreslo en annen nominell dimensjon enn sitatet oppgir.');
+  if(f.field==='memberRole'&&sectionRoles.length===1&&f.value!==sectionRoles[0])throw Error('AI flyttet dimensjonen til en annen konstruksjonsdel.');
+  if(f.field==='sectionConstruction'&&f.value==='multiple_members'&&!/bjelk|drager/i.test(f.evidence))throw Error('Doble stendere er ikke en sammensatt drager.');
   if(typeof f.value==='number'){
    const values=[...f.evidence.matchAll(/\d+(?:[.,]\d+)?/g)].map(m=>Number(m[0].replace(',','.')));
    const unitScale=f.field==='spacingMm'&&(/\bcm\b/i.test(f.evidence)||! /\bmm\b/i.test(f.evidence)&&/c\s*\/?\s*c\s*60/i.test(f.evidence))?10:f.field.endsWith('M')&&/\bmm\b/i.test(f.evidence)?.001:f.field.endsWith('M')&&/\bcm\b/i.test(f.evidence)?.01:1;
