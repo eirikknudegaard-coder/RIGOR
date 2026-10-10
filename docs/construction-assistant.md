@@ -54,6 +54,34 @@ en ny drager. AI-forslag med en annen nominell dimensjon enn sitatet, feil
 konstruksjonsdel eller doble stendere som sammensatt drager avvises både på
 server og klient. Andre uavhengig dokumenterte fakta beholdes.
 
+### Generell tolkning av dimensjoner og betegnelser
+
+`section-notation.js` leser dimensjoner etter en grammatikk, ikke en liste over
+2x6/2x8. Nominelle tommemål kan derfor være for eksempel 2x2, 3x4, 2x10,
+2x12, 1½x3½ eller 5/4x6. `x`, `×`, `*`, ordet «ganger», vanlige tommetegn,
+desimalkomma og brøker normaliseres; originalteksten blir bevart som kilde.
+Dette sier ikke at enhver tallkombinasjon er en standardvare eller har en
+verifisert kapasitet. Nominelle mål blir ikke automatisk høvlede millimetermål.
+
+Oppgitte tverrsnitt i mm/cm/m beholdes med enheten. Et stort tallpar som
+48x198 uten enhet får et enhetsvalg. Bekreftede mål overføres bare til delen de
+uttrykkelig gjelder. Endring av mål/enhet oppdaterer avhengige dimensjoner;
+mål på eksisterende stendere blir ikke mål på en ny drager. Terrasse- og
+romgeometri behandles separat. Treleddsmål som 2x48x198 eller 200x400x12000
+beholdes hele, uten å ta de første to tallene som et massivt tverrsnitt.
+
+Profiler som IPE, HEA/HEB/HEM, UPN/UPE, RHS/SHS/CHS, L, T, C og Z beholder
+hele betegnelsen. Ukjente katalogbetegnelser skrevet med «profil» beholdes også
+og krever dokumentasjon. Materialbetegnelser som C18, GL28h, S235 og C30/37
+registreres uten å erstattes med C24/GL30c/S355. Flere materialer gir avklaring.
+Dette utvider **tolkningen**, ikke materialregisteret eller kapasitetssolveren.
+
+Overgang til medlemsberegningen rydder tidligere dimensjoner og velger ikke en
+støttet treklasse i stedet for en oppgitt annen klasse. Profiler og sammensatte
+deler blokkeres fra å bli beregnet som ett massivt rektangel. En ny, uavhengig
+manuell beregning kan startes eksplisitt. Det manuelle material-/kontrollomfanget
+står i [rib-member-design.md](rib-member-design.md).
+
 Spørsmål bruker nedtrekk når svaret har kjente alternativer, tallfelt med
 desimalkomma/punktum for mål og tekst for lastkilden. «Dette vet jeg ikke»
 beholder mangelen og tillater fortsatt kvalitativ vurdering. Ingen tom
@@ -122,7 +150,7 @@ beskrivelse/fakta til domenefunksjonene; domenelogikken importerer ikke DOM.
 | Konsept | Fil |
 | --- | --- |
 | StructuralContext / datakontrakt | `construction/context.js` |
-| Conversation / begrenset lokal tolkning | `construction/language.js`, `conversation.js` |
+| Conversation / lokal tolkning | `construction/language.js`, `conversation.js`, `section-notation.js` |
 | LoadPathModel | `construction/load-path.js` |
 | StructuralModel / LoadEngine | `construction/load-engine.js` |
 | MaterialDatabase | `construction/materials.js` |

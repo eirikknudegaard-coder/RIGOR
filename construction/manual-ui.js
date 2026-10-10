@@ -5,8 +5,9 @@ const fmt=(n,d=2)=>new Intl.NumberFormat('nb-NO',{maximumFractionDigits:d}).form
 const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
 export function initManual(root){
  if(!root)return;
- let result=null,rowId=0;
+ let result=null,rowId=0,contextBlock='';
  const form=el('form',undefined,'rib-form'),error=el('p',undefined,'rib-error'),report=el('section',undefined,'rib-report member-report');error.setAttribute('role','alert');report.setAttribute('aria-live','polite');
+ const contextNotice=el('div',undefined,'rib-scope'),contextText=el('p'),newManual=el('button','Start en ny manuell beregning','secondary');contextNotice.id='rib-context-notice';contextNotice.hidden=true;newManual.type='button';contextNotice.append(contextText,newManual);form.append(contextNotice);
  const controls={},rows=[],groups={};
  function group(title,help){const fieldset=el('fieldset'),legend=el('legend',title);fieldset.append(legend,el('p',help,'muted'));const grid=el('div',undefined,'rib-fields');fieldset.append(grid);form.append(fieldset);return grid;}
  function field(parent,id,title,{options=null,value='',help='',required=true}={}){
@@ -30,7 +31,7 @@ export function initManual(root){
  tick(dims,'supportsVerified','Opplegg og lastvei er dokumentert','For innspenning kreves en forbindelse som faktisk kan ta moment.');
  tick(dims,'addSelfWeight','Legg til medlemsegenvekt automatisk','La valget stå av dersom medlemsegenvekten allerede inngår i Gk.');
  const mat=group('3. Materialgrunnlag','Styrkeklasse, varighet og klima påvirker kapasiteten. Materialdata og formler følger resultatet.');groups.mat=mat.parentElement;
- field(mat,'grade','Treklasse',{options:[['C24','Konstruksjonsvirke C24'],['GL30c','Limtre GL30c']]});
+ field(mat,'grade','Treklasse',{options:[['','Velg dokumentert treklasse'],['C24','Konstruksjonsvirke C24'],['GL30c','Limtre GL30c']]});
  field(mat,'serviceClass','Klimaklasse',{options:[['','Velg dokumentert klimaklasse'],['1','1 – tørt innemiljø'],['2','2 – beskyttet, høyere fukt'],['3','3 – utendørs / fuktig']]});
  field(mat,'fyMPa','Dokumentert flytegrense fy (MPa)',{help:'S355 betyr ikke automatisk 355 MPa for alle tykkelser.'});
  field(mat,'strengthSource','Kilde for stålets flytegrense',{help:'Produktdokumentasjon, tykkelse og standard.'});controls.strengthSource.inputMode='text';
@@ -121,7 +122,23 @@ export function initManual(root){
  function invalidate(){result=null;report.replaceChildren();report.hidden=true;error.textContent='';}
  controls.member.onchange=()=>{sync();invalidate();};controls.family.onchange=()=>{if(controls.family.value==='steel')controls.gammaM.value='1';else if(controls.family.value==='timber')controls.gammaM.value=controls.grade.value==='C24'?'1.3':'1.25';controls.confirmed.checked=false;sync();invalidate();};controls.grade.onchange=()=>{controls.gammaM.value=controls.grade.value==='C24'?'1.3':'1.25';controls.confirmed.checked=false;invalidate();};
  form.addEventListener('input',event=>{if(event.target!==controls.confirmed)controls.confirmed.checked=false;invalidate();});form.addEventListener('change',event=>{if(event.target!==controls.confirmed)controls.confirmed.checked=false;invalidate();});
- form.onsubmit=event=>{event.preventDefault();invalidate();if(controls.member.value==='terrace')return;try{result=analyzeMember(input());render(result);report.scrollIntoView({block:'nearest',behavior:'smooth'});}catch(e){error.textContent=e.message;}};
+ newManual.onclick=()=>{contextBlock='';contextNotice.hidden=true;for(const id of ['widthMm','heightMm','lengthM'])controls[id].value='';invalidate();controls.widthMm.focus();};
+ form.onsubmit=event=>{event.preventDefault();invalidate();if(controls.member.value==='terrace')return;try{if(contextBlock)throw Error(contextBlock);result=analyzeMember(input());render(result);report.scrollIntoView({block:'nearest',behavior:'smooth'});}catch(e){error.textContent=e.message;}};
  addRow('G');addRow('Q');sync();report.hidden=true;
- return {open(member='beam',context=null){controls.member.value=member;sync();if(member==='terrace')terraceUi.open(context);if(context){const facts=context.facts||{},complex=['profile','multiple_members'].includes(facts.sectionConstruction?.value);for(const [key,id]of [['spanM','lengthM'],['widthMm','widthMm'],['heightMm','heightMm']])if(facts[key]&&!(complex&&['widthMm','heightMm'].includes(key)))controls[id].value=String(facts[key].value);}controls.confirmed.checked=false;invalidate();}};
+ return {open(member='beam',context=null){
+  controls.member.value=member;contextBlock='';contextNotice.hidden=true;
+  if(context&&member!=='terrace'){
+   const facts=context.facts||{},complex=['profile','multiple_members'].includes(facts.sectionConstruction?.value),designation=facts.materialDesignation?.value,material=facts.material?.value;
+   for(const id of ['widthMm','heightMm','lengthM'])controls[id].value='';
+   for(const [key,id]of [['spanM','lengthM'],['widthMm','widthMm'],['heightMm','heightMm']])if(facts[key]&&!(complex&&['widthMm','heightMm'].includes(key)))controls[id].value=String(facts[key].value);
+   const grade=material||designation;controls.grade.value='';
+   if(grade&&/^S\d/.test(grade)){controls.family.value='steel';controls.fyMPa.value='';controls.strengthSource.value='';}
+   else if(grade&&/^C\d+\//.test(grade)){controls.family.value='concrete';controls.fckMPa.value=grade.match(/^C(\d+)/)[1];controls.fykMPa.value='';}
+   else if(grade&&/^(?:C\d+$|D\d|GL)/.test(grade)){controls.family.value='timber';controls.grade.value=['C24','GL30c'].includes(grade)?grade:'';}
+   if(complex)contextBlock='Den oppgitte profilen eller sammensatte delen kan ikke beregnes som ett massivt rektangel. Profil- og forbindelsesdata må dokumenteres i en egnet beregningsmodell.';
+   if(designation&&/^(?:C\d+$|D\d|GL)/.test(designation)&&!['C24','GL30c'].includes(designation))contextBlock+=' '+designation+' har ikke verifiserte materialdata i dette skjemaet og erstattes ikke med C24 eller GL30c.';
+   if(contextBlock){contextBlock=contextBlock.trim();contextText.textContent=contextBlock;contextNotice.hidden=false;}
+  }
+  sync();if(member==='terrace')terraceUi.open(context);controls.confirmed.checked=false;invalidate();
+ }};
 }
