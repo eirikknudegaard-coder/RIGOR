@@ -1,10 +1,10 @@
 import {test} from 'node:test';import assert from 'node:assert/strict';
 import {emptyContext,setFact,markUnknown,validateContext,fact} from '../construction/context.js';
 import {interpretDescription} from '../construction/language.js';
-import {nextQuestion} from '../construction/conversation.js';
+import {nextQuestion,questionFor} from '../construction/conversation.js';
 import {buildStructuralModel} from '../construction/load-engine.js';
 import {analyzeStructure,explainResult} from '../construction/analysis.js';
-import {validateInterpretation,validateFocus} from '../construction/ai-contract.js';
+import {validateInterpretation,reviewInterpretation,validateFocus} from '../construction/ai-contract.js';
 import {buildLoadPath} from '../construction/load-path.js';
 const fill=(values,c=emptyContext('Kontrollert testbeskrivelse'))=>Object.entries(values).reduce((ctx,[k,v])=>setFact(ctx,k,v),c);
 const close=(a,b)=>assert(Math.abs(a-b)<1e-9);
@@ -20,6 +20,42 @@ test('Informal wall example retains nominal size and asks one relevant question 
  let c=interpretDescription('Trenger jeg en drager her? Bindingsverk c/c 600, 2x8 og saltak med 25 graders vinkel. Jeg vil fjerne ca. 3 meter av veggen.');
  assert.equal(fact(c,'goal'),'remove_wall');assert.equal(fact(c,'nominalSection'),'2x8');assert.equal(fact(c,'widthMm'),undefined);assert.equal(fact(c,'heightMm'),undefined);assert.equal(fact(c,'openingM'),3);assert.equal(fact(c,'roofAngleDeg'),25);assert.equal(fact(c,'spacingMm'),600);assert.equal(nextQuestion(c).id,'memberRole');
  c=setFact(c,'memberRole','rafters');assert.equal(nextQuestion(c).id,'direction');c=setFact(c,'direction','across');assert.equal(nextQuestion(c).id,'roofBearsOnWall');assert.equal(analyzeStructure(c).beam,null);assert.match(explainResult(analyzeStructure(c)).paragraphs.join(' '),/Retningen alene bekrefter ikke/);
+});
+const studBrief='trenger jeg en drager her? Bindingsverk cc 600, 2x6" vertikalesøyler, med dobbel hver 1.2m. Saltak med 25 graders vinkel. Jeg vil fjerne 2 meter av veggen';
+test('The reported 2x6 wall studs are retained separately from a possible new beam',()=>{
+ const c=interpretDescription(studBrief);
+ assert.equal(fact(c,'goal'),'remove_wall');assert.equal(fact(c,'nominalSection'),'2x6');assert.equal(fact(c,'memberRole'),'column');
+ assert.equal(fact(c,'openingM'),2);assert.equal(fact(c,'spacingMm'),600);assert.equal(fact(c,'roofAngleDeg'),25);
+ assert.equal(nextQuestion(c).id,'direction');assert.equal(fact(c,'widthMm'),undefined);assert.equal(fact(c,'heightMm'),undefined);assert.equal(fact(c,'sectionConstruction'),undefined);assert.equal(analyzeStructure(c).beam,null);
+ assert.match(c.facts.memberRole.source,/2x6.*vertikalesøyler/);
+ const withRoof=interpretDescription(studBrief+'. Sperrene går på tvers av veggen.');
+ assert.equal(fact(withRoof,'memberRole'),'column');assert.equal(nextQuestion(withRoof).id,'roofBearsOnWall');
+});
+test('Nominal questions use the stated dimension, offer studs and use a neutral label without a size',()=>{
+ for(const [size,notation]of [['2x6','2x6"'],['2x6','2" × 6"'],['2x8','2 x 8 tommer']]){
+  const c=interpretDescription('Jeg vil fjerne 2 meter av veggen. Bindingsverk cc600, '+notation+'.');
+  const q=nextQuestion(c);assert.equal(q.id,'memberRole');assert.match(q.label,new RegExp(size));assert(!q.label.includes(size==='2x6'?'2x8':'2x6'));assert(q.options.some(([v])=>v==='column'));
+  assert(!questionFor('widthMm',c).help.includes('2x8'));
+ }
+ assert(!questionFor('memberRole').label.includes('2x8'));
+});
+test('Nominal member roles follow adjacent words rather than other parts elsewhere in the brief',()=>{
+ for(const [description,role]of [['2x6 stående stendere','column'],['2x6 vertikale søyler','column'],['stendere i 2x6','column'],['taksperrer på 2x8','rafters'],['bjelkelaget er 2x8','joists'],['drager 2x6','beam']]){
+  const c=interpretDescription('Jeg vil fjerne 2 meter av veggen. '+description+'.');
+  assert.equal(fact(c,'memberRole'),role,description);assert.notEqual(nextQuestion(c).id,'memberRole',description);
+ }
+ const c=interpretDescription('Jeg vil undersøke en drager. Sperrer 2x6 og bjelkelag 2x8.');
+ assert.deepEqual(c.conflicts.nominalSection,['2x6','2x8']);assert.deepEqual(c.conflicts.memberRole,['rafters','joists']);assert.equal(buildStructuralModel(c).ready,false);
+ assert.equal(nextQuestion(setFact(c,'memberRole','joists')).id,'nominalSection');
+});
+test('AI cannot change the quoted nominal size or move stud dimensions to the replacement beam',()=>{
+ const good={field:'openingM',value:2,evidence:'fjerne 2 meter'};
+ const bad=[{field:'nominalSection',value:'2x8',evidence:'2x6"'},{field:'memberRole',value:'beam',evidence:'trenger jeg en drager her?'},{field:'sectionConstruction',value:'multiple_members',evidence:'dobbel hver 1.2m'}];
+ for(const f of bad)assert.throws(()=>validateInterpretation({facts:[f]},studBrief));
+ const reviewed=reviewInterpretation({facts:[good,...bad]},studBrief);
+ assert.deepEqual(reviewed.facts.map(f=>f.field),['openingM']);assert.deepEqual(reviewed.rejectedFields,['nominalSection','memberRole','sectionConstruction']);assert.equal(reviewed.partial,true);
+ const correct=validateInterpretation({facts:[{field:'nominalSection',value:'2x6',evidence:'2x6"'},{field:'memberRole',value:'column',evidence:'2x6" vertikalesøyler'}]},studBrief);
+ assert.equal(correct.facts.length,2);
 });
 test('Known facts are not asked again; unknown answers stay REQUIRED and never become a default load',()=>{
  let c=fill(beam);assert.equal(buildStructuralModel(c).ready,true);assert.equal(nextQuestion(c),null);

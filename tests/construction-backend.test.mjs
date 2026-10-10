@@ -48,6 +48,15 @@ test('The terrace question keeps evidenced intent and c/c when an invented drage
  assert.equal(r.status,200);assert.equal(data.facts.length,2);assert.equal(data.facts[0].value,'plan_terrace');assert.equal(data.facts[1].value,600);assert.deepEqual(data.rejectedFields,['widthMm']);assert.equal(data.partial,true);assert.equal(data.requiresConfirmation,true);assert.equal(d.calls(),1);
  const legacy=await handleConstruction(req({action:'interpret',brief:text}),fixture({output:proposed}));assert.equal(legacy.status,200);assert.deepEqual((await legacy.json()).facts.map(f=>f.field),['spacingMm']);
 });
+test('Wall interpretation keeps 2x6 studs and rejects invented size, member role and double-beam construction',async()=>{
+ const text='trenger jeg en drager her? Bindingsverk cc 600, 2x6" vertikalesøyler, med dobbel hver 1.2m. Saltak med 25 graders vinkel. Jeg vil fjerne 2 meter av veggen';
+ const proposed={facts:[{field:'openingM',value:2,evidence:'fjerne 2 meter'},{field:'nominalSection',value:'2x8',evidence:'2x6"'},{field:'memberRole',value:'beam',evidence:'trenger jeg en drager her?'},{field:'sectionConstruction',value:'multiple_members',evidence:'dobbel hver 1.2m'}]};
+ const d=fixture({output:proposed}),r=await handleConstruction(req({action:'interpret',brief:text,schemaVersion:2}),d),data=await r.json();
+ assert.equal(r.status,200);assert.deepEqual(data.facts.map(f=>f.field),['openingM']);assert.deepEqual(data.rejectedFields,['nominalSection','memberRole','sectionConstruction']);assert.equal(data.partial,true);
+ const correct={facts:[{field:'nominalSection',value:'2x6',evidence:'2x6"'},{field:'memberRole',value:'column',evidence:'vertikalesøyler'}]};
+ const valid=await handleConstruction(req({action:'interpret',brief:text,schemaVersion:2}),fixture({output:correct}));
+ assert.equal(valid.status,200);assert.deepEqual((await valid.json()).facts.map(f=>f.value),['2x6','column']);
+});
 test('Explanation is rebuilt from the deterministic model and supports an independent provider adapter',async()=>{
  let c=emptyContext('En drager for orienterende lastanalyse');for(const [k,v]of Object.entries({goal:'check_beam',system:'simple',spanM:4,loadChoice:'line',lineLoadKnM:2,loadBasis:'documented',loadSource:'K-01'}))c=setFact(c,k,v);
  const d=fixture({output:{focusId:'support_result'}}),r=await handleConstruction(req({action:'explain',context:c}),d);assert.equal(r.status,200);const data=await r.json();assert.match(data.explanation.paragraphs[0],/4 kN/);assert.equal(data.explanation.focusId,'support_result');assert(!JSON.stringify(data).includes('godkjent løsning'));

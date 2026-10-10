@@ -2,7 +2,8 @@ import {fact,fields} from './context.js';
 const choices={
  goal:[['remove_wall','Jeg vil fjerne en vegg'],['check_beam','Jeg vil undersøke en bjelke eller drager'],['check_column','Jeg vil undersøke en søyle eller stolpe'],['plan_terrace','Jeg vil plassere dragere og stolper i en terrasse']],
  terraceWallSupport:[['documented','Dokumentert bæring mot huset'],['free_standing','Frittstående – egne dragere og stolper på begge sider']],
- memberRole:[['rafters','Taksperrene'],['joists','Bjelkelaget'],['beam','Drageren jeg vil undersøke']],
+ memberRole:[['rafters','Taksperrene'],['joists','Bjelkelaget'],['beam','Drageren jeg vil undersøke'],['column','Søylene / stenderne']],
+ nominalSection:[['2x6','2x6 tommer'],['2x8','2x8 tommer']],
  direction:[['across','På tvers av veggen'],['parallel','Langs veggen']],
  roofBearsOnWall:[['yes','Ja, de har opplegg på veggen'],['no','Nei, de bæres et annet sted']],
  floorAbove:[['no','Nei, bare tak over'],['yes','Ja, også etasjeskiller eller annen bæring']],
@@ -24,7 +25,8 @@ const wording={
  terraceHeightM:['Hvor høyt er terrassegulvet over terrenget?','Oppgi meter. Høyde og avstivning påvirker stolper, rekkverk og fundament.'],
  terraceWallSupport:['Skal terrassen bæres av huset eller være frittstående?','Innfesting mot huset må være dokumentert. Et kledningsbord er ikke et dokumentert opplegg.'],
  goal:['Hva vil du undersøke først?','Vi starter med hva konstruksjonen skal gjøre.'],
- memberRole:['Når du sier 2x8 eller bjelker, hvilken del av konstruksjonen mener du?','Samme dimensjon kan brukes i ulike deler. Den skal ikke flyttes automatisk til en ny drager.'],
+ memberRole:['Hvilken del av konstruksjonen gjelder dimensjonen?','Samme dimensjon kan brukes i ulike deler. Den skal ikke flyttes automatisk til en ny drager.'],
+ nominalSection:['Hvilken nominell dimensjon skal vi følge videre?','Du har oppgitt flere dimensjoner. Velg dimensjonen for den delen du vil undersøke; faktiske mål på en ny drager bekreftes separat.'],
  direction:['Går taksperrene på tvers av veggen du ønsker å fjerne?','Retningen kan gi en indikasjon, men bekrefter ikke bæring alene.'],
  roofBearsOnWall:['Hviler taksperrene faktisk på denne veggen?','Se etter et opplegg eller dokumentasjon. Er du usikker, kan vi fortsatt vurdere lastveien.'],
  floorAbove:['Bærer veggen også etasjeskiller eller andre konstruksjoner over?','Taklast alene dekker ikke last fra en etasje eller andre dragere.'],
@@ -46,7 +48,7 @@ const wording={
  deadBasis:['Hvilket areal gjelder takets oppgitte egenvekt for?','Vi omregner bare når arealgrunnlag og takvinkel er kjent.'],
  loadBasis:['Hvordan er disse lastene fastsatt?','Dette følger med resultatet. Ingen Eurocodekombinasjoner eller sikkerhetsfaktorer legges til automatisk.'],
  loadSource:['Hvor kommer lastene fra?','Oppgi for eksempel dokumentnavn, tegning eller beskrivelse av din foreløpige forutsetning.'],
- widthMm:['Hva er den faktiske bredden på drageren du vil undersøke?','Oppgi i millimeter. 2x8 kan tilsvare 48x198 mm, men må bekreftes på den aktuelle drageren. Ingen samvirkning for doble bjelker forutsettes.'],
+ widthMm:['Hva er den faktiske bredden på drageren du vil undersøke?','Oppgi målt bredde i millimeter. En ny drager trenger egne bekreftede mål. Ingen samvirkning for doble bjelker forutsettes.'],
  sectionConstruction:['Hvordan er drageren bygget opp?','Første versjon beregner nedbøyning for ett massivt rektangel. Stålprofiler og sammensatte bjelker trenger et annet tverrsnittsgrunnlag.'],
  heightMm:['Hva er den faktiske høyden på drageren?','Oppgi vertikal høyde i millimeter. Høyden påvirker stivheten kraftig.'],
  material:['Hvilken dokumentert materialklasse har drageren?','Materialverdiene hentes fra et kontrollert register. Dimensjonen alene angir ikke styrkeklassen. Stålprofiler med flenser eller hulrom støttes ikke som rektangel.'],
@@ -54,9 +56,10 @@ const wording={
  deflectionRatio:['Hvilken L/–grense vil du sammenligne nedbøyningen med?','Oppgi nevneren, for eksempel 300 for L/300. Dette er en oppgitt sammenligningsgrense, ikke automatisk et forskriftskrav.'],
  supportBelow:['Hva støtter dragerens ender videre nedover?','Store punktlaster krever en sammenhengende lastvei til fundamentet. Oppleggskapasitet beregnes ikke her.']
 };
-export function questionFor(id){
+export function questionFor(id,c=null){
  const d=fields[id],w=wording[id];if(!d||!w)throw Error('Spørsmålet støttes ikke.');
- return {id,label:w[0],help:w[1],type:choices[id]?'select':d.type==='number'?'number':'text',options:choices[id]||[],min:d.min,max:d.max};
+ const nominal=c&&fact(c,'nominalSection'),label=id==='memberRole'&&nominal?'Hvilken del av konstruksjonen gjelder '+nominal+'?':w[0];
+ return {id,label,help:w[1],type:choices[id]?'select':d.type==='number'?'number':'text',options:choices[id]||[],min:d.min,max:d.max};
 }
 export function requiredFields(c){
  const get=id=>fact(c,id),ids=[];
@@ -85,6 +88,6 @@ export function nextQuestion(c){
  if(fact(c,'unsupportedReason')||['continuous','frame'].includes(fact(c,'system')))return null;
  if(fact(c,'sectionRequested')===true&&['multiple_members','profile'].includes(fact(c,'sectionConstruction')))return null;
  if(fact(c,'loadChoice')==='roof'&&(['trusses','ridge_board'].includes(fact(c,'roofSupport'))||fact(c,'floorAbove')==='yes'||fact(c,'roofBearsOnWall')==='no'))return null;
- const conflicts=Object.keys(c.conflicts).find(id=>wording[id]);if(conflicts)return {...questionFor(conflicts),help:'Opplysningene motsier hverandre. Bekreft riktig verdi. '+questionFor(conflicts).help};
- const id=requiredFields(c).find(id=>!c.facts[id]&&!c.unknowns.includes(id));return id?questionFor(id):null;
+ const conflicts=Object.keys(c.conflicts).find(id=>wording[id]);if(conflicts)return {...questionFor(conflicts,c),help:'Opplysningene motsier hverandre. Bekreft riktig verdi. '+questionFor(conflicts,c).help};
+ const id=requiredFields(c).find(id=>!c.facts[id]&&!c.unknowns.includes(id));return id?questionFor(id,c):null;
 }

@@ -12,8 +12,9 @@ Brukeren velger ingen analysemetode. Oppleggene beskrives med vanlig språk.
 ## Hva denne versjonen gjør
 
 - Tolker beskrivelser av veggfjerning og undersøkelse av en bjelke/drager.
-- Skiller sperrer, bjelkelag og den nye drageren. `2x8` er nominelt og blir
-  ikke automatisk en bekreftet dragerdimensjon. `c/c 60` kan tolkes som 600 mm;
+- Skiller søyler/stendere, sperrer, bjelkelag og den nye drageren. `2x6` og
+  `2x8` er nominelle dimensjoner og blir
+  ikke automatisk bekreftede dragerdimensjoner. `c/c 60` kan tolkes som 600 mm;
   enhet og hvilken konstruksjonsdel dimensjonen gjelder, er synlig.
 - Bygger en foreløpig lastvei og viser den som SVG. Oppgitt sperreretning
   alene bekrefter ikke bæring. Støtte under drageren helt ned til fundamentet
@@ -44,6 +45,14 @@ Data følger `StructuralContext` med kilde og status. Oppgitt/bekreftet informas
 har `KNOWN`. Synlige, foreløpige forutsetninger har `ASSUMED`. Motoren produserer
 `DERIVED` som egne sporbare poster. Mangler får `REQUIRED`, ikke standardverdier.
 Motstridende mål må bekreftes; de kan ikke overskrive hverandre stille.
+
+Avklaringsspørsmålet viser den oppgitte nominelle dimensjonen. Beskrivelsen
+«2x6 vertikale søyler» (også «vertikalesøyler» / stendere) registrerer rollen
+ut fra ordene ved dimensjonen. Ved veggfjerning behandles dette som eksisterende
+bindingsverk; verken dimensjonen eller doble stendere hver 1,2 m overføres til
+en ny drager. AI-forslag med en annen nominell dimensjon enn sitatet, feil
+konstruksjonsdel eller doble stendere som sammensatt drager avvises både på
+server og klient. Andre uavhengig dokumenterte fakta beholdes.
 
 Spørsmål bruker nedtrekk når svaret har kjente alternativer, tallfelt med
 desimalkomma/punktum for mål og tekst for lastkilden. «Dette vet jeg ikke»
@@ -179,6 +188,7 @@ Med lokal server på port 8090:
 
 ```sh
 python3 tests/construction-browser.py
+python3 tests/construction-interpretation-browser.py
 python3 tests/portal-tool-browser.py
 python3 tests/portal-user-storage-browser.py
 python3 tests/kalkyle-pdf-browser.py
