@@ -1,6 +1,7 @@
 import {fact,validateContext} from './context.js';
 import {rectangle} from './sections.js';
 import {materialFor} from './materials.js';
+import {readSectionNotations} from './section-notation.js';
 export function buildStructuralModel(input){
  const c=validateContext(input),get=id=>fact(c,id),required=[],derived=[],assumptions=[],limitations=[];
  if(['plan_terrace','check_column'].includes(get('goal'))){
@@ -15,8 +16,10 @@ export function buildStructuralModel(input){
  let span=get('spanM');
  if(!span&&goal==='remove_wall'&&get('openingM')){span=get('openingM');assumptions.push({id:'spanM',value:span,status:'ASSUMED',text:'Beregningsspennet er foreløpig satt lik ønsket åpning. Faktisk avstand mellom oppleggsreaksjonene må bekreftes.'});}
  if(!span)required.push(goal==='remove_wall'?'openingM':'spanM');
- if(c.conflicts.memberRole||get('nominalSection')&&!get('memberRole'))required.push('memberRole');
- if(c.conflicts.nominalSection)required.push('nominalSection');
+ if(c.conflicts.memberRole||(get('nominalSection')||get('sectionNotation')||get('profileDesignation'))&&!get('memberRole'))required.push('memberRole');
+ for(const id of ['nominalSection','sectionNotation','profileDesignation','sectionUnit','materialDesignation'])if(c.conflicts[id])required.push(id);
+ if(get('materialDesignation'))limitations.push('Oppgitt materialbetegnelse '+get('materialDesignation')+' er beholdt. Samtalemotorens materialregister dekker C24, GL30c og S355; andre klasser har ikke automatisk verifiserte materialverdier.');
+ if(get('sectionNotation')&&!get('sectionUnit')&&!readSectionNotations(get('sectionNotation'))[0]?.unit)required.push('sectionUnit');
  if(c.conflicts.system)required.push('system');
  need('loadChoice');let q=0;const points=[];
  if(['line','mixed'].includes(get('loadChoice'))){need('lineLoadKnM');q=(get('lineLoadKnM')||0)*1000;}

@@ -12,12 +12,16 @@ og lastes ikke opp som backendavhengighet. Publiser funksjonen før klienten.
 
 Rettelsen 10. oktober validerer nominelle dimensjoner og eksisterende stender-/
 søyleroller i både backend og klient. Publiser samme funksjon på nytt med
-`language.js` som ny delt avhengighet, før klienten. Ingen migrasjon eller
-nye secrets er nødvendig.
+`language.js` og `section-notation.js` som delte avhengigheter, før klienten.
+Ingen migrasjon eller nye secrets er nødvendig.
 
 Importkartet i `konstruksjon.html` gir alle nettlesermodulene samme eksplisitte
 versjon. Dette hindrer at en ny skjemaklient bruker et gammelt, cachet
 konstruksjonskontrakt fra forrige publisering.
+
+Utvidet dimensjons-/profilkontrakt bruker `schemaVersion: 3`. Backend støtter
+også eldre versjon 2 og utelater nye felt/nominelle verdier for cachede eldre
+klienter. Backend publiseres før klienten. Ingen migrasjon eller nye secrets.
 
 ## Publiseringsrekkefølge
 
@@ -63,7 +67,8 @@ For multipart-API-et må filnavnene beholde prosjektets relative struktur:
   modulene under `construction/` med samme relative filnavn som i repoet.
 
 Handlerens `../../../construction/…`-import må ikke få en flattet mappe.
-Nødvendige delte moduler er `ai-contract.js`, `language.js`, `context.js`, `analysis.js`,
+Nødvendige delte moduler er `ai-contract.js`, `language.js`, `section-notation.js`,
+`context.js`, `analysis.js`,
 `load-path.js`, `load-engine.js`, `sections.js`, `materials.js`,
 `beam-solver.js` og `checks.js`. Browser-UI, CSS og `ai-client.js` er ikke
 backendavhengigheter. Deploy-endepunktet er

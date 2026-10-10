@@ -1,5 +1,5 @@
-// Nominal inch descriptions must be confirmed as actual metric dimensions.
-export const nominalSuggestions={'2x6':{widthMm:48,heightMm:148},'2x8':{widthMm:48,heightMm:198}};
+// Nominal descriptions are parsed generically in section-notation.js. Actual
+// dressed dimensions are independently confirmed before rectangular analysis.
 export function rectangle(widthMm,heightMm){
  if(!Number.isFinite(widthMm)||!Number.isFinite(heightMm)||widthMm<10||widthMm>2000||heightMm<10||heightMm>3000)throw Error('Oppgi faktisk bredde og høyde i millimeter.');
  const b=widthMm/1000,h=heightMm/1000;

@@ -50,16 +50,49 @@ with sync_playwright() as p:
         assert page.locator('#construction-current-answer').input_value()=='column'
         if ai:
             assert 'Noen detaljer kunne ikke bekreftes' in page.locator('#construction-message').inner_text()
-        for size in ['2x6','2x8']:
+        for size in ['2x2','3x4','2x6','2x8','2x10','2x12']:
             start('Jeg vil fjerne 2 meter av veggen. Bindingsverk cc600, '+size+'".')
             title=page.locator('#construction-question-title').inner_text()
             assert size in title and ('2x8' if size=='2x6' else '2x6') not in title
             options=page.locator('#construction-current-answer option').all_text_contents()
             assert 'Søylene / stenderne' in options
+        # Explicit units are retained, missing units use a dropdown, and changes
+        # recalculate the dimensions rather than retaining old input values.
+        start('Jeg vil undersøke en drager. Bjelke 48x198.')
+        assert 'Hvilken enhet' in page.locator('#construction-question-title').inner_text()
+        assert page.locator('#construction-current-answer').evaluate('e=>e.tagName')=='SELECT'
+        page.locator('#construction-current-answer').select_option('mm')
+        page.locator('#construction-answer button[type=submit]').click()
+        page.locator('#construction-basis>summary').click()
+        assert '48x198 mm' in page.locator('#construction-facts').inner_text()
+        row=page.locator('#construction-facts tr').filter(has_text='Oppgitt tverrsnitt').first
+        row.get_by_role('button',name='Endre').click()
+        page.locator('#construction-current-answer').fill('73×223 mm')
+        page.locator('#construction-answer button[type=submit]').click()
+        assert '73x223 mm' in page.locator('#construction-facts').inner_text()
+        assert '223' in page.locator('#construction-facts tr').filter(has_text='Høyde (mm)').first.inner_text()
+        start('Jeg vil undersøke en drager. Bjelke 1½×3½″.')
+        page.locator('#construction-basis>summary').click()
+        assert '1.5x3.5' in page.locator('#construction-facts').inner_text()
+        start('Jeg vil undersøke en drager. Bjelke RHS 100x50x4.')
+        page.locator('#construction-basis>summary').click()
+        assert 'RHS 100x50x4' in page.locator('#construction-facts').inner_text()
+        page.locator('#construction-mode-manual').click()
+        assert page.locator('#rib-context-notice').is_visible()
+        assert page.locator('#rib-widthMm').input_value()==''
+        assert page.locator('#rib-heightMm').input_value()==''
+        page.locator('#construction-mode-ai').click()
+        start('Jeg vil undersøke en drager. Bjelke 90x225 mm i GL28h.')
+        page.locator('#construction-basis>summary').click()
+        assert 'GL28h' in page.locator('#construction-facts').inner_text()
+        page.locator('#construction-mode-manual').click()
+        assert 'GL28h' in page.locator('#rib-context-notice').inner_text()
+        assert page.locator('#rib-grade').input_value()==''
+        page.locator('#construction-mode-ai').click()
         start(brief)
         page.set_viewport_size({'width':390,'height':844})
         assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
         assert not errors,errors
         page.close()
     browser.close()
-print('Wall interpretation passed: exact 2x6 brief, dropdown, role edit, AI/offline, stale provider validation and mobile.')
+print('Section interpretation passed: general nominal/metric/profile/grade notation, dropdown units, edits, manual scope, AI/offline and mobile.')

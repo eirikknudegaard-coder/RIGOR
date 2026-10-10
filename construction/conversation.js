@@ -1,9 +1,10 @@
 import {fact,fields} from './context.js';
+import {readSectionNotations} from './section-notation.js';
 const choices={
  goal:[['remove_wall','Jeg vil fjerne en vegg'],['check_beam','Jeg vil undersøke en bjelke eller drager'],['check_column','Jeg vil undersøke en søyle eller stolpe'],['plan_terrace','Jeg vil plassere dragere og stolper i en terrasse']],
  terraceWallSupport:[['documented','Dokumentert bæring mot huset'],['free_standing','Frittstående – egne dragere og stolper på begge sider']],
  memberRole:[['rafters','Taksperrene'],['joists','Bjelkelaget'],['beam','Drageren jeg vil undersøke'],['column','Søylene / stenderne']],
- nominalSection:[['2x6','2x6 tommer'],['2x8','2x8 tommer']],
+ sectionUnit:[['mm','Millimeter'],['cm','Centimeter'],['m','Meter'],['inch','Nominelle tommemål – faktiske mål må bekreftes']],
  direction:[['across','På tvers av veggen'],['parallel','Langs veggen']],
  roofBearsOnWall:[['yes','Ja, de har opplegg på veggen'],['no','Nei, de bæres et annet sted']],
  floorAbove:[['no','Nei, bare tak over'],['yes','Ja, også etasjeskiller eller annen bæring']],
@@ -27,6 +28,10 @@ const wording={
  goal:['Hva vil du undersøke først?','Vi starter med hva konstruksjonen skal gjøre.'],
  memberRole:['Hvilken del av konstruksjonen gjelder dimensjonen?','Samme dimensjon kan brukes i ulike deler. Den skal ikke flyttes automatisk til en ny drager.'],
  nominalSection:['Hvilken nominell dimensjon skal vi følge videre?','Du har oppgitt flere dimensjoner. Velg dimensjonen for den delen du vil undersøke; faktiske mål på en ny drager bekreftes separat.'],
+ sectionNotation:['Hvilket tverrsnitt gjelder det?','Oppgi bredde × høyde og enhet, for eksempel 48x198 mm eller 20x40 cm. Hold eksisterende deler og en ny drager adskilt.'],
+ sectionUnit:['Hvilken enhet gjelder målene på tverrsnittet?','Enheten mangler. Vi omregner først når du har bekreftet millimeter, centimeter eller meter.'],
+ profileDesignation:['Hvilken profilbetegnelse gjelder det?','Oppgi hele betegnelsen, for eksempel IPE 200, HEB 200 eller RHS 100x50x4. En profilbetegnelse gir ikke automatisk et beregningsgrunnlag.'],
+ materialDesignation:['Hvilken materialbetegnelse gjelder det?','Oppgi den dokumenterte klassen. Klassen beholdes slik du oppgir den; den erstattes ikke automatisk med en annen klasse i registeret.'],
  direction:['Går taksperrene på tvers av veggen du ønsker å fjerne?','Retningen kan gi en indikasjon, men bekrefter ikke bæring alene.'],
  roofBearsOnWall:['Hviler taksperrene faktisk på denne veggen?','Se etter et opplegg eller dokumentasjon. Er du usikker, kan vi fortsatt vurdere lastveien.'],
  floorAbove:['Bærer veggen også etasjeskiller eller andre konstruksjoner over?','Taklast alene dekker ikke last fra en etasje eller andre dragere.'],
@@ -58,15 +63,19 @@ const wording={
 };
 export function questionFor(id,c=null){
  const d=fields[id],w=wording[id];if(!d||!w)throw Error('Spørsmålet støttes ikke.');
- const nominal=c&&fact(c,'nominalSection'),label=id==='memberRole'&&nominal?'Hvilken del av konstruksjonen gjelder '+nominal+'?':w[0];
- return {id,label,help:w[1],type:choices[id]?'select':d.type==='number'?'number':'text',options:choices[id]||[],min:d.min,max:d.max};
+ const section=c&&(fact(c,'nominalSection')||fact(c,'sectionNotation')||fact(c,'profileDesignation'));
+ const label=id==='memberRole'&&section?'Hvilken del av konstruksjonen gjelder '+section+'?':w[0];
+ const options=c?.conflicts[id]&&['nominalSection','sectionNotation','profileDesignation','materialDesignation'].includes(id)?c.conflicts[id].map(value=>[value,value+(id==='nominalSection'?' tommer':'')]):choices[id];
+ const help=id==='nominalSection'&&!c?.conflicts[id]?'Oppgi nominelle tommemål, for eksempel 2x2, 3x4 eller 1½x3½. Faktiske mål i millimeter bekreftes separat.':w[1];
+ return {id,label,help,type:options?'select':d.type==='number'?'number':'text',options:options||[],min:d.min,max:d.max};
 }
 export function requiredFields(c){
  const get=id=>fact(c,id),ids=[];
  if(!get('goal')||get('goal')==='unknown')return ['goal'];
  if(get('goal')==='plan_terrace')return ['terraceLengthM','terraceDepthM','terraceHeightM','terraceWallSupport'];
- if(get('goal')==='check_column')return [];
- if(c.conflicts.memberRole||get('nominalSection')&&!get('memberRole'))ids.push('memberRole');
+ if(get('sectionNotation')&&!get('sectionUnit')&&!readSectionNotations(get('sectionNotation'))[0]?.unit)ids.push('sectionUnit');
+ if(c.conflicts.memberRole||(get('nominalSection')||get('sectionNotation')||get('profileDesignation'))&&!get('memberRole'))ids.push('memberRole');
+ if(get('goal')==='check_column')return ids;
  if(get('goal')==='remove_wall'){
   ids.push('direction','roofBearsOnWall','floorAbove','openingM');
   if(!get('loadChoice'))ids.push('rafterSpanM');

@@ -57,6 +57,17 @@ test('Wall interpretation keeps 2x6 studs and rejects invented size, member role
  const valid=await handleConstruction(req({action:'interpret',brief:text,schemaVersion:2}),fixture({output:correct}));
  assert.equal(valid.status,200);assert.deepEqual((await valid.json()).facts.map(f=>f.value),['2x6','column']);
 });
+test('Version 3 supports general section notation while cached version 2 and legacy clients get only fields they know',async()=>{
+ const text='Jeg vil undersøke en drager. Stendere 3x4 tommer, bjelke 20x40 cm, profil HEB200 og betong C30/37.';
+ const proposed={facts:[{field:'nominalSection',value:'3x4',evidence:'3x4 tommer'},{field:'sectionNotation',value:'20x40 cm',evidence:'20x40 cm'},{field:'profileDesignation',value:'HEB 200',evidence:'HEB200'},{field:'materialDesignation',value:'C30/37',evidence:'C30/37'}]};
+ const r=await handleConstruction(req({action:'interpret',brief:text,schemaVersion:3}),fixture({output:proposed}));
+ assert.equal(r.status,200);assert.deepEqual((await r.json()).facts.map(f=>f.value),['3x4','20x40 cm','HEB 200','C30/37']);
+ for(const version of [undefined,2]){
+  const old=await handleConstruction(req({action:'interpret',brief:text,...(version?{schemaVersion:version}:{})}),fixture({output:proposed}));
+  assert.equal(old.status,200);assert.deepEqual((await old.json()).facts,[]);
+ }
+ assert.equal((await handleConstruction(req({action:'interpret',brief:text,schemaVersion:4}),fixture())).status,400);
+});
 test('Explanation is rebuilt from the deterministic model and supports an independent provider adapter',async()=>{
  let c=emptyContext('En drager for orienterende lastanalyse');for(const [k,v]of Object.entries({goal:'check_beam',system:'simple',spanM:4,loadChoice:'line',lineLoadKnM:2,loadBasis:'documented',loadSource:'K-01'}))c=setFact(c,k,v);
  const d=fixture({output:{focusId:'support_result'}}),r=await handleConstruction(req({action:'explain',context:c}),d);assert.equal(r.status,200);const data=await r.json();assert.match(data.explanation.paragraphs[0],/4 kN/);assert.equal(data.explanation.focusId,'support_result');assert(!JSON.stringify(data).includes('godkjent løsning'));

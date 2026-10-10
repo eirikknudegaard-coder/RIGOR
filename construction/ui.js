@@ -1,4 +1,5 @@
-import {interpretDescription} from './language.js';
+import {interpretDescription,applySectionDimensions,applySectionAnswer} from './language.js';
+import {canonicalNominal,canonicalSection,canonicalProfile,canonicalMaterial} from './section-notation.js';
 import {fact,setFact,markUnknown,labels,valueLabels} from './context.js';
 import {nextQuestion,questionFor} from './conversation.js';
 import {buildLoadPath} from './load-path.js';
@@ -108,7 +109,7 @@ $('construction-start').onsubmit=async event=>{
  state.context=interpretDescription(brief);resetResult();state.busy=state.aiReady;advance();const ticket=state.revision;
  if(!state.aiReady){message('AI er ikke tilgjengelig akkurat nå. Du kan bruke den faglige spørreflyten og beregningsmotoren.');return;}
  message('AI tolker beskrivelsen. Alle foreslåtte opplysninger må kontrolleres.');$('construction-submit').disabled=true;
- try{const response=await requestConstruction({action:'interpret',brief,schemaVersion:2});if(ticket!==state.revision)return;
+ try{const response=await requestConstruction({action:'interpret',brief,schemaVersion:3});if(ticket!==state.revision)return;
   const validated=reviewInterpretation({facts:response.facts?.map(({field,value,evidence})=>({field,value,evidence}))},brief);
   state.proposals=validated.facts.filter(f=>fact(state.context,f.field)!==f.value);renderProposals();message((response.partial||validated.partial?'Noen detaljer kunne ikke bekreftes og blir avklart med spørsmål. ':'')+(state.proposals.length?'Kontroller tolkningen under før vi bruker opplysningene.':'De entydige opplysningene er registrert. Vi spør bare om det som trengs videre.'));
  }catch(error){if(ticket===state.revision)message(error.message+' Du kan fortsette med spørreflyten.');}
@@ -116,6 +117,7 @@ $('construction-start').onsubmit=async event=>{
 };
 $('construction-confirm').onclick=()=>{
  for(const check of $('construction-proposals').querySelectorAll('input:checked')){const f=state.proposals[Number(check.dataset.proposalIndex)];state.context=setFact(state.context,f.field,f.value,'Brukerbekreftet AI-tolkning: «'+f.evidence+'»');}
+ state.context=applySectionDimensions(state.context);
  resetResult();message('Valgte opplysninger er bekreftet. Beregninger bruker bare dette grunnlaget.');advance();
 };
 $('construction-reject').onclick=()=>{resetResult();message('AI-tolkningen er forkastet. Registrerte opplysninger er beholdt.');advance();};
@@ -123,9 +125,13 @@ $('construction-answer').onsubmit=event=>{
  event.preventDefault();if(!state.question||state.busy)return;
  const q=state.question,input=$('construction-current-answer');let value=input.value.trim();
  if(q.type==='select')value=q.options.find(([v])=>String(v)===value)?.[0];else if(q.type==='number'){if(!/^\d+(?:[.,]\d+)?$/.test(value)){$('construction-answer-error').textContent='Oppgi ett tall med punktum eller komma som desimaltegn.';return;}value=Number(value.replace(',','.'));}
- try{state.context=setFact(state.context,q.id,value);resetResult();message('Svaret er registrert.');advance();}catch(e){$('construction-answer-error').textContent=e.message;}
+ try{
+  const normalize=({nominalSection:canonicalNominal,sectionNotation:canonicalSection,profileDesignation:canonicalProfile,materialDesignation:canonicalMaterial})[q.id];
+  if(normalize)value=normalize(value)||value;
+  state.context=applySectionAnswer(state.context,q.id,value);resetResult();message('Svaret er registrert.');advance();
+ }catch(e){$('construction-answer-error').textContent=e.message;}
 };
-$('construction-unknown').onclick=()=>{if(!state.question||state.busy)return;state.context=markUnknown(state.context,state.question.id);resetResult();message('Opplysningen er beholdt som uavklart. Vi setter ikke inn en gjettet verdi.');advance();};
+$('construction-unknown').onclick=()=>{if(!state.question||state.busy)return;state.context=applySectionDimensions(markUnknown(state.context,state.question.id));resetResult();message('Opplysningen er beholdt som uavklart. Vi setter ikke inn en gjettet verdi.');advance();};
 $('construction-calculate').onclick=()=>{if(!state.context||state.busy||state.proposals.length)return;try{state.result=analyzeStructure(state.context);render();message(state.result.beam?'Beregningen er utført med det viste grunnlaget.':'Viser foreløpig vurdering. Tallgrunnlaget er fortsatt uavklart.');}catch(e){state.result=null;render();message(e.message);}};
 $('construction-section').onclick=()=>{state.context=setFact(state.context,'sectionRequested',true,'Brukeren ønsker nedbøyningsanalyse');resetResult();advance();$('construction-question-card').scrollIntoView({block:'nearest',behavior:'smooth'});};
 $('construction-forces-only').onclick=()=>{state.context=setFact(state.context,'sectionRequested',false,'Brukeren ønsker bare lastanalyse');resetResult();advance();};
