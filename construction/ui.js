@@ -9,12 +9,33 @@ import {reviewInterpretation,validateFocus} from './ai-contract.js';
 import {constructionAiStatus,requestConstruction} from './ai-client.js';
 import {renderLoadPath,renderBeam,renderDiagrams} from './diagram-renderer.js';
 import {initManual} from './manual-ui.js';
+import {initSiteLoads} from './site-load-ui.js';
+import {municipalityLabel} from './municipalities.js';
 const $=id=>document.getElementById(id);
 const node=(tag,text,cls='')=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e;};
 const fmt=n=>new Intl.NumberFormat('nb-NO',{maximumFractionDigits:2}).format(n);
 const describe=v=>typeof v==='boolean'?v?'Ja':'Nei':typeof v==='number'?fmt(v):valueLabels[v]||v;
 const state={context:null,result:null,question:null,proposals:[],aiReady:false,busy:false,revision:0,mode:'ai'};
 const manual=initManual($('construction-manual-root'));
+const siteRoot=node('div');$('construction-composer').after(siteRoot);
+const site=initSiteLoads(siteRoot,{onChange(p){
+ manual.clearSiteSnow();
+ if(!state.context)return;
+ state.busy=false;$('construction-submit').disabled=false;
+ for(const [key,id]of Object.entries({actions:'weatherActions',municipality:'siteMunicipality',area:'siteArea',altitudeM:'siteAltitudeM',heightM:'buildingHeightM',terrain:'siteTerrain',topography:'siteTopography',terrainTransition:'siteTerrainTransition',roofType:'roofType',roofAngleDeg:'roofAngleDeg'})){
+  if(p[key]!==undefined&&p[key]!=='')try{state.context=setFact(state.context,id,p[key]);}catch{}
+  else if(state.context.facts[id])state.context=markUnknown(state.context,id);
+ }
+ if(state.context.facts.roofSnowKnM2?.source.startsWith('Stedlig beregning:')){delete state.context.facts.roofSnowKnM2;delete state.context.facts.loadSource;delete state.context.facts.loadBasis;}
+ resetResult();advance();
+},onSnow(r,source){
+ if(fact(state.context||{facts:{}},'goal')==='plan_terrace'){manual.applySiteSnow(r.snow.roofKnM2,'Stedlig beregning: '+source);mode('manual','terrace');return;}
+ if(!state.context){message('Start først en vurdering av bjelken eller taket. Lastgrunnlaget kan lastes ned separat.');return;}
+ state.context=setFact(state.context,'roofSnowKnM2',r.snow.roofKnM2,'Stedlig beregning: '+source);
+ state.context=setFact(state.context,'loadChoice','site_roof');state.context=setFact(state.context,'loadBasis','documented');state.context=setFact(state.context,'loadSource',source);
+ resetResult();advance();message('Beregnet snølast er registrert. Avklar takets egenvekt, lastbredde og bæring videre.');
+}});
+const siteButton=node('button','Byggested, snø og vind','secondary');siteButton.type='button';siteButton.id='construction-open-site';siteButton.onclick=()=>site.open();document.querySelector('.construction-modes').append(siteButton);
 function mode(selected,member='beam'){
  state.mode=selected;
  const isManual=selected==='manual';$('construction-manual').hidden=!isManual;$('construction-composer').hidden=isManual;$('construction-workspace').hidden=isManual||!state.context;
@@ -25,7 +46,10 @@ $('construction-mode-ai').onclick=()=>mode('ai');$('construction-mode-manual').o
 const examples={wall:'Trenger jeg en drager her? Bindingsverk c/c 600, 2x8 og saltak med 25 graders vinkel. Jeg vil fjerne ca. 3 meter av veggen.',beam:'Jeg vil undersøke en fritt opplagt drager med spenn på 3,2 meter. Jevnt fordelt last på 4 kN/m. Drager 115x315 mm, limtre GL30c.',cantilever:'Jeg vil kontrollere en bjelke. Den er fast innspent i venstre ende og har spenn på 1,5 meter. Punktlast på 2 kN, 1,5 meter fra innspent ende.'};
 function message(text){$('construction-message').textContent=text;}
 function resetResult(){state.result=null;state.proposals=[];state.revision++;}
+const siteSnowInputs=['siteMunicipality','siteAltitudeM','siteArea','weatherActions','roofType','roofAngleDeg'];
+function dropSiteSnow(){manual.clearSiteSnow();if(state.context.facts.roofSnowKnM2?.source.startsWith('Stedlig beregning:')){delete state.context.facts.roofSnowKnM2;delete state.context.facts.loadSource;delete state.context.facts.loadBasis;}}
 function basisRow(id,value,status,source,editable=false){
+ if(id==='siteMunicipality')value=municipalityLabel(value);
  const tr=node('tr'),name=node('td',labels[id]||id),data=node('td',describe(value)),provenance=node('td');provenance.append(node('span',{KNOWN:'Oppgitt',ASSUMED:'Antatt',DERIVED:'Utledet',REQUIRED:'Må avklares'}[status]+' · '+status,'basis-status'),node('span',source));
  if(editable){try{questionFor(id,state.context);const b=node('button','Endre','secondary');b.type='button';b.onclick=()=>{state.question=questionFor(id,state.context);renderQuestion();$('construction-question-card').scrollIntoView({block:'nearest',behavior:'smooth'});};name.append(b);}catch{}}
  tr.append(name,data,provenance);$('construction-facts').append(tr);
@@ -102,14 +126,14 @@ function renderProposals(){
  const container=$('construction-proposals');container.replaceChildren();
  state.proposals.forEach((f,i)=>{const label=node('label',undefined,'proposal'),check=node('input');check.type='checkbox';check.dataset.proposalIndex=i;check.checked=!state.context.facts[f.field];label.append(check,document.createTextNode((labels[f.field]||f.field)+': '+describe(f.value)),node('small','Sitat: «'+f.evidence+'»'+(state.context.facts[f.field]?' · Erstatt registrert verdi bare hvis dette er riktig.':'')));container.append(label);});
 }
-function advance(){state.question=nextQuestion(state.context);render();}
+function advance(){site.setContext(state.context);state.question=nextQuestion(state.context);render();}
 $('construction-start').onsubmit=async event=>{
  event.preventDefault();const brief=$('construction-brief').value.trim();if(brief.length<10)return;
  for(const detail of document.querySelectorAll('#construction-basis, #construction-basis details'))detail.open=false;
- state.context=interpretDescription(brief);resetResult();state.busy=state.aiReady;advance();const ticket=state.revision;
+ manual.clearSiteSnow();site.reset();state.context=interpretDescription(brief);resetResult();state.busy=state.aiReady;advance();const ticket=state.revision;
  if(!state.aiReady){message('AI er ikke tilgjengelig akkurat nå. Du kan bruke den faglige spørreflyten og beregningsmotoren.');return;}
  message('AI tolker beskrivelsen. Alle foreslåtte opplysninger må kontrolleres.');$('construction-submit').disabled=true;
- try{const response=await requestConstruction({action:'interpret',brief,schemaVersion:3});if(ticket!==state.revision)return;
+ try{const response=await requestConstruction({action:'interpret',brief,schemaVersion:4});if(ticket!==state.revision)return;
   const validated=reviewInterpretation({facts:response.facts?.map(({field,value,evidence})=>({field,value,evidence}))},brief);
   state.proposals=validated.facts.filter(f=>fact(state.context,f.field)!==f.value);renderProposals();message((response.partial||validated.partial?'Noen detaljer kunne ikke bekreftes og blir avklart med spørsmål. ':'')+(state.proposals.length?'Kontroller tolkningen under før vi bruker opplysningene.':'De entydige opplysningene er registrert. Vi spør bare om det som trengs videre.'));
  }catch(error){if(ticket===state.revision)message(error.message+' Du kan fortsette med spørreflyten.');}
@@ -128,10 +152,12 @@ $('construction-answer').onsubmit=event=>{
  try{
   const normalize=({nominalSection:canonicalNominal,sectionNotation:canonicalSection,profileDesignation:canonicalProfile,materialDesignation:canonicalMaterial})[q.id];
   if(normalize)value=normalize(value)||value;
+  if(q.id==='siteMunicipality'){delete state.context.facts.siteArea;delete state.context.conflicts.siteArea;state.context.unknowns=state.context.unknowns.filter(id=>id!=='siteArea');}
+  if(siteSnowInputs.includes(q.id))dropSiteSnow();
   state.context=applySectionAnswer(state.context,q.id,value);resetResult();message('Svaret er registrert.');advance();
  }catch(e){$('construction-answer-error').textContent=e.message;}
 };
-$('construction-unknown').onclick=()=>{if(!state.question||state.busy)return;state.context=applySectionDimensions(markUnknown(state.context,state.question.id));resetResult();message('Opplysningen er beholdt som uavklart. Vi setter ikke inn en gjettet verdi.');advance();};
+$('construction-unknown').onclick=()=>{if(!state.question||state.busy)return;if(siteSnowInputs.includes(state.question.id))dropSiteSnow();state.context=applySectionDimensions(markUnknown(state.context,state.question.id));resetResult();message('Opplysningen er beholdt som uavklart. Vi setter ikke inn en gjettet verdi.');advance();};
 $('construction-calculate').onclick=()=>{if(!state.context||state.busy||state.proposals.length)return;try{state.result=analyzeStructure(state.context);render();message(state.result.beam?'Beregningen er utført med det viste grunnlaget.':'Viser foreløpig vurdering. Tallgrunnlaget er fortsatt uavklart.');}catch(e){state.result=null;render();message(e.message);}};
 $('construction-section').onclick=()=>{state.context=setFact(state.context,'sectionRequested',true,'Brukeren ønsker nedbøyningsanalyse');resetResult();advance();$('construction-question-card').scrollIntoView({block:'nearest',behavior:'smooth'});};
 $('construction-forces-only').onclick=()=>{state.context=setFact(state.context,'sectionRequested',false,'Brukeren ønsker bare lastanalyse');resetResult();advance();};
@@ -146,9 +172,9 @@ $('construction-ai-explain').onclick=async()=>{
 $('construction-download').onclick=()=>{
  if(!state.result?.beam)return;const blob=new Blob([JSON.stringify({product:'RIGOR Konstruksjon',version:1,generatedAt:new Date().toISOString(),...state.result},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=node('a');a.href=url;a.download='rigor-konstruksjon-beregningsgrunnlag.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 };
-function clear(){state.revision++;state.busy=false;state.context=null;state.result=null;state.proposals=[];state.question=null;$('construction-workspace').hidden=true;$('construction-brief').value='';$('construction-submit').disabled=false;message('');$('construction-brief').focus();}
+function clear(){manual.clearSiteSnow();site.reset();state.revision++;state.busy=false;state.context=null;state.result=null;state.proposals=[];state.question=null;$('construction-workspace').hidden=true;$('construction-brief').value='';$('construction-submit').disabled=false;message('');$('construction-brief').focus();}
 $('construction-reset').onclick=clear;
-$('construction-brief').oninput=()=>{if(state.context){state.revision++;state.context=null;state.result=null;state.busy=false;state.proposals=[];$('construction-workspace').hidden=true;$('construction-submit').disabled=false;message('Beskrivelsen er endret. Start vurderingen på nytt for å bruke den nye teksten.');}};
+$('construction-brief').oninput=()=>{if(state.context){state.revision++;manual.clearSiteSnow();site.reset();state.context=null;state.result=null;state.busy=false;state.proposals=[];$('construction-workspace').hidden=true;$('construction-submit').disabled=false;message('Beskrivelsen er endret. Start vurderingen på nytt for å bruke den nye teksten.');}};
 for(const b of document.querySelectorAll('[data-construction-example]'))b.onclick=()=>{clear();$('construction-brief').value=examples[b.dataset.constructionExample];};
 async function refreshAi(){const ticket=++refreshAi.version;$('construction-ai-status').disabled=true;const status=await constructionAiStatus();if(ticket!==refreshAi.version)return;state.aiReady=status.ready;$('construction-ai-status').textContent=status.ready?'AI klar':'Faglig spørreflyt';$('construction-ai-status').title=status.ready?'AI-tolkning er tilgjengelig. Klikk for ny kontroll.':'AI er ikke tilgjengelig. Spørreflyt og beregning kan brukes. Klikk for ny kontroll.';$('construction-ai-status').disabled=false;$('construction-submit').textContent=status.ready?'Start med AI →':'Start vurdering →';if(state.context)render();}
 refreshAi.version=0;$('construction-ai-status').onclick=refreshAi;void refreshAi();

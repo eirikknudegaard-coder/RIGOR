@@ -56,6 +56,10 @@ server og klient. Andre uavhengig dokumenterte fakta beholdes.
 
 ### Generell tolkning av dimensjoner og betegnelser
 
+Byggested og stedlige snø-/vindlaster har nå en egen spørreflyt og et
+deterministisk lastgrunnlag. Datadekning, vedleggsutgaver, kommunegrenser og
+gjenstående normavklaringer står i [site-loads.md](site-loads.md).
+
 `section-notation.js` leser dimensjoner etter en grammatikk, ikke en liste over
 2x6/2x8. Nominelle tommemål kan derfor være for eksempel 2x2, 3x4, 2x10,
 2x12, 1½x3½ eller 5/4x6. `x`, `×`, `*`, ordet «ganger», vanlige tommetegn,

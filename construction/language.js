@@ -1,5 +1,6 @@
 import {emptyContext,setFact,validateValue} from './context.js';
 import {readSectionNotations,readProfileNotations,readMaterialDesignations,metricDimensions} from './section-notation.js';
+import {municipalityMentions} from './municipalities.js';
 const n=s=>Number(s.replace(',','.'));
 const numeric='(\\d+(?:[.,]\\d+)?)';
 const memberNames={
@@ -65,6 +66,11 @@ export function interpretDescription(brief){
   if(c.facts[id]&&c.facts[id].value!==value){c.conflicts[id]=[c.facts[id].value,value];delete c.facts[id];return;}
   c=setFact(c,id,value,'Beskrivelsen: «'+evidence+'»');
  }
+ for(const m of municipalityMentions(brief))if(municipalityMentions(m.evidence).length===1)put('siteMunicipality',m.id,m.evidence);
+ for(const m of s.matchAll(/(\d+(?:[.,]\d+)?)\s*(?:moh\.?|m\.?o\.?h\.?|meter over havet|m over havet)\b/g))put('siteAltitudeM',n(m[1]),m[0]);
+ for(const m of s.matchAll(/(?:byggehøyde|byggets høyde)(?: er| på)?\s*(\d+(?:[.,]\d+)?)\s*(?:meter|m)\b(?!\s*(?:over havet|moh))/g))put('buildingHeightM',n(m[1]),m[0]);
+ for(const m of s.matchAll(/bygget er\s*(\d+(?:[.,]\d+)?)\s*(?:meter|m)\s+høyt\b/g))put('buildingHeightM',n(m[1]),m[0]);
+ const hasSnow=/snølast/.test(s),hasWind=/vindlast|vindtrykk/.test(s);if(hasSnow||hasWind)put('weatherActions',hasSnow&&hasWind?'both':hasSnow?'snow':'wind','Oppgitt snø-/vindlasttema');
  const detect=(re,id,value)=>{for(const m of s.matchAll(re))put(id,value,m[0]);};
  for(const m of s.matchAll(/(?:fjerne|fjern|rive|riv|ta bort|åpne)[^\n]{0,70}vegg|(?:åpning|fjerning)[^\n]{0,45}vegg/g))if(!/\bikke\b/.test(s.slice(Math.max(0,m.index-12),m.index+m[0].length)))put('goal','remove_wall',m[0]);
  detect(/(?:holder|kontrollere|undersøke|sjekke)[^.\n]{0,45}(?:bjelk|drager)/g,'goal','check_beam');
@@ -111,6 +117,7 @@ export function interpretDescription(brief){
  if(/\bramme\b|portalramme/.test(s))put('system','frame','ramme');
  if((s.match(/punktlast/g)||[]).length>1)put('unsupportedReason','Flere punktlaster må spesifiseres i en utvidet modell.','Flere punktlaster');
  if(/vindlast|horisontallast|oppoverrettet|jordtrykk|torsjon/.test(s))put('unsupportedReason','Første versjon dekker vertikale laster nedover. Vind, horisontallast, jordtrykk, løft og torsjon krever en utvidet modell.','Andre lastretninger');
+ if(!c.facts.goal&&c.facts.weatherActions)c=setFact(c,'goal','site_loads','Beskrivelsen gjelder stedlige laster');
  if(c.facts.lineLoadKnM&&!c.facts.loadChoice)c=setFact(c,'loadChoice',c.facts.pointLoadKn?'mixed':'line','Uttrykkelig oppgitte lasttyper');
  else if(c.facts.pointLoadKn&&!c.facts.loadChoice)c=setFact(c,'loadChoice','point','Uttrykkelig oppgitt punktlast');
  return applySectionDimensions(c);

@@ -1,7 +1,9 @@
 import {fact,fields} from './context.js';
+import {weatherRequired,weatherChoices,weatherWording} from './weather-context.js';
+import {weatherAreas} from './weather-register.js';
 import {readSectionNotations} from './section-notation.js';
-const choices={
- goal:[['remove_wall','Jeg vil fjerne en vegg'],['check_beam','Jeg vil undersøke en bjelke eller drager'],['check_column','Jeg vil undersøke en søyle eller stolpe'],['plan_terrace','Jeg vil plassere dragere og stolper i en terrasse']],
+const choices={...weatherChoices,
+ goal:[['site_loads','Jeg vil finne snø- og vindlast for byggestedet'],['remove_wall','Jeg vil fjerne en vegg'],['check_beam','Jeg vil undersøke en bjelke eller drager'],['check_column','Jeg vil undersøke en søyle eller stolpe'],['plan_terrace','Jeg vil plassere dragere og stolper i en terrasse']],
  terraceWallSupport:[['documented','Dokumentert bæring mot huset'],['free_standing','Frittstående – egne dragere og stolper på begge sider']],
  memberRole:[['rafters','Taksperrene'],['joists','Bjelkelaget'],['beam','Drageren jeg vil undersøke'],['column','Søylene / stenderne']],
  sectionUnit:[['mm','Millimeter'],['cm','Centimeter'],['m','Meter'],['inch','Nominelle tommemål – faktiske mål må bekreftes']],
@@ -12,7 +14,7 @@ const choices={
  roofSides:[['one','Én side'],['two','Begge sider']],
  spanBasis:[['horizontal','Vannrett mellom oppleggene'],['slope','Langs sperren / takflaten']],
  system:[['simple','Støttet i begge ender'],['cantilever','Fast innspent i én ende, fri i den andre'],['continuous','Støttet på tre eller flere steder'],['frame','Del av en ramme']],
- loadChoice:[['roof','Jeg har oppgitt egenvekt og snølast på taket'],['line','Jeg har en oppgitt last langs drageren'],['point','Jeg har en oppgitt punktlast'],['mixed','Jeg har begge lasttypene']],
+ loadChoice:[['site_roof','Jeg vil finne snølast fra byggested og takform'],['roof','Jeg har oppgitt egenvekt og snølast på taket'],['line','Jeg har en oppgitt last langs drageren'],['point','Jeg har en oppgitt punktlast'],['mixed','Jeg har begge lasttypene']],
  deadBasis:[['horizontal','Per m² vannrett takareal'],['slope','Per m² av skrå takflate']],
  loadBasis:[['documented','Fra en tegning eller lastberegning'],['preliminary','Egne foreløpige lastforutsetninger']],
  material:[['C24','Konstruksjonsvirke C24'],['GL30c','Limtre GL30c'],['S355','Stål S355 – massivt rektangel']],
@@ -20,7 +22,7 @@ const choices={
  supportBelow:[['documented','Dokumentert støtte helt ned til fundament'],['unsupported','Det mangler støtte under enden']],
  selfWeightInLoad:[[true,'Ja, den er med i de oppgitte lastene'],[false,'Nei, legg til dragerens egenvekt']]
 };
-const wording={
+const wording={...weatherWording,
  terraceLengthM:['Hvor lang er terrassen langs huset?','Oppgi lengden i meter. Antall stolper kan ikke finnes fra c/c-avstand alene.'],
  terraceDepthM:['Hvor langt går terrassen ut fra huset?','Oppgi dybden i meter. Dette er normalt retningen de tverrgående bjelkene spenner.'],
  terraceHeightM:['Hvor høyt er terrassegulvet over terrenget?','Oppgi meter. Høyde og avstivning påvirker stolper, rekkverk og fundament.'],
@@ -65,14 +67,16 @@ export function questionFor(id,c=null){
  const d=fields[id],w=wording[id];if(!d||!w)throw Error('Spørsmålet støttes ikke.');
  const section=c&&(fact(c,'nominalSection')||fact(c,'sectionNotation')||fact(c,'profileDesignation'));
  const label=id==='memberRole'&&section?'Hvilken del av konstruksjonen gjelder '+section+'?':w[0];
- const options=c?.conflicts[id]&&['nominalSection','sectionNotation','profileDesignation','materialDesignation'].includes(id)?c.conflicts[id].map(value=>[value,value+(id==='nominalSection'?' tommer':'')]):choices[id];
+ const options=id==='siteArea'?weatherAreas(fact(c,'siteMunicipality')).map(v=>[v,v]):c?.conflicts[id]&&['nominalSection','sectionNotation','profileDesignation','materialDesignation'].includes(id)?c.conflicts[id].map(value=>[value,value+(id==='nominalSection'?' tommer':'')]):choices[id];
  const help=id==='nominalSection'&&!c?.conflicts[id]?'Oppgi nominelle tommemål, for eksempel 2x2, 3x4 eller 1½x3½. Faktiske mål i millimeter bekreftes separat.':w[1];
  return {id,label,help,type:options?'select':d.type==='number'?'number':'text',options:options||[],min:d.min,max:d.max};
 }
 export function requiredFields(c){
  const get=id=>fact(c,id),ids=[];
  if(!get('goal')||get('goal')==='unknown')return ['goal'];
- if(get('goal')==='plan_terrace')return ['terraceLengthM','terraceDepthM','terraceHeightM','terraceWallSupport'];
+ ids.push(...weatherRequired(c));
+ if(get('goal')==='site_loads')return get('weatherActions')?ids:['weatherActions'];
+ if(get('goal')==='plan_terrace')return [...ids,... ['terraceLengthM','terraceDepthM','terraceHeightM','terraceWallSupport']];
  if(get('sectionNotation')&&!get('sectionUnit')&&!readSectionNotations(get('sectionNotation'))[0]?.unit)ids.push('sectionUnit');
  if(c.conflicts.memberRole||(get('nominalSection')||get('sectionNotation')||get('profileDesignation'))&&!get('memberRole'))ids.push('memberRole');
  if(get('goal')==='check_column')return ids;
@@ -81,7 +85,7 @@ export function requiredFields(c){
   if(!get('loadChoice'))ids.push('rafterSpanM');
  }else ids.push('spanM','system');
  ids.push('loadChoice');
- if(get('loadChoice')==='roof'){
+ if(['roof','site_roof'].includes(get('loadChoice'))){
   ids.push('roofBearsOnWall','floorAbove','roofSupport','roofSides','rafterSpanM','spanBasis');
   if(get('roofSides')==='two')ids.push('oppositeRafterSpanM');
   if(get('spanBasis')==='slope'||get('deadBasis')==='slope')ids.push('roofAngleDeg');
@@ -94,6 +98,7 @@ export function requiredFields(c){
  return [...new Set(ids)];
 }
 export function nextQuestion(c){
+ const weatherId=weatherRequired(c).find(id=>c.conflicts[id]||(!c.facts[id]&&!c.unknowns.includes(id)));if(weatherId)return questionFor(weatherId,c);
  if(fact(c,'unsupportedReason')||['continuous','frame'].includes(fact(c,'system')))return null;
  if(fact(c,'sectionRequested')===true&&['multiple_members','profile'].includes(fact(c,'sectionConstruction')))return null;
  if(fact(c,'loadChoice')==='roof'&&(['trusses','ridge_board'].includes(fact(c,'roofSupport'))||fact(c,'floorAbove')==='yes'||fact(c,'roofBearsOnWall')==='no'))return null;

@@ -125,7 +125,7 @@ export function initManual(root){
  newManual.onclick=()=>{contextBlock='';contextNotice.hidden=true;for(const id of ['widthMm','heightMm','lengthM'])controls[id].value='';invalidate();controls.widthMm.focus();};
  form.onsubmit=event=>{event.preventDefault();invalidate();if(controls.member.value==='terrace')return;try{if(contextBlock)throw Error(contextBlock);result=analyzeMember(input());render(result);report.scrollIntoView({block:'nearest',behavior:'smooth'});}catch(e){error.textContent=e.message;}};
  addRow('G');addRow('Q');sync();report.hidden=true;
- return {open(member='beam',context=null){
+ return {clearSiteSnow(){terraceUi.clearSiteSnow();},applySiteSnow(value,source){terraceUi.applySnow(value,source);},open(member='beam',context=null){
   controls.member.value=member;contextBlock='';contextNotice.hidden=true;
   if(context&&member!=='terrace'){
    const facts=context.facts||{},complex=['profile','multiple_members'].includes(facts.sectionConstruction?.value),designation=facts.materialDesignation?.value,material=facts.material?.value;

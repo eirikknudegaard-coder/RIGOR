@@ -23,6 +23,11 @@ Utvidet dimensjons-/profilkontrakt bruker `schemaVersion: 3`. Backend støtter
 også eldre versjon 2 og utelater nye felt/nominelle verdier for cachede eldre
 klienter. Backend publiseres før klienten. Ingen migrasjon eller nye secrets.
 
+Byggestedsutvidelsen 11. oktober bruker `schemaVersion: 4`; eldre klienter får
+ikke de nye stedlige feltene. Nye delte backendavhengigheter er
+`municipalities.js`, `weather-context.js` og `weather-register.js`.
+`site-load-ui.js` er kun en nettlesermodul. Ingen migrasjon eller nye secrets.
+
 ## Publiseringsrekkefølge
 
 1. Kontroller de nye domenetestene og nettleserflyten.

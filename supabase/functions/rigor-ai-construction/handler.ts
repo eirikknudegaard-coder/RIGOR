@@ -28,7 +28,7 @@ export async function handleConstruction(request:Request,deps:Dependencies){
   let input,analysis,schema;try{
    input=JSON.parse(raw);
    if(!input||!['interpret','explain'].includes(input.action)||Object.keys(input).some(k=>!(input.action==='interpret'?['action','brief','schemaVersion']:['action','context']).includes(k)))throw Error();
-   if(input.action==='interpret'){if(input.schemaVersion!==undefined&&![2,3].includes(input.schemaVersion))throw Error();if(typeof input.brief!=='string'||input.brief.trim().length<10||input.brief.length>8000)throw Error();schema=interpretationSchema();}
+   if(input.action==='interpret'){if(input.schemaVersion!==undefined&&![2,3,4].includes(input.schemaVersion))throw Error();if(typeof input.brief!=='string'||input.brief.trim().length<10||input.brief.length>8000)throw Error();schema=interpretationSchema();}
    else {analysis=analyzeStructure(validateContext(input.context));schema=focusSchema(analysis.findings.map(f=>f.id));}
   }catch{return reply(400,{error:'Beskrivelse eller konstruksjonsmodell er ugyldig. Ingen opplysninger er endret.'});}
   const serviceHeaders={apikey:service,Authorization:'Bearer '+service,'Content-Type':'application/json'};
@@ -45,7 +45,8 @@ export async function handleConstruction(request:Request,deps:Dependencies){
    if(input.action==='interpret'){
     const reviewed=reviewInterpretation(value,input.brief);
     // A previously cached client only knows the original beam/wall contract.
-    if(input.schemaVersion!==3)reviewed.facts=reviewed.facts.filter(f=>!['sectionNotation','sectionUnit','profileDesignation','materialDesignation'].includes(f.field)&&!(f.field==='nominalSection'&&!['2x6','2x8'].includes(String(f.value))));
+    if(input.schemaVersion!==4)reviewed.facts=reviewed.facts.filter(f=>!['weatherActions','siteMunicipality','siteAltitudeM','siteArea','buildingHeightM','siteTerrain','siteTopography','siteTerrainTransition'].includes(f.field)&&!(f.field==='goal'&&f.value==='site_loads')&&!(f.field==='loadChoice'&&f.value==='site_roof'));
+    if(![3,4].includes(input.schemaVersion))reviewed.facts=reviewed.facts.filter(f=>!['sectionNotation','sectionUnit','profileDesignation','materialDesignation'].includes(f.field)&&!(f.field==='nominalSection'&&!['2x6','2x8'].includes(String(f.value))));
     if(input.schemaVersion===undefined)reviewed.facts=reviewed.facts.filter(f=>!f.field.startsWith('terrace')&&!(f.field==='goal'&&['plan_terrace','check_column'].includes(String(f.value)))&&!(f.field==='memberRole'&&f.value==='column'));
     return reply(200,{...reviewed,requiresConfirmation:true});
    }
