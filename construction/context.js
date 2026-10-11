@@ -1,10 +1,12 @@
 // Input contract shared by the conversation and the server. Derived values are
 // produced by the load engine, never accepted as claims from a language model.
+import {weatherFields,weatherLabels} from './weather-context.js';
 import {canonicalNominal,canonicalSection,canonicalProfile,canonicalMaterial} from './section-notation.js';
 const number=(min,max)=>({type:'number',min,max});
 const choice=(...values)=>({type:'enum',values});
 export const fields=Object.freeze({
- goal:choice('remove_wall','check_beam','check_column','plan_terrace','unknown'),
+ ...weatherFields,
+ goal:choice('remove_wall','check_beam','check_column','plan_terrace','site_loads','unknown'),
  memberRole:choice('rafters','joists','beam','column','unknown'),
  terraceLengthM:number(.5,50),terraceDepthM:number(.5,30),terraceHeightM:number(0,10),
  terraceWallSupport:choice('documented','free_standing','unknown'),
@@ -20,17 +22,18 @@ export const fields=Object.freeze({
  roofSupport:choice('ridge_beam','trusses','ridge_board','unknown'),roofSides:choice('one','two','unknown'),
  supportBelow:choice('documented','unknown','unsupported'),
  system:choice('simple','cantilever','continuous','frame','unknown'),
- loadChoice:choice('roof','line','point','mixed','unknown'),
+ loadChoice:choice('site_roof','roof','line','point','mixed','unknown'),
  lineLoadKnM:number(0,500),pointLoadKn:number(0,5000),pointPositionM:number(0,30),
  roofDeadKnM2:number(0,20),roofSnowKnM2:number(0,30),deadBasis:choice('horizontal','slope','unknown'),
  loadBasis:choice('documented','preliminary'),loadSource:{type:'text',max:400},
  material:choice('C24','GL30c','S355','unknown'),sectionRequested:{type:'boolean'},sectionConstruction:choice('solid_single','multiple_members','profile','unknown'),deflectionRatio:number(100,1000),
  selfWeightInLoad:{type:'boolean'},unsupportedReason:{type:'text',max:500}
 });
-export const labels={sectionConstruction:'Dragerens oppbygging',tributaryWidthM:'Lastbredde (m)',roofLineLoadKnM:'Utledet taklast langs drageren (kN/m)',selfWeightKnM:'Utledet egenvekt for drageren (kN/m)',goal:'Hva du vil undersøke',memberRole:'Del av konstruksjonen',nominalSection:'Nominell dimensjon',widthMm:'Bredde (mm)',heightMm:'Høyde (mm)',spacingMm:'Senteravstand (mm)',roofType:'Takform',roofAngleDeg:'Takvinkel (grader)',openingM:'Ønsket åpning (m)',spanM:'Dragerspenn (m)',rafterSpanM:'Sperrespenn (m)',oppositeRafterSpanM:'Sperrespenn på andre siden (m)',spanBasis:'Hvordan spennet er målt',direction:'Sperrer i forhold til veggen',roofBearsOnWall:'Sperrer med opplegg på veggen',floorAbove:'Etasjeskiller over veggen',roofSupport:'Bæring ved mønet',roofSides:'Taklast fra én eller to sider',supportBelow:'Støtte under endene',system:'Opplegg for drageren',loadChoice:'Lastgrunnlag',lineLoadKnM:'Last langs drageren (kN/m)',pointLoadKn:'Punktlast (kN)',pointPositionM:'Punktlast fra venstre ende (m)',roofDeadKnM2:'Takets egenvekt (kN/m²)',roofSnowKnM2:'Snølast på taket (kN/m²)',deadBasis:'Areal for takets egenvekt',loadBasis:'Dokumentasjon av laster',loadSource:'Kilde for lastene',material:'Materialklasse',deflectionRatio:'Foreløpig nedbøyningsgrense L/',selfWeightInLoad:'Dragerens egenvekt er med i oppgitt last',unsupportedReason:'Avgrensning'};
+export const labels={...weatherLabels,sectionConstruction:'Dragerens oppbygging',tributaryWidthM:'Lastbredde (m)',roofLineLoadKnM:'Utledet taklast langs drageren (kN/m)',selfWeightKnM:'Utledet egenvekt for drageren (kN/m)',goal:'Hva du vil undersøke',memberRole:'Del av konstruksjonen',nominalSection:'Nominell dimensjon',widthMm:'Bredde (mm)',heightMm:'Høyde (mm)',spacingMm:'Senteravstand (mm)',roofType:'Takform',roofAngleDeg:'Takvinkel (grader)',openingM:'Ønsket åpning (m)',spanM:'Dragerspenn (m)',rafterSpanM:'Sperrespenn (m)',oppositeRafterSpanM:'Sperrespenn på andre siden (m)',spanBasis:'Hvordan spennet er målt',direction:'Sperrer i forhold til veggen',roofBearsOnWall:'Sperrer med opplegg på veggen',floorAbove:'Etasjeskiller over veggen',roofSupport:'Bæring ved mønet',roofSides:'Taklast fra én eller to sider',supportBelow:'Støtte under endene',system:'Opplegg for drageren',loadChoice:'Lastgrunnlag',lineLoadKnM:'Last langs drageren (kN/m)',pointLoadKn:'Punktlast (kN)',pointPositionM:'Punktlast fra venstre ende (m)',roofDeadKnM2:'Takets egenvekt (kN/m²)',roofSnowKnM2:'Snølast på taket (kN/m²)',deadBasis:'Areal for takets egenvekt',loadBasis:'Dokumentasjon av laster',loadSource:'Kilde for lastene',material:'Materialklasse',deflectionRatio:'Foreløpig nedbøyningsgrense L/',selfWeightInLoad:'Dragerens egenvekt er med i oppgitt last',unsupportedReason:'Avgrensning'};
 export const valueLabels={solid_single:'Ett massivt rektangel',multiple_members:'Sammensatt bjelke',profile:'Profil med flenser / hulrom',remove_wall:'Fjerne vegg',check_beam:'Undersøke bjelke',unknown:'Vet ikke',rafters:'Taksperrer',joists:'Bjelkelag',beam:'Drager / bjelke',gable:'Saltak',mono:'Pulttak',hip:'Valmtak',flat:'Flatt tak',horizontal:'Vannrett',slope:'Langs takflaten',across:'På tvers av veggen',parallel:'Langs veggen',yes:'Ja',no:'Nei',ridge_beam:'Bærende drager ved mønet',trusses:'Takstoler',ridge_board:'Mønebord uten bærende drager',one:'Én side',two:'Begge sider',documented:'Dokumentert',unsupported:'Mangler støtte',simple:'Opplegg i begge ender',cantilever:'Fast innspent i én ende',continuous:'Tre eller flere opplegg',frame:'Ramme',roof:'Oppgitte taklaster',line:'Oppgitt last langs drageren',point:'Oppgitt punktlast',mixed:'Last langs drageren og punktlast',preliminary:'Foreløpige, brukeroppgitte laster'};
 Object.assign(labels,{terraceLengthM:'Terrassens lengde langs huset (m)',terraceDepthM:'Terrassens dybde fra huset (m)',terraceHeightM:'Høyde over terreng (m)',terraceWallSupport:'Bæring ved huset'});
 Object.assign(labels,{sectionNotation:'Oppgitt tverrsnitt',sectionUnit:'Enhet for tverrsnitt',profileDesignation:'Oppgitt profilbetegnelse',materialDesignation:'Oppgitt materialbetegnelse'});
+Object.assign(valueLabels,{site_loads:'Finne stedlige snø- og vindlaster',site_roof:'Taklaster fra byggested',snow:'Snølast',wind:'Vindlast',both:'Snø og vind'});
 Object.assign(valueLabels,{check_column:'Undersøke søyle / stolpe',plan_terrace:'Plassere dragere og stolper i terrasse',column:'Søyle / stolpe',free_standing:'Frittstående terrasse'});
 export function validateValue(id,value){
  const d=fields[id];if(!d)throw Error('Ukjent konstruksjonsopplysning.');

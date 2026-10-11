@@ -66,7 +66,14 @@ test('Version 3 supports general section notation while cached version 2 and leg
   const old=await handleConstruction(req({action:'interpret',brief:text,...(version?{schemaVersion:version}:{})}),fixture({output:proposed}));
   assert.equal(old.status,200);assert.deepEqual((await old.json()).facts,[]);
  }
- assert.equal((await handleConstruction(req({action:'interpret',brief:text,schemaVersion:4}),fixture())).status,400);
+ assert.equal((await handleConstruction(req({action:'interpret',brief:text,schemaVersion:5}),fixture())).status,400);
+});
+test('Version 4 keeps quoted building location; cached clients never receive new weather fields',async()=>{
+ const text='Snølast i Grimstad, 70 moh. Bygget er 8 meter høyt.';
+ const proposed={facts:[{field:'siteMunicipality',value:'4202',evidence:'Grimstad'},{field:'siteAltitudeM',value:70,evidence:'70 moh'},{field:'buildingHeightM',value:8,evidence:'Bygget er 8 meter høyt'}]};
+ const current=await handleConstruction(req({action:'interpret',brief:text,schemaVersion:4}),fixture({output:proposed}));assert.equal(current.status,200);assert.equal((await current.json()).facts.length,3);
+ for(const version of [undefined,2,3]){const r=await handleConstruction(req({action:'interpret',brief:text,...(version?{schemaVersion:version}:{})}),fixture({output:proposed}));assert.equal(r.status,200);assert.deepEqual((await r.json()).facts,[]);}
+ const invented=await handleConstruction(req({action:'interpret',brief:text,schemaVersion:4}),fixture({output:{facts:[{field:'siteAltitudeM',value:8,evidence:'Bygget er 8 meter høyt'}]}}));assert.equal((await invented.json()).partial,true);
 });
 test('Explanation is rebuilt from the deterministic model and supports an independent provider adapter',async()=>{
  let c=emptyContext('En drager for orienterende lastanalyse');for(const [k,v]of Object.entries({goal:'check_beam',system:'simple',spanM:4,loadChoice:'line',lineLoadKnM:2,loadBasis:'documented',loadSource:'K-01'}))c=setFact(c,k,v);

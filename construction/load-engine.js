@@ -1,9 +1,12 @@
+import {weatherRequired} from './weather-context.js';
 import {fact,validateContext} from './context.js';
 import {rectangle} from './sections.js';
 import {materialFor} from './materials.js';
 import {readSectionNotations} from './section-notation.js';
 export function buildStructuralModel(input){
- const c=validateContext(input),get=id=>fact(c,id),required=[],derived=[],assumptions=[],limitations=[];
+ const c=validateContext(input),get=id=>id==='loadChoice'&&fact(c,id)==='site_roof'?'roof':fact(c,id),required=[],derived=[],assumptions=[],limitations=[];
+ if(get('goal')==='site_loads')return {ready:false,required:weatherRequired(c).filter(id=>get(id)===undefined||get(id)==='unknown'),derived,assumptions,limitations:['Stedlige laster vises i byggestedsskjemaet. Vindkasttrykk er ikke ferdig vegg-/taklast eller medlemskontroll.'],section:null};
+ required.push(...weatherRequired(c).filter(id=>get(id)===undefined||get(id)==='unknown'||c.conflicts[id]));
  if(['plan_terrace','check_column'].includes(get('goal'))){
   const ids=get('goal')==='plan_terrace'?['terraceLengthM','terraceDepthM','terraceHeightM','terraceWallSupport']:[];
   return {ready:false,required:ids.filter(id=>get(id)===undefined||get(id)==='unknown'),derived,assumptions,limitations:[get('goal')==='plan_terrace'?'Terrassen krever en plan for bjelkelag, dragere, stolper og fundament. Den erstattes ikke av én enkelt bjelke.':'Bruk søyleskjemaet for normalkraft, knekkelengder og materialkontroll.'],section:null};

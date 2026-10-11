@@ -1,7 +1,8 @@
+import {municipalityMentions} from './municipalities.js';
 import {fields,validateValue,labels} from './context.js';
 import {sectionMentions} from './language.js';
 import {readSectionNotations,readProfileNotations,readMaterialDesignations,metricDimensions} from './section-notation.js';
-export const interpretationFields=Object.keys(fields).filter(id=>!['unsupportedReason','sectionRequested','deflectionRatio','selfWeightInLoad','loadSource','loadBasis'].includes(id));
+export const interpretationFields=Object.keys(fields).filter(id=>!['unsupportedReason','sectionRequested','deflectionRatio','selfWeightInLoad','loadSource','loadBasis','siteArea'].includes(id));
 export function interpretationSchema(){
  return {type:'object',additionalProperties:false,required:['facts'],properties:{facts:{type:'array',maxItems:20,items:{anyOf:interpretationFields.map(id=>{
   const d=fields[id],value=d.type==='number'?{type:'number'}:d.type==='enum'?{type:'string',enum:d.values}:d.type==='text'?{type:'string'}:{type:'boolean'};
@@ -14,6 +15,13 @@ export function validateInterpretation(input,brief){
  const seen=new Set();const facts=input.facts.map(f=>{
   if(!f||Object.keys(f).some(k=>!['field','value','evidence'].includes(k))||!interpretationFields.includes(f.field)||seen.has(f.field)||typeof f.evidence!=='string'||f.evidence.trim().length<2||f.evidence.length>600||!brief.toLowerCase().includes(f.evidence.toLowerCase()))throw Error('AI-tolkningen mangler et entydig sitat.');
   seen.add(f.field);validateValue(f.field,f.value);
+  if(f.field==='siteMunicipality'&&(new Set(municipalityMentions(f.evidence).map(m=>m.id)).size!==1||!municipalityMentions(f.evidence).some(m=>m.id===f.value)))throw Error('Kommunen finnes ikke entydig i sitatet.');
+  if(f.field==='weatherActions'&&!(f.value==='snow'?/snølast/i.test(f.evidence):f.value==='wind'?/vindlast|vindtrykk/i.test(f.evidence):/snø/i.test(f.evidence)&&/vind/i.test(f.evidence)))throw Error('Lasttemaet finnes ikke i sitatet.');
+  if(f.field==='siteTerrain'&&!({0:/åpent hav/i,I:/kyst|åpent vann|uten trær/i,II:/landbruk|spredte små/i,III:/skog|småhus|industri/i,IV:/tett by|byområde|15 m/i})[f.value]?.test(f.evidence))throw Error('Terrengkategorien må beskrives uttrykkelig.');
+  if(f.field==='siteTopography'&&!({flat:/flat|svakt hellende/i,hill:/ås|fjellrygg/i,escarpment:/skrent|trang dal/i})[f.value]?.test(f.evidence))throw Error('Terrengformen må beskrives uttrykkelig.');
+  if(f.field==='siteTerrainTransition'&&!({yes:/terrengovergang|overgang fra/i,no:/ingen terrengovergang|samme terrengtype/i})[f.value]?.test(f.evidence))throw Error('Ruhetsovergangen er ikke dokumentert i sitatet.');
+  if(f.field==='siteAltitudeM'&&!/moh|m\.?o\.?h\.?|over havet/i.test(f.evidence))throw Error('Byggehøyde er ikke høyde over havet.');
+  if(f.field==='buildingHeightM'&&(!/bygge?høyde|byggets høyde|bygget er[^.]{0,30}høyt/i.test(f.evidence)||/moh|m\.?o\.?h\.?|over havet/i.test(f.evidence)))throw Error('Referansehøyde for bygget er ikke oppgitt.');
   if(f.field==='nominalSection'&&!readSectionNotations(f.evidence).some(m=>m.kind==='nominal'&&m.value===f.value))throw Error('AI foreslo en annen nominell dimensjon enn sitatet oppgir.');
   if(f.field==='sectionNotation'&&!readSectionNotations(f.evidence).some(m=>m.kind!=='nominal'&&m.value===f.value))throw Error('AI endret det oppgitte tverrsnittet.');
   if(f.field==='profileDesignation'&&!readProfileNotations(f.evidence).some(m=>m.value===f.value))throw Error('AI endret den oppgitte profilen.');
